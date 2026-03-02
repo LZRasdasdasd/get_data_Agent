@@ -1,0 +1,51 @@
+# DeepAgents Configuration File
+# 配置千问(Qwen)模型使用 OpenAI 兼容接口
+
+[providers.openai]
+# API Key 从环境变量读取（在 .env 文件中配置）
+api_key_env = "OPENAI_API_KEY"
+# 千问模型的 Base URL
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+# 可用的千问模型列表
+models = [
+    "qwen-turbo",
+    "qwen-plus",
+    "qwen-max",
+    "qwen-long",
+    "qwen-vl-max",
+    "qwen-max-longcontext"
+]
+
+[params.openai.qwen-turbo]
+# qwen-turbo 模型的参数配置
+temperature = 0.7
+max_tokens = 2000
+
+[params.openai.qwen-plus]
+# qwen-plus 模型的参数配置
+temperature = 0.7
+max_tokens = 4000
+
+[params.openai.qwen-max]
+# qwen-max 模型的参数配置（最强性能）
+temperature = 0.7
+max_tokens = 6000
+
+[params.openai.qwen-long]
+# qwen-long 长文本模型支持
+temperature = 0.7
+max_tokens = 12000
+
+[params.openai.qwen-vl-max]
+# qwen-vl-max 多模态模型（支持图像）
+temperature = 0.7
+max_tokens = 4000
+
+[params.openai.qwen-max-longcontext]
+# qwen-max-longcontext 长上下文模型
+temperature = 0.7
+max_tokens = 30000
+
+[models]
+# 设置默认模型
+default = "openai:qwen-plus"
