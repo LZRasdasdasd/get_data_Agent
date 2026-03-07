@@ -258,17 +258,17 @@ class QdrantManager:
             # 生成查询向量
             query_embedding = self.generate_embedding(query_text)
             
-            # 执行搜索
-            search_results = self.client.search(
+            # 执行搜索 - 使用 query_points 方法（新版 qdrant-client API）
+            search_results = self.client.query_points(
                 collection_name=collection_name,
-                query_vector=query_embedding,
+                query=query_embedding,
                 limit=n_results,
                 score_threshold=score_threshold
             )
             
             # 格式化结果
             results = []
-            for result in search_results:
+            for result in search_results.points:
                 results.append({
                     "text": result.payload.get("text", ""),
                     "score": result.score,
