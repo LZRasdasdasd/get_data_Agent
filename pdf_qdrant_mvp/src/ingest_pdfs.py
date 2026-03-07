@@ -132,6 +132,15 @@ def main():
             console.print(f"\n[{i+1}/{len(pdf_files)}] 处理: {pdf_file['name']}")
             console.print(f"  集合名: {collection_name}")
             
+            # 确保集合存在
+            create_result = qdrant.create_collection(collection_name)
+            if create_result["status"] == "error":
+                console.print(f"  [red]创建集合失败: {create_result.get('error')}[/red]")
+                stats["failed"] += 1
+                continue
+            elif create_result["status"] == "created":
+                console.print(f"  [dim]创建新集合[/dim]")
+            
             # 提取文本
             pdf_result = extract_text_from_pdf(pdf_file["path"])
             

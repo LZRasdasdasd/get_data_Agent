@@ -111,10 +111,19 @@ class QdrantManager:
             collections = self.client.get_collections()
             result = []
             for col in collections.collections:
+                # 需要调用 get_collection 获取 points_count
+                try:
+                    info = self.client.get_collection(collection_name=col.name)
+                    points_count = info.points_count
+                    status = info.status.value if hasattr(info.status, 'value') else "active"
+                except:
+                    points_count = 0
+                    status = "unknown"
+                
                 result.append({
                     "name": col.name,
-                    "points_count": col.points_count if hasattr(col, 'points_count') else 0,
-                    "status": "active"
+                    "points_count": points_count,
+                    "status": status
                 })
             return result
         except Exception as e:
@@ -175,57 +184,64 @@ class QdrantManager:
             raise
     
     def add_points(
-        self, 
-        collection_name: str, 
+        self,
+        collection_name: str,
         points: List[Dict[str, Any]],
-        batch_size: int = 100
+        batch_size: int = 10
     ) -> Dict[str, Any]:
         """
         批量添加向量点到 Qdrant 集合
         
         Args:
             collection_name: 集合名称
-            points: 点数据列表，            batch_size: 批量大小
-            points: List[Dict[str, Any]]): 点数据列表
-            batch_size: 批量大小
+            points: 点数据列表
+            batch_size: 批量大小（每批处理的块数，用于控制 API 调用频率）
             
         Returns:
             dict: 操作结果
         """
         try:
-            # 准备 PointStruct 对象
-            qdrant_points = []
-            for i in range(0, len(points), batch_size):
-                chunk = points[i]
-                
-                # 生成唯一ID
-                point_id = str(uuid.uuid4())
-                
-                # 生成嵌入
-                embedding = self.generate_embedding(chunk["text"])
-                
-                qdrant_points.append(PointStruct(
-                    id=point_id,
-                    vector=embedding,
-                    payload={
-                        "text": chunk["text"],
-                        "chunk_index": chunk.get("chunk_index", 0),
-                        "source_file": chunk.get("source_file", ""),
-                        "page_num": chunk.get("page_num", 0),
-                    }
-                ))
+            total_points_added = 0
             
-            # 批量插入
-            self.client.upsert(
-                collection_name=collection_name,
-                points=qdrant_points
-            )
+            # 分批处理所有点
+            for batch_start in range(0, len(points), batch_size):
+                batch_end = min(batch_start + batch_size, len(points))
+                batch = points[batch_start:batch_end]
+                
+                # 为当前批次准备 PointStruct 对象
+                qdrant_points = []
+                for chunk in batch:
+                    # 生成唯一ID
+                    point_id = str(uuid.uuid4())
+                    
+                    # 生成嵌入
+                    embedding = self.generate_embedding(chunk["text"])
+                    
+                    qdrant_points.append(PointStruct(
+                        id=point_id,
+                        vector=embedding,
+                        payload={
+                            "text": chunk["text"],
+                            "chunk_index": chunk.get("chunk_index", 0),
+                            "source_file": chunk.get("source_file", ""),
+                            "page_num": chunk.get("page_num", 0),
+                        }
+                    ))
+                
+                # 批量插入当前批次
+                if qdrant_points:
+                    self.client.upsert(
+                        collection_name=collection_name,
+                        points=qdrant_points
+                    )
+                    total_points_added += len(qdrant_points)
+                    print(f"  [批量 {batch_start//batch_size + 1}] 已添加 {len(qdrant_points)} 个向量点")
             
             return {
                 "status": "success",
                 "collection_name": collection_name,
-                "points_added": len(qdrant_points),
-                "message": f"成功添加 {len(qdrant_points)} 个向量点到集合 {collection_name}"
+                "points_added": total_points_added,
+                "message": f"成功添加 {total_points_added} 个向量点到集合 {collection_name}"
             }
             
         except Exception as e:
