@@ -118,101 +118,143 @@ def read_markdown_file(md_path: str) -> dict:
     return result
 
 
-def merge_small_chunks(chunks: list, min_chunk_size: int = 500, max_chunk_size: int = 1200) -> list:
+def is_heading(paragraph: str) -> bool:
     """
-    后处理：强制合并小于最小字符数的块
+    判断段落是否为Markdown标题
     
     Args:
-        chunks: 原始分块列表
-        min_chunk_size: 最小字符数（默认500）
-        max_chunk_size: 合并后最大字符数（默认1200）
+        paragraph: 段落文本
         
     Returns:
-        list: 合并后的分块列表
+        bool: 是否为标题
     """
-    if not chunks:
+    stripped = paragraph.strip()
+    # Markdown 标题以 # 开头
+    if stripped.startswith('#'):
+        return True
+    # 也检测一些常见的小标题格式（全大写、短行等）
+    if len(stripped) < 50 and stripped.isupper():
+        return True
+    return False
+
+
+def split_paragraph_at_period(paragraph: str) -> tuple:
+    """
+    在句号位置将段落分成两块
+    
+    Args:
+        paragraph: 段落文本
+        
+    Returns:
+        tuple: (前半部分, 后半部分)
+    """
+    # 查找所有句号位置（包括中英文句号）
+    period_positions = []
+    for i, char in enumerate(paragraph):
+        if char in ['。', '.']:
+            period_positions.append(i)
+    
+    # 如果没有句号，返回整个段落
+    if not period_positions:
+        return paragraph, ""
+    
+    # 找到中间位置的句号（尽可能接近中间）
+    mid_point = len(paragraph) // 2
+    best_pos = period_positions[0]
+    min_dist = abs(period_positions[0] - mid_point)
+    
+    for pos in period_positions:
+        dist = abs(pos - mid_point)
+        if dist < min_dist:
+            min_dist = dist
+            best_pos = pos
+    
+    # 在句号后分割（包含句号）
+    first_part = paragraph[:best_pos + 1].strip()
+    second_part = paragraph[best_pos + 1:].strip()
+    
+    return first_part, second_part
+
+
+def merge_small_paragraphs(paragraphs: list, min_chars: int = 100) -> list:
+    """
+    合并小段落：如果段落字数太少则向下合并，小标题合并到下一段落
+    
+    Args:
+        paragraphs: 段落列表
+        min_chars: 最小字符数（默认100）
+        
+    Returns:
+        list: 合并后的段落列表
+    """
+    if not paragraphs:
         return []
     
     merged = []
-    temp_text = ""
+    i = 0
     
-    for chunk in chunks:
-        text = chunk["text"]
+    while i < len(paragraphs):
+        current_para = paragraphs[i].strip()
         
-        # 如果当前累积的文本为空，直接添加
-        if not temp_text:
-            temp_text = text
+        if not current_para:
+            i += 1
             continue
         
-        # 如果累积文本小于最小字符数，尝试合并
-        if len(temp_text) < min_chunk_size:
-            if len(temp_text) + len(text) + 2 <= max_chunk_size:
-                # 可以合并
-                temp_text += "\n\n" + text
-            else:
-                # 合并后会超过限制，但如果当前累积仍然太小，强制合并
-                if len(temp_text) < min_chunk_size // 2:
-                    # 实在太小，强制合并（允许稍微超过限制）
-                    temp_text += "\n\n" + text
+        # 检查是否为标题
+        is_title = is_heading(current_para)
+        
+        # 如果是标题或段落太小，尝试与下一段合并
+        if is_title or len(current_para) < min_chars:
+            # 收集需要合并的段落
+            combined = current_para
+            
+            # 向下查找可以合并的段落
+            j = i + 1
+            while j < len(paragraphs):
+                next_para = paragraphs[j].strip()
+                
+                if not next_para:
+                    j += 1
+                    continue
+                
+                # 如果下一段也是标题或也很小，继续合并
+                if is_heading(next_para) or len(next_para) < min_chars:
+                    combined += "\n\n" + next_para
+                    j += 1
                 else:
-                    # 保存当前累积，开始新的累积
-                    merged.append({
-                        "text": temp_text,
-                        "chunk_index": len(merged),
-                        "char_count": len(temp_text)
-                    })
-                    temp_text = text
+                    # 找到了足够大的段落，合并后退出
+                    combined += "\n\n" + next_para
+                    j += 1
+                    break
+            
+            merged.append(combined)
+            i = j
         else:
-            # 当前累积已经足够大，保存它
-            merged.append({
-                "text": temp_text,
-                "chunk_index": len(merged),
-                "char_count": len(temp_text)
-            })
-            temp_text = text
-    
-    # 处理最后剩余的文本
-    if temp_text:
-        # 如果最后一块太小，尝试与前一个块合并
-        if len(temp_text) < min_chunk_size and merged:
-            last_chunk = merged[-1]
-            if len(last_chunk["text"]) + len(temp_text) + 2 <= max_chunk_size:
-                # 合并到最后一个块
-                merged[-1]["text"] += "\n\n" + temp_text
-                merged[-1]["char_count"] = len(merged[-1]["text"])
-            else:
-                # 无法合并，单独保存（最后一块允许小于最小字符数）
-                merged.append({
-                    "text": temp_text,
-                    "chunk_index": len(merged),
-                    "char_count": len(temp_text)
-                })
-        else:
-            merged.append({
-                "text": temp_text,
-                "chunk_index": len(merged),
-                "char_count": len(temp_text)
-            })
-    
-    # 重新编号
-    for i, chunk in enumerate(merged):
-        chunk["chunk_index"] = i
+            # 段落足够大，直接添加
+            merged.append(current_para)
+            i += 1
     
     return merged
 
 
 def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_chunk_size: int = 500) -> list:
     """
-    将 Markdown 文本分割成块（按段落智能分割）
+    将 Markdown 文本分割成块（优化版）
+    
+    分块规则：
+    1. 每一段分成两块，在句号位置分开
+    2. 如果段落字数太少则合并段落
+    3. 小标题一律合并到下一段落
+    4. 如果每一段都只有不超过100字符则向下合并
     
     Args:
         text: Markdown 文本
-        chunk_size: 每个块的最大字符数（默认1000）
-        overlap: 块之间的重叠字符数（暂未使用，保留接口兼容）
+        chunk_size: 每个块的最大字符数（默认1000，用于参考）
+        overlap: 块之间的重叠字符数（保留接口兼容，暂未使用）
         min_chunk_size: 每个块的最小字符数（默认500）
         
     Returns:
-        list: 文本块列表（确保每个块至少500字符，除非是文档末尾）
+        list: 文本块列表
     """
     if not text:
         return []
@@ -220,75 +262,92 @@ def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_ch
     # 按段落分割（Markdown 用 \n\n 分割段落）
     paragraphs = text.split('\n\n')
     
-    raw_chunks = []
-    current_chunk = ""
+    # 第一步：合并小段落和标题
+    merged_paragraphs = merge_small_paragraphs(paragraphs, min_chars=100)
     
-    for para in paragraphs:
+    raw_chunks = []
+    
+    # 第二步：对每个合并后的段落进行分割
+    for para in merged_paragraphs:
         para = para.strip()
         if not para:
             continue
         
-        # 如果当前块 + 新段落不超过限制，则添加
-        if len(current_chunk) + len(para) + 2 <= chunk_size:
-            current_chunk += ("\n\n" if current_chunk else "") + para
-        else:
-            # 保存当前块
-            if current_chunk:
+        # 如果段落很大，在句号位置分成两块
+        if len(para) > chunk_size:
+            first_part, second_part = split_paragraph_at_period(para)
+            
+            if first_part:
                 raw_chunks.append({
-                    "text": current_chunk,
+                    "text": first_part,
                     "chunk_index": len(raw_chunks),
-                    "char_count": len(current_chunk)
+                    "char_count": len(first_part)
                 })
             
-            # 如果段落本身超过 chunk_size，需要进一步分割
-            if len(para) > chunk_size:
-                # 按句子分割
-                sentences = []
-                current_sentence = ""
-                for char in para:
-                    current_sentence += char
-                    if char in ['。', '.', '!', '?', '！', '？', '\n']:
-                        sentences.append(current_sentence)
-                        current_sentence = ""
-                
-                if current_sentence:
-                    sentences.append(current_sentence)
-                
-                # 合并句子到块中
-                temp_chunk = ""
-                for sentence in sentences:
-                    if len(temp_chunk) + len(sentence) <= chunk_size:
-                        temp_chunk += sentence
-                    else:
-                        if temp_chunk:
-                            raw_chunks.append({
-                                "text": temp_chunk,
-                                "chunk_index": len(raw_chunks),
-                                "char_count": len(temp_chunk)
-                            })
-                        temp_chunk = sentence
-                
-                if temp_chunk:
+            # 如果后半部分仍然很大，递归分割
+            remaining = second_part
+            while len(remaining) > chunk_size:
+                first_part, remaining = split_paragraph_at_period(remaining)
+                if first_part:
                     raw_chunks.append({
-                        "text": temp_chunk,
+                        "text": first_part,
                         "chunk_index": len(raw_chunks),
-                        "char_count": len(temp_chunk)
+                        "char_count": len(first_part)
                     })
-                
-                current_chunk = ""
-            else:
-                current_chunk = para
+            
+            if remaining:
+                raw_chunks.append({
+                    "text": remaining,
+                    "chunk_index": len(raw_chunks),
+                    "char_count": len(remaining)
+                })
+        else:
+            # 段落大小合适，直接作为一个块
+            raw_chunks.append({
+                "text": para,
+                "chunk_index": len(raw_chunks),
+                "char_count": len(para)
+            })
     
-    # 添加最后一个块
-    if current_chunk:
-        raw_chunks.append({
-            "text": current_chunk,
-            "chunk_index": len(raw_chunks),
-            "char_count": len(current_chunk)
-        })
+    # 第三步：后处理，合并仍然太小的块
+    final_chunks = []
+    temp_text = ""
     
-    # 后处理：强制合并所有小块
-    final_chunks = merge_small_chunks(raw_chunks, min_chunk_size=min_chunk_size, max_chunk_size=chunk_size + 200)
+    for chunk in raw_chunks:
+        text = chunk["text"]
+        
+        if not temp_text:
+            temp_text = text
+            continue
+        
+        # 如果当前累积的块太小，继续合并
+        if len(temp_text) < min_chunk_size:
+            temp_text += "\n\n" + text
+        else:
+            # 当前块已经足够大，保存它
+            final_chunks.append({
+                "text": temp_text,
+                "chunk_index": len(final_chunks),
+                "char_count": len(temp_text)
+            })
+            temp_text = text
+    
+    # 处理最后剩余的文本
+    if temp_text:
+        # 如果最后一块太小，尝试与前一个块合并
+        if len(temp_text) < min_chunk_size and final_chunks:
+            final_chunks[-1]["text"] += "\n\n" + temp_text
+            final_chunks[-1]["char_count"] = len(final_chunks[-1]["text"])
+        else:
+            final_chunks.append({
+                "text": temp_text,
+                "chunk_index": len(final_chunks),
+                "char_count": len(temp_text)
+            })
+    
+    # 重新编号
+    for i, chunk in enumerate(final_chunks):
+        chunk["chunk_index"] = i
     
     return final_chunks
 
