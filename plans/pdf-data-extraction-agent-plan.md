@@ -28,7 +28,7 @@ paper_data_extraction/
 │
 ├── paper_extractor/            # 主Agent包
 │   ├── __init__.py
-│   ├── agent.py               # 主Agent创建和配置
+│   ├── agent.py                # 主Agent创建和配置
 │   ├── main.py                # 命令行入口
 │   ├── config.py              # 配置管理
 │   ├── utils.py               # 工具函数

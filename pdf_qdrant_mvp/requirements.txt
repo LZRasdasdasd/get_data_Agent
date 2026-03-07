@@ -1,0 +1,22 @@
+# PDF Qdrant MVP 依赖包
+
+# Qdrant 客户端
+qdrant-client>=1.7.0
+
+# OpenAI API (用于向量嵌入)
+openai>=1.0.0
+
+# PDF 处理
+pdfplumber>=0.11.0
+
+# 环境变量管理
+python-dotenv>=1.0.0
+
+# 终端美化输出
+rich>=13.7.0
+
+# HTTP 请求
+requests>=2.31.0
+
+# 类型提示支持
+typing-extensions>=4.9.0
