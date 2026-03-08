@@ -116,23 +116,28 @@ class CatalystInfoExtractor:
             base_url=config.openai_api_base
         )
     
-    def search_related_content(self, query: str = None, top_k: int = 10, score_threshold: float = 0.4):
+    def search_related_content(self, query: str = None, top_k_per_collection: int = 5, total_top_k: int = 20, score_threshold: float = 0.35):
         """
         搜索相关内容
         
         Args:
             query: 查询文本
-            top_k: 返回结果数量
-            score_threshold: 相似度阈值
+            top_k_per_collection: 每个集合返回的结果数量
+            total_top_k: 总共返回的结果数量
+            score_threshold: 相似度阈值（降低以获取更多结果）
             
         Returns:
             list: 搜索结果列表
         """
         if query is None:
-            query = """单原子催化剂合成实验 experimental synthesis of single-atom catalysts 
-            preparation method reaction conditions temperature time atmosphere 
-            active site metal precursor precursor synthesis procedure
-            实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点"""
+            # 更精确的查询关键词，专门针对实验/合成部分
+            query = """experimental section synthesis procedure preparation method
+            catalyst synthesis reaction temperature heating annealing
+            precursor solution mixing stirring calcination
+            experimental details materials methods
+            sample preparation synthesis route
+            实验部分 合成方法 制备步骤 实验步骤 材料与方法
+            反应温度 煅烧 退火 前驱体 溶液 搅拌"""
         
         collections = self.qdrant.list_collections()
         print(f"\n找到 {len(collections)} 个集合")
@@ -142,10 +147,11 @@ class CatalystInfoExtractor:
         for col in collections:
             collection_name = col['name']
             try:
+                # 增加每个集合的搜索数量
                 results = self.qdrant.search(
                     collection_name=collection_name,
                     query_text=query,
-                    n_results=top_k,
+                    n_results=top_k_per_collection,
                     score_threshold=score_threshold
                 )
                 
@@ -159,7 +165,16 @@ class CatalystInfoExtractor:
         # 按相似度排序
         all_results.sort(key=lambda x: x['score'], reverse=True)
         
-        return all_results[:top_k]
+        # 去重 - 基于源文件名和文本内容的前200个字符
+        seen = set()
+        unique_results = []
+        for r in all_results:
+            key = (r.get('source_file', ''), r['text'][:200] if r.get('text') else '')
+            if key not in seen:
+                seen.add(key)
+                unique_results.append(r)
+        
+        return unique_results[:total_top_k]
     
     def extract_with_llm(self, content: str, source_file: str = ""):
         """
@@ -222,13 +237,13 @@ class CatalystInfoExtractor:
                 "source_file": source_file
             }
     
-    def process_and_extract(self, query: str = None, top_k: int = 10):
+    def process_and_extract(self, query: str = None, total_top_k: int = 20):
         """
         搜索并提取信息的主函数
         
         Args:
             query: 查询文本
-            top_k: 处理的结果数量
+            total_top_k: 处理的结果数量
             
         Returns:
             list: 提取结果列表
@@ -237,8 +252,8 @@ class CatalystInfoExtractor:
         print("搜索单原子催化剂合成相关内容...")
         print("=" * 80)
         
-        # 搜索相关内容
-        results = self.search_related_content(query=query, top_k=top_k)
+        # 搜索相关内容 - 增加搜索数量
+        results = self.search_related_content(query=query, top_k_per_collection=5, total_top_k=total_top_k, score_threshold=0.35)
         print(f"\n找到 {len(results)} 个相关结果")
         
         extracted_results = []
@@ -289,8 +304,8 @@ def main():
     """主函数"""
     extractor = CatalystInfoExtractor()
     
-    # 搜索并提取信息
-    results = extractor.process_and_extract(top_k=10)
+    # 搜索并提取信息 - 增加搜索数量
+    results = extractor.process_and_extract(total_top_k=20)
     
     # 过滤出与化学合成相关的结果
     related_results = [r for r in results if r.get('is_related_to_synthesis')]

@@ -1,30 +1,333 @@
 [
   {
+    "is_related_to_synthesis": false,
+    "reason": "The content describes first-principles calculations and thermodynamic analysis of synthetic steps for CN and Cu/CN formation, but provides no experimental details on chemical synthesis, reaction conditions, reagents, catalysts, or model reactions.",
+    "source_file": "Large-Scale Synthesis of High-Loading Single Metallic Atom Catalysts by a Metal Coordination Route.md",
+    "score": 0.64793396,
+    "collection": "large_scale_synthesis_of_high_loading_single_metal"
+  },
+  {
     "is_related_to_synthesis": true,
     "reaction_steps": 1,
     "step_1": {
       "reactants": [
         {
-          "reactant_A": "biuret (C2H5N3O2)",
+          "reactant_A": "dicyandiamide (C2H4N4)",
+          "amount": "2 g"
+        },
+        {
+          "reactant_B": "H2PdCl4 aqueous solution (0.01 M)",
+          "amount": "different volumes"
+        }
+      ],
+      "temperature": "80°C (stirring) → 550°C (calcination)",
+      "reaction_time": "3 hours (stirring) → 4 hours (calcination)",
+      "atmosphere": "argon",
+      "product": "g-C3N4-Pd single-atom catalyst"
+    },
+    "single_atom_catalyst_active_site": {
+      "active_site": "PdN4",
+      "amount": "10, 20, or 30 wt% Pd (denoted as g-C3N4-Pd10, g-C3N4-Pd20, g-C3N4-Pd30)"
+    },
+    "source_file": "Design of Palladium Doped g C3N4 for Enhanced Photocatalytic Activity toward Hydrogen Evolution Reaction.md",
+    "score": 0.61700433,
+    "collection": "design_of_palladium_doped_g_c3n4_for_enhanced_phot"
+  },
+  {
+    "is_related_to_synthesis": true,
+    "reaction_steps": 1,
+    "step_1": {
+      "reactants": [
+        {
+          "reactant_A": "melamine (C3H6N6)",
           "amount": "not specified"
         },
         {
-          "reactant_B": "metal ion (e.g., Cu²⁺)",
+          "reactant_B": "melem (C6H6N10)",
           "amount": "not specified"
         }
       ],
-      "temperature": "one heating step",
+      "temperature": "thermal condensation temperature (not specified)",
       "reaction_time": "not specified",
-      "atmosphere": "air",
-      "product": "single-atom catalyst (SAC)"
+      "atmosphere": "not specified",
+      "product": "CoCML or CoCMM single-atom catalyst"
     },
     "single_atom_catalyst_active_site": {
-      "active_site": "M-Nx (M = metal, x = coordination number)",
-      "计量": "high-loading (<3 mol% not applicable)"
+      "active_site": "CoN4",
+      "metal_source": "cobalt ions (Co^2+)"
+    },
+    "source_file": "High-Density Cobalt Single-Atom Catalysts for Enhanced Oxygen Evolution Reaction.md",
+    "score": 0.57580405,
+    "collection": "high_density_cobalt_single_atom_catalysts_for_enha"
+  },
+  {
+    "is_related_to_synthesis": true,
+    "reaction_steps": 1,
+    "step_1": {
+      "reactants": [
+        {
+          "reactant_A": "thiourea (CH4N2S)",
+          "amount": "not specified"
+        },
+        {
+          "reactant_B": "biuret (C2H5N3O2)",
+          "amount": "not specified"
+        },
+        {
+          "reactant_C": "copper salt (e.g., Cu(NO3)2 or CuSO4)",
+          "amount": "not specified"
+        }
+      ],
+      "temperature": "not specified",
+      "reaction_time": "not specified",
+      "atmosphere": "not specified",
+      "product": "Cu/CN single-atom catalysts (Cu/CNSACs)"
+    },
+    "single_atom_catalyst_active_site": {
+      "active_site": "CuN4",
+      "loading": "mol% (exact value not specified)"
     },
     "source_file": "Large-Scale Synthesis of High-Loading Single Metallic Atom Catalysts by a Metal Coordination Route.md",
-    "score": 0.6504729,
+    "score": 0.5667287,
     "collection": "large_scale_synthesis_of_high_loading_single_metal"
+  },
+  {
+    "is_related_to_synthesis": true,
+    "reaction_steps": 1,
+    "step_1": {
+      "reactants": [
+        {
+          "reactant_A": "urea (CH4N2O)",
+          "amount": "15 g"
+        },
+        {
+          "reactant_B": "deionized water (H2O)",
+          "amount": "200 mL"
+        },
+        {
+          "reactant_C": "zinc acetate (Zn(CH3COO)2)",
+          "amount": "different amounts"
+        }
+      ],
+      "temperature": "550°C",
+      "reaction_time": "3 hours",
+      "atmosphere": "air",
+      "product": "Zn-CN single-atom catalyst"
+    },
+    "single_atom_catalyst_active_site": {
+      "active_site": "ZnN4",
+      "amount": "not specified"
+    },
+    "source_file": "Single-atom dispersed Zn-N3 active sites bridging the interlayer of g-C3N4.md",
+    "score": 0.5643459,
+    "collection": "single_atom_dispersed_zn_n3_active_sites_bridging_"
+  },
+  {
+    "is_related_to_synthesis": true,
+    "reaction_steps": 1,
+    "step_1": {
+      "reactants": [
+        {
+          "reactant_A": "Cu species",
+          "amount": "not specified"
+        },
+        {
+          "reactant_B": "s-triazine-based polymer (CN substrate)",
+          "amount": "not specified"
+        }
+      ],
+      "temperature": "20°C",
+      "reaction_time": "not specified",
+      "atmosphere": "not specified",
+      "product": "Cu/CN single-atom catalyst"
+    },
+    "single_atom_catalyst_active_site": {
+      "active_site": "CuN4",
+      "amount": "10.0 wt% Cu (Cu/CN-10.0)"
+    },
+    "source_file": "Large-Scale Synthesis of High-Loading Single Metallic Atom Catalysts by a Metal Coordination Route.md",
+    "score": 0.5600749,
+    "collection": "large_scale_synthesis_of_high_loading_single_metal"
+  },
+  {
+    "is_related_to_synthesis": true,
+    "reaction_steps": 1,
+    "step_1": {
+      "reactants": [
+        {
+          "reactant_A": "n-C3N4 substrate",
+          "amount": "not specified"
+        },
+        {
+          "reactant_B": "copper precursor (e.g., Cu(NO3)2)",
+          "amount": "not specified"
+        }
+      ],
+      "temperature": "not specified",
+      "reaction_time": "not specified",
+      "atmosphere": "not specified",
+      "product": "Cu@n-CN–27%"
+    },
+    "single_atom_catalyst_active_site": {
+      "active_site": "CuN4",
+      "amount": "27% Cu loading (atomic %)"
+    },
+    "source_file": "CO electroreduction on single-atom copper.md",
+    "score": 0.55953836,
+    "collection": "co_electroreduction_on_single_atom_copper"
+  },
+  {
+    "is_related_to_synthesis": true,
+    "reaction_steps": 1,
+    "step_1": {
+      "reactants": [
+        {
+          "reactant_A": "Fe ICC",
+          "amount": "defined weight ratio (melamine/Fe ICC = 5)"
+        },
+        {
+          "reactant_B": "melamine (C3H6N6)",
+          "amount": "defined weight ratio (melamine/Fe ICC = 5)"
+        }
+      ],
+      "temperature": "400°C, 500°C, or 600°C",
+      "reaction_time": "6 hours",
+      "atmosphere": "N2",
+      "product": "SA Fe-g-C3N4(400), SA Fe-g-C3N4(500), or SA Fe-g-C3N4(600)"
+    },
+    "single_atom_catalyst_active_site": {
+      "active_site": "FeN4",
+      "quantification": "highly dispersed single Fe atoms or tiny Fe clusters (no metallic Fe diffraction peaks)"
+    },
+    "source_file": "Activation of peroxymonosulfate by single-atom Fe-g-C3N4 catalysts for high efficiency degradation..md",
+    "score": 0.55878067,
+    "collection": "activation_of_peroxymonosulfate_by_single_atom_fe_"
+  },
+  {
+    "is_related_to_synthesis": true,
+    "reaction_steps": 1,
+    "step_1": {
+      "reactants": [
+        {
+          "reactant_A": "urea (CH4N2)",
+          "amount": "10 g"
+        },
+        {
+          "reactant_B": "copper(II) chloride dihydrate (CuCl2·2H2O)",
+          "amount": "268 mg"
+        },
+        {
+          "reactant_C": "deionized water",
+          "amount": "20 mL"
+        }
+      ],
+      "temperature": "80°C (drying), then 550°C (calcination)",
+      "reaction_time": "12 hours (drying), then 2 hours (calcination)",
+      "atmosphere": "argon (≥99.999%)",
+      "product": "Cu1@n-C3N4"
+    },
+    "single_atom_catalyst_active_site": {
+      "active_site": "CuN4",
+      "amount": "0.4 wt% Cu"
+    },
+    "source_file": "CO electroreduction on single-atom copper.md",
+    "score": 0.5587209,
+    "collection": "co_electroreduction_on_single_atom_copper"
+  },
+  {
+    "is_related_to_synthesis": false,
+    "reason": "The text contains fragmented, garbled sentences with no coherent experimental procedure, no description of reaction steps, reactants, catalysts, conditions, or model reactions; it only mentions general attributes of SACs (e.g., metal loading, catalytic performance for CO2 photoreduction) without synthetic details.",
+    "source_file": "Large-Scale Synthesis of High-Loading Single Metallic Atom Catalysts by a Metal Coordination Route.md",
+    "score": 0.5538709,
+    "collection": "large_scale_synthesis_of_high_loading_single_metal"
+  },
+  {
+    "is_related_to_synthesis": true,
+    "reaction_steps": 1,
+    "step_1": {
+      "reactants": [
+        {
+          "reactant_A": "g-C3N4",
+          "amount": "not specified"
+        },
+        {
+          "reactant_B": "H2PdCl4 (aq, 0.01 M)",
+          "amount": "0–30 mL"
+        }
+      ],
+      "temperature": "not specified",
+      "reaction_time": "not specified",
+      "atmosphere": "not specified",
+      "product": "g-C3N4-Pd single-atom catalyst"
+    },
+    "single_atom_catalyst_active_site": {
+      "active_site": "PdN4",
+      "amount": "0.9–1.9 wt%"
+    },
+    "source_file": "Design of Palladium Doped g C3N4 for Enhanced Photocatalytic Activity toward Hydrogen Evolution Reaction.md",
+    "score": 0.5528065,
+    "collection": "design_of_palladium_doped_g_c3n4_for_enhanced_phot"
+  },
+  {
+    "is_related_to_synthesis": true,
+    "reaction_steps": 1,
+    "step_1": {
+      "reactants": [
+        {
+          "reactant_A": "Fe-N4/OCN",
+          "amount": "150 mg"
+        },
+        {
+          "reactant_B": "6 M HCl",
+          "amount": "4 mL"
+        }
+      ],
+      "temperature": "25°C",
+      "reaction_time": "6 hours",
+      "atmosphere": "air",
+      "product": "Fe-N2O1/OCN"
+    },
+    "single_atom_catalyst_active_site": {
+      "active_site": "FeN2O1"
+    },
+    "source_file": "Highly effective activation of peroxymonosulfate via oxygen-coordinated.md",
+    "score": 0.5527305,
+    "collection": "highly_effective_activation_of_peroxymonosulfate_v"
+  },
+  {
+    "is_related_to_synthesis": false,
+    "reason": "The content describes electrocatalytic characterization setup (e.g., catalyst ink preparation, electrode fabrication, CV measurements, gas diffusion electrode cell operation) but contains no information on the synthesis of single-atom catalysts or any chemical reaction steps for catalyst preparation.",
+    "source_file": "CO electroreduction on single-atom copper.md",
+    "score": 0.5522692,
+    "collection": "co_electroreduction_on_single_atom_copper"
+  },
+  {
+    "is_related_to_synthesis": false,
+    "reason": "The content describes characterization data (XANES, EXAFS, WT plot) of a pre-synthesized single-atom Fe-g-C3N4 catalyst and discusses coordination environments; no experimental synthesis procedure, reaction conditions, reactants, or model reaction details are provided.",
+    "source_file": "Activation of peroxymonosulfate by single-atom Fe-g-C3N4 catalysts for high efficiency degradation..md",
+    "score": 0.5511544,
+    "collection": "activation_of_peroxymonosulfate_by_single_atom_fe_"
+  },
+  {
+    "is_related_to_synthesis": false,
+    "reason": "The content discusses catalytic performance, degradation pathways, stability, and reusability of a pre-synthesized single-atom Fe–g–C3N4 catalyst in tetracycline (TC) oxidation with PMS; no experimental synthesis procedure or model reaction for catalyst preparation is described.",
+    "source_file": "Activation of peroxymonosulfate by single-atom Fe-g-C3N4 catalysts for high efficiency degradation..md",
+    "score": 0.5505115,
+    "collection": "activation_of_peroxymonosulfate_by_single_atom_fe_"
+  },
+  {
+    "is_related_to_synthesis": false,
+    "reason": "The content describes electrochemical measurement setup, radical scavenging experiments, and reaction conditions for pollutant degradation (e.g., BPA), but contains no information on chemical synthesis of single-atom catalysts or any catalyst preparation procedure.",
+    "source_file": "Highly effective activation of peroxymonosulfate via oxygen-coordinated.md",
+    "score": 0.54912674,
+    "collection": "highly_effective_activation_of_peroxymonosulfate_v"
+  },
+  {
+    "is_related_to_synthesis": false,
+    "reason": "The provided text is a list of author affiliations and analytical techniques referenced in the paper's supplementary information; no experimental synthesis procedure, reaction conditions, catalyst preparation details, or model reaction description is included.",
+    "source_file": "High-Density Cobalt Single-Atom Catalysts for Enhanced Oxygen Evolution Reaction.md",
+    "score": 0.54849017,
+    "collection": "high_density_cobalt_single_atom_catalysts_for_enha"
   },
   {
     "is_related_to_synthesis": true,
@@ -54,54 +357,8 @@
       "amount": "not specified"
     },
     "source_file": "Activation of peroxymonosulfate by single-atom Fe-g-C3N4 catalysts for high efficiency degradation..md",
-    "score": 0.6461689,
+    "score": 0.5469527,
     "collection": "activation_of_peroxymonosulfate_by_single_atom_fe_"
-  },
-  {
-    "is_related_to_synthesis": false,
-    "reason": "The provided text is a list of article titles, publication dates, journal names, and DOIs; it contains no experimental section, synthesis procedures, reaction conditions, or model reaction details.",
-    "source_file": "High-Density Cobalt Single-Atom Catalysts for Enhanced Oxygen Evolution Reaction.md",
-    "score": 0.61776507,
-    "collection": "high_density_cobalt_single_atom_catalysts_for_enha"
-  },
-  {
-    "is_related_to_synthesis": true,
-    "reaction_steps": 2,
-    "step_1": {
-      "reactants": [
-        {
-          "reactant_A": "dicyandiamide (C2H4N4)",
-          "amount": "2 g"
-        },
-        {
-          "reactant_B": "H2PdCl4 aqueous solution (0.01 M)",
-          "amount": "different volumes"
-        }
-      ],
-      "temperature": "80°C",
-      "reaction_time": "3 hours",
-      "atmosphere": "air",
-      "product": "dried Pd-doped dicyandiamide precursor"
-    },
-    "step_2": {
-      "reactants": [
-        {
-          "reactant_A": "dried Pd-doped dicyandiamide precursor",
-          "amount": "ground powder"
-        }
-      ],
-      "temperature": "550°C",
-      "reaction_time": "4 hours",
-      "atmosphere": "Ar",
-      "product": "g-C3N4-Pd single-atom catalyst"
-    },
-    "single_atom_catalyst_active_site": {
-      "active_site": "PdN4",
-      "loading": "10, 20, or 30 wt% Pd (denoted as g-C3N4-Pd10, g-C3N4-Pd20, g-C3N4-Pd30)"
-    },
-    "source_file": "Design of Palladium Doped g C3N4 for Enhanced Photocatalytic Activity toward Hydrogen Evolution Reaction.md",
-    "score": 0.6174319,
-    "collection": "design_of_palladium_doped_g_c3n4_for_enhanced_phot"
   },
   {
     "is_related_to_synthesis": true,
@@ -109,26 +366,30 @@
     "step_1": {
       "reactants": [
         {
-          "reactant_A": "Fe imidazole coordination compound (Fe ICC)",
-          "amount": "not specified"
+          "reactant_A": "thiourea (CH4N2S)",
+          "amount": "10 g"
         },
         {
-          "reactant_B": "g-C3N4",
-          "amount": "not specified"
+          "reactant_B": "copper chloride dihydrate (CuCl2·2H2O)",
+          "amount": "a small amount"
+        },
+        {
+          "reactant_C": "deionized water",
+          "amount": "30 mL"
         }
       ],
-      "temperature": "not specified",
-      "reaction_time": "not specified",
-      "atmosphere": "not specified",
-      "product": "SA Fe-g-C3N4"
+      "temperature": "343 K",
+      "reaction_time": "3 hours",
+      "atmosphere": "air",
+      "product": "Cu/CN single-atom catalyst"
     },
     "single_atom_catalyst_active_site": {
-      "active_site": "FeN4",
-      "measurement": "inferred from Fe imidazole precursor and g-C3N4 support"
+      "active_site": "CuN4",
+      "loading": "16.03 mol%"
     },
-    "source_file": "Activation of peroxymonosulfate by single-atom Fe-g-C3N4 catalysts for high efficiency degradation..md",
-    "score": 0.61649644,
-    "collection": "activation_of_peroxymonosulfate_by_single_atom_fe_"
+    "source_file": "Large-Scale Synthesis of High-Loading Single Metallic Atom Catalysts by a Metal Coordination Route.md",
+    "score": 0.54678965,
+    "collection": "large_scale_synthesis_of_high_loading_single_metal"
   },
   {
     "is_related_to_synthesis": true,
@@ -157,35 +418,7 @@
       "active_site": "FeN2O1"
     },
     "source_file": "Highly effective activation of peroxymonosulfate via oxygen-coordinated.md",
-    "score": 0.6002137,
+    "score": 0.545841,
     "collection": "highly_effective_activation_of_peroxymonosulfate_v"
-  },
-  {
-    "is_related_to_synthesis": false,
-    "reason": "The content describes catalytic performance evaluation (tetracycline degradation using PMS activation) and characterization of a pre-synthesized single-atom Fe catalyst (SA Fe–g–C3N4), but provides no experimental details on the chemical synthesis procedure—no reaction steps, reactants, temperatures, times, atmospheres, or catalyst preparation methodology are given.",
-    "source_file": "Activation of peroxymonosulfate by single-atom Fe-g-C3N4 catalysts for high efficiency degradation..md",
-    "score": 0.59971094,
-    "collection": "activation_of_peroxymonosulfate_by_single_atom_fe_"
-  },
-  {
-    "is_related_to_synthesis": false,
-    "reason": "The provided text is a list of literature references without any experimental or synthetic procedure description; no reaction details, catalyst synthesis steps, model reactions, or chemical conditions are given.",
-    "source_file": "High-Density Cobalt Single-Atom Catalysts for Enhanced Oxygen Evolution Reaction.md",
-    "score": 0.59942526,
-    "collection": "high_density_cobalt_single_atom_catalysts_for_enha"
-  },
-  {
-    "is_related_to_synthesis": false,
-    "reason": "The provided text is a list of acknowledgments and funding statements from a scientific paper, with no experimental section, synthesis procedures, reaction conditions, or model reaction descriptions. It contains only citations and institutional/financial support information.",
-    "source_file": "High-Density Cobalt Single-Atom Catalysts for Enhanced Oxygen Evolution Reaction.md",
-    "score": 0.594594,
-    "collection": "high_density_cobalt_single_atom_catalysts_for_enha"
-  },
-  {
-    "is_related_to_synthesis": false,
-    "reason": "The provided text is a bibliography/reference list and journal metadata (e.g., authors, affiliations, DOIs, article titles, journals, years, page numbers) with no experimental section, synthesis procedures, reaction schemes, or model reaction descriptions. It contains no information on reaction conditions, catalyst preparation steps, reactants, temperatures, times, atmospheres, or products.",
-    "source_file": "High-Density Cobalt Single-Atom Catalysts for Enhanced Oxygen Evolution Reaction.md",
-    "score": 0.5935094,
-    "collection": "high_density_cobalt_single_atom_catalysts_for_enha"
   }
 ]
