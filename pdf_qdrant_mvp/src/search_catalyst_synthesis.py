@@ -165,4 +165,4 @@ def get_expert_prompt():
 
 
 if __name__ == "__main__":
-    search_catalyst_synthesis_in_all_collections()                                                                                                                                                                                                                                                                                                                                                                       
+    search_catalyst_synthesis_in_all_collections()

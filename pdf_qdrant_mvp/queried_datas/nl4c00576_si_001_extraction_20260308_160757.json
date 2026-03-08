@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "collection_name": "the_synergistic_effect_in_the_heteronuclear_double",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts \n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere \n    active site metal dimer precursor synthesis procedure\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260308_160757",
+    "total_results": 10,
+    "combined_text_length": 9638
+  },
+  "query_results": [
+    {
+      "text": "nt 174–181.\n[16] X.Y. Li, W.H. Zhong, J.Li Peng.Cui, J. Jiang, Design of efficient catalysts with\nGuorong Jia: Writing – original draft, Validation, Investigation, d 17 ou 5 b 0 l – e 1 7 tr 5 a 5 n . s ition metal atoms on C2N layer, J. Phys. Chem. Lett. 7 (2016)\nFormal analysis, Data curation. Lixia Ling: Writing – review & editing, [17] W.J. Wang, Y. Gao, H.D. Li, F.B. Tian, D. Li, T. Cui, Unraveling electrochemical CO\nMethodology, Investigation, Funding acquisition, Formal analysis, reductio...",
+      "score": 0.6493458,
+      "chunk_index": -1
+    },
+    {
+      "text": "MolecularCatalysis557(2024)114005\nContents lists available at ScienceDirect\nMolecular Catalysis\njournal homepage: www.journals.elsevier.com/molecular-catalysis\nResearch Paper\nThe synergistic effect in the heteronuclear double-atom catalysts on CO\nactivation: Insights from DFT calculations\nGuorong Jiaa,c, Lixia Lingb, Riguang Zhanga, Baojun Wanga,*\naState Key Laboratory of Clean and Efficient Coal Utilization, Taiyuan University of Technology, No. 79 West Yingze Street, Taiyuan, Shanxi 030024, PR...",
+      "score": 0.6489106,
+      "chunk_index": -1
+    },
+    {
+      "text": "asin, R. Iqbal, T.A. Nguyen, R.\nK. Gupta, M.R. Islam, M-N-C-based single-atom catalysts for H2, O2 & CO2 t P r h a y n s s . i t 2 io 2 n ( 2 m 0 e 2 t 0 al ) s 9 a 2 s 1 s 6 in – g 9 l 2 e 2 -a 4 t . o m catalysts for nitrogen fixation, Phys. Chem. Chem.\nelectrocatalysis: activity descriptors, active sites identification, challenges and\nprospects, Fuel 304 (2021) 121420.\n11\n\nG. Jia et al. M o l e c u l a r C a t a ly s i s557(2024)114005\n[39] X.Y. Guo, J.X. Gu, S.R. Lin, S.L. Zhang, Z.F. Chen, ...",
+      "score": 0.62559265,
+      "chunk_index": -1
+    },
+    {
+      "text": "he\nhomonuclear and heteronuclear DACs. However, the Bader charge displays that there is a strong electronic\ninteraction between Mo atom and other transition metals of dimer for the heteronuclear DACs. The synergistic\neffect of the heteronuclear DACs originates from the enhancement of the intermetallic interaction between the\nMo atom and other transition metals. The work offers rational guideline for the synthesis of DACs with excellent\ncatalytic performances, and has great potential for applicat...",
+      "score": 0.61133784,
+      "chunk_index": -1
+    },
+    {
+      "text": "f CHO depend on electronic properties of transition metals. In\n3d-TM 2Sc@NC 1.48 -0.61 1.70 -0.47 1.48\nview of two continuous reaction, the 2Nb@NC catalyst possesses the\n2Ti@NC 1.92 -0.27 1.64 0.59 1.92\nhighest catalytic activity for CO activation through CHO, followed by\n2V@NC 1.31 0.13 1.16 0.72 1.31\n2Cr@NC 0.78 0.15 0.83 0.21 0.98 2Mo@NC catalyst. The total activation energy Etotal of 2Nb@NC and\n2Mn@NC 0.94 0.17 1.50 1.22 1.67 2Mo@NC catalysts are 1.25 and 1.28 eV. However, the total activati...",
+      "score": 0.6106411,
+      "chunk_index": -1
+    },
+    {
+      "text": "FTS the Cu2@2SV, MnCu@2SV was selective toward CH4, but the optimal\ntechnology [1–3]. CO activation is mainly composed of three pathways catalytic product of NiCu@2SV was CH3OH. In 2019, Zhang et al. [20]\n[4–7]: (1) the direct dissociation pathway; (2) H-assisted dissociation proved that the Pt-Ru dimers presented much better catalytic ability for\npathway via CHO; (3) H-assisted dissociation pathway via COH. hydrogen evolution reaction (HER), the catalytic activity of Pt-Ru di-\nSince first repor...",
+      "score": 0.60677046,
+      "chunk_index": -1
+    },
+    {
+      "text": "5.44 2.28\n2Ag@NC 8.66 7.44 2.68 3.3.1. CO direct dissociation mechanism\nThe activation energy Ea, the reaction energy ΔH and the C=O dis-\ntance at the transition state of CO=C+O are listed in Table 1. And the\nconsidered. For the homonuclear DACs, H2 can spontaneous dissociation\nconfiguration of initial state (IS), transition state (TS) and final state (FS)\nexcept for 2Mn@NC, 2Co@NC, 2Ni@NC, 2Cu@NC, 2Pd@NC and\nof CO→C+O for the homonuclear DACs are displayed in Fig. S11.\n2Ag@NC catalysts. The H2 ...",
+      "score": 0.601465,
+      "chunk_index": -1
+    },
+    {
+      "text": "ocation, Comput. Mater. Sci. 28\n[36] C. Kittel, P. McEuen, P. McEuen, Introduction to Solid State Physics, Wiley, New\n[8] B.T. Qiao, A.Q. Wang, X.F. Yang, L.F. Allard, Z. Jiang, Y.T. Cui, J.Y. Liu, J. Li,\nYork, 1996.\nT. Zhang, Single-atom catalysis of CO oxidation using Pt1/FeOx, Nat. Chem. 3\n(2011) 634–641. [37] C. Ling, L. Shi, Y. Ouyang, X. Zeng, J. Wang, Nanosheet supported single-metal\natom bifunctional catalyst for overall water splitting, Nano Lett. 17 (2017)\n[9] X.F. Yang, A.Q. Wang, B.T...",
+      "score": 0.6003117,
+      "chunk_index": -1
+    },
+    {
+      "text": "catalysts possess strong CO acti-\nthe total activation energy Etotal of 2Cu@NC catalyst is 5.76 eV, and it is vation ability and easily form metal carbides [45,46]. It is in agreement\n4\n\nG. Jia et al. M o l e c u l a r C a t a ly s i s557(2024)114005\nTable 4 Table 6\nThe activation energy (Ea, eV), the reaction energy (ΔH, eV) and the C=O dis- The (total) activation energy (Ea3; Ea4; Etotal, eV) and the reaction energy (ΔH3;\ntance at the transition state (dc=o, Å) of CO→C+O for the heteronuclear ...",
+      "score": 0.599939,
+      "chunk_index": -1
+    },
+    {
+      "text": "erimental research [41–43]. With regard to the pure\nThe activation energy Ea2 of CHO→CH+O is in the range of 0.83 to 5.88 transition metal catalysts, the transition metals situated in right of pe-\neV. In view of two continuous reaction, the 2Cr@NC catalyst possesses riodic table possess weaker CO activation ability (such as Pd and Cu), the\nthe highest catalytic activity for the CO activation through CHO, the C=O bond does not break and methanol is the main product for the Pd\ntotal activation ene...",
+      "score": 0.5990632,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": false,
+    "error": "无法解析 JSON",
+    "raw_response": "`-`"
+  }
+}
