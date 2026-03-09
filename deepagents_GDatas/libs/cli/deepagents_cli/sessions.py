@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import uuid
 from contextlib import asynccontextmanager
@@ -382,6 +383,10 @@ async def get_checkpointer() -> AsyncIterator[AsyncSqliteSaver]:
 
     async with AsyncSqliteSaver.from_conn_string(str(get_db_path())) as checkpointer:
         yield checkpointer
+
+    # Give aiosqlite background thread a moment to complete cleanup
+    # This prevents "Event loop is closed" RuntimeError on exit
+    await asyncio.sleep(0)
 
 
 _DEFAULT_THREAD_LIMIT = 20
