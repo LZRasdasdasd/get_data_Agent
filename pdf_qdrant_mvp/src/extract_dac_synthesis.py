@@ -75,9 +75,9 @@ EXPERT_PROMPT = """你是一位化学合成领域的资深专家。你的任务�
   "reaction_steps": 4,
   "step_1": {
     "reactants": [
-      {"reactant": "Zn(NO3)2·6H2O", "amount": "1186 mg"},
-      {"reactant": "cetyltrimethylammonium bromide", "amount": "30 mg"},
-      {"reactant": "deionized water", "amount": "40 mL"}
+      {"reactant": "Zn(NO3)2·6H2O", "amount": "8000 mg"},
+      {"reactant": "cetyltrimethylammonium bromide", "amount": "8000 mg"},
+      {"reactant": "deionized water", "amount": "8000 mL"}
     ],
     "temperature": "room temperature",
     "reaction_time": "dissolved",
