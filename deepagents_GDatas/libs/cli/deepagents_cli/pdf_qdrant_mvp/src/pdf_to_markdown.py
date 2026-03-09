@@ -632,6 +632,8 @@ def merge_broken_chemical_lines(text: str) -> str:
         'Na SO', 'H SO', 'Tris-HCl',
         # 催化剂相关
         '₂@NG', '₂@NG DAC',
+        # 标题行模式
+        'NH  Enabled', 'Enabled',
     ]
     
     # 单位后缀模式（后面跟的数字应该是上标）
@@ -784,6 +786,40 @@ def merge_broken_chemical_lines(text: str) -> str:
                         # 化学式上下文：使用下标
                         merged_line = current_line.rstrip() + process_number_line(next_line, is_unit_context=False)
                     
+                    merged_lines.append(merged_line)
+                    i += 2
+                    continue
+                
+                # 情况 1.5: 特殊处理 "NH Enabled" 这种标题行，下一行是 "2 3" 应该合并为 "NH₃ Enabled"
+                # 检测当前行是否包含 "NH " 并且下一行是数字
+                if 'NH ' in current_line and re.match(r'^[\d\s]+$', next_line):
+                    # 提取数字并转换为下标
+                    numbers = re.findall(r'\d+', next_line)
+                    if numbers:
+                        # 只使用第一个数字（通常是 3）作为 NH 的下标
+                        # 将 "NH " 替换为 "NH₃ "，保留后面的文本
+                        subscript = convert_to_subscript(numbers[0]) if numbers else ''
+                        merged_line = re.sub(r'NH\s+', f'NH{subscript} ', current_line)
+                        merged_lines.append(merged_line)
+                        i += 2
+                        continue
+                
+                # 情况 1.6: 特殊处理 "H SO " 这种化学式，下一行是数字应该合并
+                # 例如 "H₂SO " + "4" → "H₂SO₄"
+                if re.search(r'H\s*SO\s*$', current_line) and re.match(r'^\d+$', next_line):
+                    merged_line = re.sub(r'H\s*SO\s*$', lambda m: 'H' + convert_to_subscript(next_line.strip()) + 'SO', current_line)
+                    merged_lines.append(merged_line)
+                    i += 2
+                    continue
+                
+                # 情况 1.7: 特殊处理 "Na SO " 这种化学式，下一行是数字应该合并
+                # 例如 "Na SO " + "2 4" → "Na₂SO₄"
+                if re.search(r'Na\s+SO\s*$', current_line) and re.match(r'^[\d\s]+$', next_line):
+                    numbers = re.findall(r'\d+', next_line)
+                    if len(numbers) >= 2:
+                        merged_line = re.sub(r'Na\s+SO\s*$', f'Na{convert_to_subscript(numbers[0])}SO{convert_to_subscript(numbers[1])}', current_line)
+                    else:
+                        merged_line = current_line.rstrip() + ''.join(convert_to_subscript(n) for n in numbers)
                     merged_lines.append(merged_line)
                     i += 2
                     continue
