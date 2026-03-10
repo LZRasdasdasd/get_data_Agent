@@ -55,7 +55,7 @@ class Config:
         
         # 嵌入模型配置
         self.embedding_model = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
-        self.embedding_dimension = int(os.getenv("EMBEDDING_DIMENSION", "1536"))
+        self.embedding_dimension = int(os.getenv("EMBEDDING_DIMENSION", "1024"))
         
         # 日志级别
         self.log_level = os.getenv("LOG_LEVEL", "INFO")

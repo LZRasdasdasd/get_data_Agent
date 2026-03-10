@@ -51,12 +51,36 @@ def test_qdrant_connection():
         return False
 
 
+def get_pdf_files(directory: str):
+    """获取目录中的所有 PDF 文件"""
+    import re
+    from pathlib import Path
+    
+    pdf_files = []
+    dir_path = Path(directory)
+    
+    if not dir_path.exists():
+        return pdf_files
+    
+    for pdf_file in sorted(dir_path.glob("*.pdf")):
+        name = pdf_file.stem
+        collection_name = re.sub(r'[^a-zA-Z0-9_]', '_', name.lower())
+        collection_name = re.sub(r'_+', '_', collection_name).strip('_')
+        
+        pdf_files.append({
+            "name": pdf_file.name,
+            "path": str(pdf_file),
+            "collection_name": collection_name
+        })
+    
+    return pdf_files
+
+
 def test_pdf_files():
     """测试 PDF 文件检测"""
     print("\n" + "=" * 50)
     print("3. 测试 PDF 文件检测...")
     
-    from pdf_tools import get_pdf_files
     from config import config
     
     pdf_files = get_pdf_files(config.pdf_dir)
@@ -100,13 +124,72 @@ def test_embedding():
         return False
 
 
+def extract_text_from_pdf(pdf_path: str):
+    """从 PDF 文件中提取文本"""
+    import pdfplumber
+    
+    try:
+        text = ""
+        with pdfplumber.open(pdf_path) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text() or ""
+                text += page_text + "\n"
+        
+        return {
+            "success": True,
+            "text": text,
+            "pages": len(pdf.pages) if 'pdf' in dir() else 0
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "text": "",
+            "pages": 0
+        }
+
+
+def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50):
+    """将文本分割成重叠的块"""
+    chunks = []
+    start = 0
+    chunk_index = 0
+    
+    while start < len(text):
+        end = start + chunk_size
+        chunk = text[start:end]
+        
+        if chunk.strip():
+            chunks.append({
+                "text": chunk,
+                "chunk_index": chunk_index,
+                "start": start,
+                "end": min(end, len(text))
+            })
+            chunk_index += 1
+        
+        start = end - overlap
+        if start >= len(text) - overlap:
+            break
+    
+    return chunks
+
+
+def sanitize_collection_name(name: str) -> str:
+    """将文件名转换为有效的集合名称"""
+    import re
+    collection_name = re.sub(r'[^a-zA-Z0-9_]', '_', name.lower())
+    collection_name = re.sub(r'_+', '_', collection_name)
+    collection_name = collection_name.strip('_')
+    return collection_name
+
+
 def test_single_pdf_ingest():
     """测试单个 PDF 的导入"""
     print("\n" + "=" * 50)
     print("5. 测试单个 PDF 导入...")
     
     from vector_tools import QdrantManager
-    from pdf_tools import extract_text_from_pdf, chunk_text, sanitize_collection_name, get_pdf_files
     from config import config
     from qdrant_client.models import PointStruct
     

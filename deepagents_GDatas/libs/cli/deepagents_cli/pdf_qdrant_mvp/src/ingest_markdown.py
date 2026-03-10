@@ -18,7 +18,7 @@ from rich.panel import Panel
 from rich.progress import Progress
 from rich.table import Table
 
-from config import config
+from qdrant_config import config
 from vector_tools import QdrantManager
 
 
@@ -239,22 +239,33 @@ def merge_small_paragraphs(paragraphs: list, min_chars: int = 100) -> list:
 
 def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_chunk_size: int = 500) -> list:
     """
-    将 Markdown 文本分割成块（优化版）
+    将 Markdown 文本智能分割成适合向量嵌入的文本块。
     
-    分块规则：
-    1. 每一段分成两块，在句号位置分开
-    2. 如果段落字数太少则合并段落
-    3. 小标题一律合并到下一段落
-    4. 如果每一段都只有不超过100字符则向下合并
+    该工具用于将长文本分割成适当大小的块，以便进行向量嵌入和语义搜索。
+    采用智能分块策略：在句号位置分割、合并小段落、保留标题上下文。
+    
+    Use this tool when you need to:
+    - Split long Markdown documents into chunks for vector embedding
+    - Prepare text data for semantic search in Qdrant
+    - Process scientific papers with proper context preservation
+    - Create text chunks that maintain semantic coherence
     
     Args:
-        text: Markdown 文本
-        chunk_size: 每个块的最大字符数（默认1000，用于参考）
-        overlap: 块之间的重叠字符数（保留接口兼容，暂未使用）
-        min_chunk_size: 每个块的最小字符数（默认500）
+        text: 要分割的 Markdown 文本内容
+        chunk_size: 每个块的目标最大字符数，默认 1000
+        overlap: 块之间的重叠字符数（保留参数，当前未使用），默认 200
+        min_chunk_size: 每个块的最小字符数，默认 500，小于此值的块会被合并
         
     Returns:
-        list: 文本块列表
+        list: 文本块列表，每个元素是包含以下字段的字典：
+            - text (str): 文本块内容
+            - chunk_index (int): 块的索引位置
+            - char_count (int): 该块的字符数
+    
+    Example:
+        >>> chunks = chunk_markdown("# Title\\n\\nContent...", chunk_size=800)
+        >>> print(len(chunks))  # 分块数量
+        >>> print(chunks[0]["text"])  # 第一个块的内容
     """
     if not text:
         return []
@@ -353,7 +364,39 @@ def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_ch
 
 
 def main():
-    """主函数"""
+    """
+    Markdown 数据向量入库的主入口工具。
+    
+    该工具用于将 Markdown 文件目录中的所有 .md 文件进行智能分块，
+    并将生成的文本块存入 Qdrant 向量数据库，以便后续进行语义搜索。
+    
+    Use this tool when you need to:
+    - Ingest multiple Markdown files into Qdrant vector database
+    - Batch process scientific papers converted to Markdown format
+    - Prepare document corpus for semantic search and retrieval
+    - Create vector embeddings for PDF-extracted content
+    
+    该工具支持以下参数：
+    - md-dir: Markdown 文件所在目录路径，默认为 'markdown_docs'
+    - chunk-size: 每个文本块的目标最大字符数，默认为 1000
+    - chunk-overlap: 文本块之间的重叠字符数，默认为 200
+    - dry-run: 仅模拟运行，不实际存入数据库
+    
+    执行流程：
+    1. 扫描指定目录下的所有 .md 文件
+    2. 对每个文件进行智能分块（保持语义完整性）
+    3. 为每个文本块生成向量嵌入
+    4. 将向量数据存入 Qdrant 集合
+    
+    Returns:
+        None: 该函数通过命令nn行参数运行，结果输出到控制台
+        
+    Example:
+        >>> # 命令行调用方式
+        >>> python ingest_markdown.py --md-dir markdown_docs --chunk-size 1000
+        >>> python ingest_markdown.py -d ./papers -s 800 -o 150
+        >>> python ingest_markdown.py --dry-run  # 仅模拟运行
+    """
     parser = argparse.ArgumentParser(
         description="Markdown 数据存入工具 - 将 Markdown 文件存入 Qdrant 向量数据库",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -550,3 +593,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

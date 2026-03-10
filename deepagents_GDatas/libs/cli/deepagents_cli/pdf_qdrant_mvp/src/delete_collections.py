@@ -7,12 +7,33 @@ sys.path.insert(0, '.')
 
 from vector_tools import QdrantManager
 
-def delete_collections_by_pattern(pattern: str):
+def delete_collections_by_pattern(pattern: str) -> dict:
     """
-    删除名称包含指定模式的集合
+    删除 Qdrant 向量数据库中名称包含指定模式的所有集合。
+    
+    该工具用于批量清理 Qdrant 数据库中的集合。它会查找所有名称中
+    包含指定模式的集合，然后逐一删除。这是一个破坏性操作，请谨慎使用。
+    
+    Use this tool when you need to:
+    - Clean up test collections from the database
+    - Remove outdated document collections
+    - Batch delete collections with similar names
+    - Manage database storage by removing unwanted collections
     
     Args:
-        pattern: 要匹配的模式字符串
+        pattern: 要匹配的集合名称模式字符串，所有名称中包含此字符串的集合都会被删除
+        
+    Returns:
+        dict: 操作结果，包含以下字段：
+            - status (str): 操作状态 ("success" 或 "partial")
+            - deleted_count (int): 成功删除的集合数量
+            - failed_count (int): 删除失败的集合数量
+            - deleted_collections (list): 已删除的集合名称列表
+            - failed_collections (list): 删除失败的集合名称列表
+    
+    Example:
+        >>> result = delete_collections_by_pattern("test_")
+        >>> print(f"Deleted {result['deleted_count']} collections")
     """
     manager = QdrantManager()
     

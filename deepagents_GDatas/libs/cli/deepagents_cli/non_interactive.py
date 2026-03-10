@@ -47,6 +47,7 @@ from deepagents_cli.file_ops import FileOpTracker
 from deepagents_cli.model_config import ModelConfigError
 from deepagents_cli.sessions import generate_thread_id, get_checkpointer
 from deepagents_cli.tools import fetch_url, http_request, web_search
+from deepagents_cli.pdf_extraction_tools import PDF_EXTRACTION_TOOLS
 
 if TYPE_CHECKING:
     from langchain_core.runnables import RunnableConfig
@@ -634,6 +635,9 @@ async def run_non_interactive(
             tools = [http_request, fetch_url]
             if settings.has_tavily:
                 tools.append(web_search)
+            
+            # Add PDF extraction tools
+            tools.extend(PDF_EXTRACTION_TOOLS)
 
             # If an allow-list is provided, enable shell but disable
             # auto-approve so HITL can gate commands. If no allow-list, disable

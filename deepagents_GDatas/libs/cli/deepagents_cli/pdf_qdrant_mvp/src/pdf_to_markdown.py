@@ -26,11 +26,48 @@ from rich.console import Console
 from rich.progress import Progress
 from rich.panel import Panel
 
-from config import config
-from pdf_tools import get_pdf_files
+from qdrant_config import config
 
 # 初始化控制台
 console = Console()
+
+
+# ========== 辅助函数 ==========
+
+def get_pdf_files(directory: str) -> List[Dict[str, str]]:
+    """获取目录中的所有 PDF 文件
+    
+    Args:
+        directory: 目录路径
+        
+    Returns:
+        包含 PDF 文件信息的列表，每个元素包含:
+        - name: 文件名
+        - path: 完整路径
+        - collection_name: 集合名称（用于向量数据库）
+    """
+    import re
+    from pathlib import Path
+    
+    pdf_files = []
+    dir_path = Path(directory)
+    
+    if not dir_path.exists():
+        return pdf_files
+    
+    for pdf_file in sorted(dir_path.glob("*.pdf")):
+        # 生成集合名称：将文件名转换为小写，替换特殊字符
+        name = pdf_file.stem
+        collection_name = re.sub(r'[^a-zA-Z0-9_]', '_', name.lower())
+        collection_name = re.sub(r'_+', '_', collection_name).strip('_')
+        
+        pdf_files.append({
+            "name": pdf_file.name,
+            "path": str(pdf_file),
+            "collection_name": collection_name
+        })
+    
+    return pdf_files
 
 
 # ========== 常量定义 ==========
@@ -763,15 +800,34 @@ def _is_likely_heading(line: str) -> bool:
 
 def convert_pdf_to_markdown(pdf_path: str, output_dir: str, overwrite: bool = False) -> dict:
     """
-    将单个 PDF 文件转换为 Markdown 格式
+    将 PDF 文件转换为 Markdown 格式，保留化学式和科学符号格式。
+    
+    该工具用于从学术论文 PDF 中提取文本内容并转换为结构化的 Markdown 格式。
+    支持保留化学式的上下标（如 H₂O、Fe²⁺）、科学计数法以及表格结构。
+    
+    Use this tool when you need to:
+    - Extract text content from scientific paper PDF files
+    - Convert PDF documents to Markdown format for further processing
+    - Preserve chemical formulas with proper subscript/superscript formatting
+    - Process academic papers containing tables and equations
     
     Args:
-        pdf_path: PDF 文件路径
-        output_dir: 输出目录
-        overwrite: 是否覆盖已存在的文件
+        pdf_path: PDF 文件的完整路径，必须是有效的 .pdf 文件路径
+        output_dir: 输出 Markdown 文件的目录路径，如果不存在会自动创建
+        overwrite: 是否覆盖已存在的同名 Markdown 文件，默认为 False（跳过已存在文件）
         
     Returns:
-        dict: 转换结果
+        dict: 包含转换结果的字典，结构如下：
+            - success (bool): 转换是否成功
+            - input_file (str): 输入的 PDF 文件路径
+            - output_file (str): 生成的 Markdown 文件路径
+            - char_count (int): 提取的字符总数
+            - pages (int): PDF 总页数
+            - error (str|None): 错误信息，成功时为 None
+    
+    Example:
+        >>> result = convert_pdf_to_markdown("paper.pdf", "markdown_docs")
+        >>> print(result["output_file"])  # "markdown_docs/paper.md"
     """
     result = {
         "success": False,

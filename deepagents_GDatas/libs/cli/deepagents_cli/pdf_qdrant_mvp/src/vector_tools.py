@@ -10,7 +10,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
 from openai import OpenAI
 
-from config import config
+from qdrant_config import config
 
 
 class QdrantManager:
@@ -252,23 +252,44 @@ class QdrantManager:
             }
     
     def search(
-        self, 
-        collection_name: str, 
-        query_text: str, 
+        self,
+        collection_name: str,
+        query_text: str,
         n_results: int = 5,
         score_threshold: float = 0.7
     ) -> List[Dict[str, Any]]:
         """
-        在指定集合中搜索相似的文本
+        在 Qdrant 向量数据库中执行语义搜索，查找与查询文本最相似的内容。
+        
+        该工具使用 OpenAI Embeddings 将查询文本转换为向量，然后在指定的 Qdrant 集合中
+        执行相似度搜索，返回与查询语义最相关的文本块。适用于从已索引的科学论文中
+        检索相关信息。
+        
+        Use this tool when you need to:
+        - Search for relevant content in indexed PDF documents
+        - Find semantically similar text passages in scientific papers
+        - Retrieve context for catalyst synthesis information
+        - Query the vector database for specific research topics
         
         Args:
-            collection_name: 集合名称
-            query_text: 查询文本
-            n_results: 返回结果数量
-            score_threshold: 相似度阈值
+            collection_name: Qdrant 集合名称，通常是 PDF 文件名的小写下划线形式
+            query_text: 搜索查询文本，支持自然语言描述和关键词
+            n_results: 返回的最大结果数量，默认 5
+            score_threshold: 相似度阈值（0-1），低于此值的结果会被过滤，默认 0.7
             
         Returns:
-            list: 搜索结果列表
+            list: 搜索结果列表，每个元素是包含以下字段的字典：
+                - text (str): 匹配的文本内容
+                - score (float): 相似度分数（0-1，越高越相似）
+                - chunk_index (int): 文本块在原文中的索引
+                - source_file (str): 来源文件名
+                - page_num (int): 页码
+        
+        Example:
+            >>> manager = QdrantManager()
+            >>> results = manager.search("paper_collection", "催化剂合成方法", n_results=10)
+            >>> for r in results:
+            ...     print(f"Score: {r['score']:.2f}, Text: {r['text'][:100]}...")
         """
         try:
             # 生成查询向量

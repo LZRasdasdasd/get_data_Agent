@@ -1,5 +1,5 @@
 """
-从 nl4c00576_si_001 集合中提取双原子催化剂合成的结构化数据
+从 集合中提取双原子催化剂合成的结构化数据
 1. 查询集合获取相关文本
 2. 使用 LLM 和 EXPERT_PROMPT 提取结构化数据
 3. 保存为时间戳命名的 JSON 文件到 queried_datas 目录
@@ -16,7 +16,7 @@ from typing import Dict, Any, List, Optional
 sys.path.insert(0, '.')
 
 from vector_tools import QdrantManager
-from config import Config
+from qdrant_config import Config
 from openai import OpenAI
 
 
@@ -222,10 +222,34 @@ def call_llm_for_extraction(client: OpenAI, text_content: str, model: str = "qwe
 
 def query_and_extract(collection_name: str = None):
     """
-    查询指定集合并提取结构化数据
+    从 Qdrant 集合中提取双原子催化剂（DAC）合成的结构化数据。
+    
+    该工具用于从已索引的科学论文中提取双原子催化剂的合成信息。
+    它会先在指定的 Qdrant 集合中搜索与双原子催化剂合成相关的内容，
+    然后使用 LLM（大语言模型）将非结构化文本转换为结构化的 JSON 数据。
+    
+    Use this tool when you need to:
+    - Extract dual-atom catalyst synthesis information from scientific papers
+    - Structure experimental details for catalyst preparation
+    - Retrieve information about active sites, precursors, and reaction conditions
+    - Parse catalyst synthesis procedures from research documents
     
     Args:
-        collection_name: 集合名称，如果为 None 则使用默认值
+        collection_name: Qdrant 集合名称，通常是 PDF 文件名的小写下划线形式。
+                        如果为 None，则使用默认值 "nl4c00576_si_001"
+                        
+    Returns:
+        dict: 包含提取结果的字典，结构如下：
+            - metadata (dict): 元数据（集合名、查询、时间戳等）
+            - query_results (list): 向量搜索的原始结果
+            - extraction (dict): LLM 提取的结构化数据，包含：
+                - reaction_steps (int): 反应步数
+                - step_X (dict): 每步的详细信息（反应物、温度、时间、产物等）
+                - double_atom_catalyst_active_site (dict): 活性位点信息
+    
+    Example:
+        >>> result = query_and_extract("paper_collection")
+        >>> print(result["extraction"]["data"]["reaction_steps"])
     """
     import sys
     
@@ -299,7 +323,7 @@ def query_and_extract(collection_name: str = None):
         
         # 准备输出数据
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_filename = f"nl4c00576_si_001_extraction_{timestamp}.json"
+        output_filename = f"_{timestamp}_{collection_name}.json"
         output_dir = Path(__file__).parent.parent / "queried_datas"
         output_dir.mkdir(exist_ok=True)
         output_path = output_dir / output_filename

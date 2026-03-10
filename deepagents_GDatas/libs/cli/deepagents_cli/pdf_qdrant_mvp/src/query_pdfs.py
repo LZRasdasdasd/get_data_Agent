@@ -16,12 +16,30 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.prompt import Prompt
 
-from config import config
-from pdf_tools import sanitize_collection_name
+from qdrant_config import config
 from vector_tools import QdrantManager
 
 # 初始化控制台
 console = Console()
+
+
+def sanitize_collection_name(name: str) -> str:
+    """将文件名转换为有效的集合名称
+    
+    Args:
+        name: 原始文件名
+        
+    Returns:
+        有效的集合名称（小写、下划线分隔）
+    """
+    import re
+    # 转换为小写，替换非字母数字字符为下划线
+    collection_name = re.sub(r'[^a-zA-Z0-9_]', '_', name.lower())
+    # 合并多个连续下划线
+    collection_name = re.sub(r'_+', '_', collection_name)
+    # 去除首尾下划线
+    collection_name = collection_name.strip('_')
+    return collection_name
 
 
 def list_collections(qdrant: QdrantManager):

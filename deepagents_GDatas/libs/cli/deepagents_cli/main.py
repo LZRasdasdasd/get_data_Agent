@@ -467,6 +467,7 @@ async def run_textual_cli_async(
     from deepagents_cli.model_config import ModelConfigError
     from deepagents_cli.sessions import get_checkpointer
     from deepagents_cli.tools import fetch_url, http_request, web_search
+    from deepagents_cli.pdf_extraction_tools import PDF_EXTRACTION_TOOLS
 
     try:
         result = create_model(model_name, extra_kwargs=model_params)
@@ -495,6 +496,9 @@ async def run_textual_cli_async(
         tools: list[Callable[..., Any] | dict[str, Any]] = [http_request, fetch_url]
         if settings.has_tavily:
             tools.append(web_search)
+        
+        # Add PDF extraction tools
+        tools.extend(PDF_EXTRACTION_TOOLS)
 
         # Handle sandbox mode
         sandbox_backend = None
