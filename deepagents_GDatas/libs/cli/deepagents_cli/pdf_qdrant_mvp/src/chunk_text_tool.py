@@ -1,17 +1,17 @@
 """
-Markdown 文本分块与向量数据库存储工具
+文本分块工具模块
 
-核心功能：
-1. 文本分块 (Text Chunking) - 将长文本智能分割成适合向量嵌入的文本块
-2. 向量存储 (Vector Storage) - 将分块后的文本存入 Qdrant 向量数据库
+核心功能：Text Chunking / 文本分块
+- 将长文本智能分割成适当大小的块，以便进行向量嵌入和语义搜索
+- 采用智能分块策略：在句号位置分割、合并小段落、保留标题上下文
 
-工作流程：
-扫描 markdown_docs 目录 -> 读取 Markdown 文件 -> 智能分块 -> 生成向量嵌入 -> 存入 Qdrant
+这是向量数据库存储流程中的独立工具，只负责文本分块操作
+分块后的文本可通过 vector_store_tool.py 存入 Qdrant 向量数据库
 
 Use this tool when you need to:
-- Chunk text into smaller pieces for vector embedding
-- Store text chunks into Qdrant vector database
-- Prepare documents for semantic search
+- Chunk text / 分块文本：将长文档分割成小块
+- Split long Markdown documents into chunks for vector embedding
+- Prepare text data for semantic search
 """
 
 import os
@@ -19,6 +19,7 @@ import re
 import sys
 import argparse
 from pathlib import Path
+from typing import List, Dict, Any
 
 # 添加父目录到路径
 sys.path.insert(0, str(Path(__file__).parent))
@@ -27,9 +28,6 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.progress import Progress
 from rich.table import Table
-
-from qdrant_config import config
-from vector_tools import QdrantManager
 
 
 # 初始化控制台
@@ -247,7 +245,12 @@ def merge_small_paragraphs(paragraphs: list, min_chars: int = 100) -> list:
     return merged
 
 
-def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_chunk_size: int = 500) -> list:
+def chunk_text(
+    text: str, 
+    chunk_size: int = 1000, 
+    overlap: int = 200, 
+    min_chunk_size: int = 500
+) -> List[Dict[str, Any]]:
     """
     【文本分块工具】将 Markdown 文本智能分割成适合向量嵌入的文本块。
     
@@ -256,7 +259,7 @@ def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_ch
     - 采用智能分块策略：在句号位置分割、合并小段落、保留标题上下文
     
     这是向量数据库存储流程中的第一步：文本分块 (Text Chunking)
-    分块后的文本将通过 embed_and_store() 存入 Qdrant 向量数据库
+    分块后的文本将通过 vector_store_tool 存入 Qdrant 向量数据库
     
     Use this tool when you need to:
     - Chunk text / 分块文本：将长文档分割成小块
@@ -276,7 +279,7 @@ def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_ch
             - char_count (int): 该块的字符数
     
     Example:
-        >>> chunks = chunk_markdown("# Title\\n\\nContent...", chunk_size=800)
+        >>> chunks = chunk_text("# Title\\n\\nContent...", chunk_size=800)
         >>> print(len(chunks))  # 分块数量
         >>> print(chunks[0]["text"])  # 第一个块的内容
     """
@@ -338,15 +341,15 @@ def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_ch
     temp_text = ""
     
     for chunk in raw_chunks:
-        text = chunk["text"]
+        chunk_text = chunk["text"]
         
         if not temp_text:
-            temp_text = text
+            temp_text = chunk_text
             continue
         
         # 如果当前累积的块太小，继续合并
         if len(temp_text) < min_chunk_size:
-            temp_text += "\n\n" + text
+            temp_text += "\n\n" + chunk_text
         else:
             # 当前块已经足够大，保存它
             final_chunks.append({
@@ -354,7 +357,7 @@ def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_ch
                 "chunk_index": len(final_chunks),
                 "char_count": len(temp_text)
             })
-            temp_text = text
+            temp_text = chunk_text
     
     # 处理最后剩余的文本
     if temp_text:
@@ -376,50 +379,124 @@ def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_ch
     return final_chunks
 
 
+def chunk_single_file(
+    md_path: str,
+    chunk_size: int = 1000,
+    overlap: int = 200,
+    min_chunk_size: int = 500
+) -> Dict[str, Any]:
+    """
+    对单个 Markdown 文件进行分块
+    
+    Args:
+        md_path: Markdown 文件路径
+        chunk_size: 目标块大小
+        overlap: 块之间的重叠
+        min_chunk_size: 最小块大小
+        
+    Returns:
+        dict: 包含分块结果和元数据的字典
+    """
+    result = {
+        "success": False,
+        "file_path": md_path,
+        "file_name": Path(md_path).name,
+        "collection_name": sanitize_collection_name(Path(md_path).name),
+        "chunks": [],
+        "char_count": 0,
+        "chunk_count": 0,
+        "error": None
+    }
+    
+    # 读取文件
+    read_result = read_markdown_file(md_path)
+    if not read_result["success"]:
+        result["error"] = read_result["error"]
+        return result
+    
+    text = read_result["text"]
+    result["char_count"] = read_result["char_count"]
+    
+    # 分块
+    chunks = chunk_text(text, chunk_size, overlap, min_chunk_size)
+    
+    # 为每个块添加源文件信息
+    for chunk in chunks:
+        chunk["source_file"] = result["file_name"]
+    
+    result["chunks"] = chunks
+    result["chunk_count"] = len(chunks)
+    result["success"] = True
+    
+    return result
+
+
+def chunk_all_files(
+    md_dir: str,
+    chunk_size: int = 1000,
+    overlap: int = 200,
+    min_chunk_size: int = 500
+) -> Dict[str, Any]:
+    """
+    对目录下所有 Markdown 文件进行分块
+    
+    Args:
+        md_dir: Markdown 文件目录
+        chunk_size: 目标块大小
+        overlap: 块之间的重叠
+        min_chunk_size: 最小块大小
+        
+    Returns:
+        dict: 包含所有文件分块结果的字典
+    """
+    result = {
+        "success": True,
+        "md_dir": md_dir,
+        "total_files": 0,
+        "success_count": 0,
+        "failed_count": 0,
+        "total_chunks": 0,
+        "files": []
+    }
+    
+    # 获取所有 Markdown 文件
+    md_files = get_markdown_files(md_dir)
+    
+    if not md_files:
+        result["success"] = False
+        result["error"] = f"未找到 Markdown 文件: {md_dir}"
+        return result
+    
+    result["total_files"] = len(md_files)
+    
+    # 处理每个文件
+    for md_file in md_files:
+        file_result = chunk_single_file(
+            md_file["path"],
+            chunk_size,
+            overlap,
+            min_chunk_size
+        )
+        
+        if file_result["success"]:
+            result["success_count"] += 1
+            result["total_chunks"] += file_result["chunk_count"]
+        else:
+            result["failed_count"] += 1
+        
+        result["files"].append(file_result)
+    
+    return result
+
+
 def main():
     """
-    【分块并存入向量数据库】的主入口工具。
+    命令行入口：文本分块工具
     
-    核心功能：Text Chunking + Vector Database Storage
-    ================================================
-    步骤1: 文本分块 (Text Chunking)
-        - 将 Markdown 文件智能分割成适当大小的文本块
-        - 保持语义完整性，在句号位置分割、合并小段落
-    
-    步骤2: 向量存储 (Vector Storage)
-        - 为每个文本块生成向量嵌入 (Embedding)
-        - 将向量数据存入 Qdrant 向量数据库
-        - 支持后续的语义搜索和检索
-    
-    Use this tool when you need to:
-    - 分块文本并存入向量数据库 (Chunk text and store to vector database)
-    - Ingest multiple Markdown files into Qdrant vector database
-    - Batch process scientific papers converted to Markdown format
-    - Prepare document corpus for semantic search and retrieval
-    
-    参数说明：
-    - md-dir: Markdown 文件所在目录路径，默认为 'markdown_docs'
-    - chunk-size: 每个文本块的目标最大字符数，默认为 1000
-    - chunk-overlap: 文本块之间的重叠字符数，默认为 200
-    - dry-run: 仅模拟运行，不实际存入数据库
-    
-    执行流程：
-    1. 扫描指定目录下的所有 .md 文件
-    2. 对每个文件进行智能分块（保持语义完整性）- chunk_markdown()
-    3. 为每个文本块生成向量嵌入
-    4. 将向量数据存入 Qdrant 集合 - qdrant.add_points()
-    
-    Returns:
-        None: 该函数通过命令行参数运行，结果输出到控制台
-        
-    Example:
-        >>> # 命令行调用方式
-        >>> python ingest_markdown.py --md-dir markdown_docs --chunk-size 1000
-        >>> python ingest_markdown.py -d ./papers -s 800 -o 150
-        >>> python ingest_markdown.py --dry-run  # 仅模拟运行
+    用于对 Markdown 文件进行智能分块，不涉及向量数据库操作
     """
     parser = argparse.ArgumentParser(
-        description="Markdown 数据存入工具 - 将 Markdown 文件存入 Qdrant 向量数据库",
+        description="文本分块工具 - 将 Markdown 文件智能分割成文本块",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     
@@ -428,6 +505,13 @@ def main():
         type=str,
         default="markdown_docs",
         help="Markdown 文件目录路径 (默认: markdown_docs)"
+    )
+    
+    parser.add_argument(
+        "--file", "-f",
+        type=str,
+        default=None,
+        help="单个 Markdown 文件路径（如果指定，则只处理该文件）"
     )
     
     parser.add_argument(
@@ -445,173 +529,70 @@ def main():
     )
     
     parser.add_argument(
-        "--dry-run", "-n",
-        action="store_true",
-        help="只模拟运行，不实际存入"
+        "--min-chunk-size", "-m",
+        type=int,
+        default=500,
+        help="最小文本块大小 (默认: 500)"
+    )
+    
+    parser.add_argument(
+        "--output", "-O",
+        type=str,
+        default=None,
+        help="输出 JSON 文件路径（可选）"
     )
     
     args = parser.parse_args()
     
     # 显示配置信息
     console.print(Panel.fit(
-        "[bold cyan]Markdown 数据存入工具[/bold cyan]",
+        "[bold cyan]文本分块工具[/bold cyan]",
         border_style="cyan"
     ))
     
-    console.print(f"Markdown 目录: {args.md_dir}")
-    console.print(f"Qdrant 地址: {config.qdrant_url}")
     console.print(f"块大小: {args.chunk_size}")
     console.print(f"块重叠: {args.chunk_overlap}")
+    console.print(f"最小块大小: {args.min_chunk_size}")
     
-    # 初始化 Qdrant 管理器
-    console.print("\n[bold]连接 Qdrant...[/bold]")
-    qdrant = QdrantManager()
-    
-    # 获取 Markdown 文件列表
-    md_files = get_markdown_files(args.md_dir)
-    
-    if not md_files:
-        console.print(f"[red]未找到 Markdown 文件: {args.md_dir}[/red]")
-        sys.exit(1)
-    
-    console.print(f"\n[bold]找到 {len(md_files)} 个 Markdown 文件[/bold]")
-    
-    # 干运行模式
-    if args.dry_run:
-        console.print("[yellow]干运行模式 - 不会实际存入数据[/yellow]")
-        for md_file in md_files:
-            console.print(f"  - {md_file['name']} -> {md_file['collection_name']}")
-        return
-    
-    # 存入统计
-    stats = {
-        "total": len(md_files),
-        "success": 0,
-        "failed": 0,
-        "total_chunks": 0,
-        "collections": []
-    }
-    
-    # 使用进度条
-    with Progress(console=console) as progress:
-        overall_task = progress.add_task(
-            "[cyan]处理 Markdown 文件...", 
-            total=len(md_files)
+    # 处理单个文件或目录
+    if args.file:
+        console.print(f"\n[bold]处理单个文件: {args.file}[/bold]")
+        result = chunk_single_file(
+            args.file,
+            args.chunk_size,
+            args.chunk_overlap,
+            args.min_chunk_size
         )
         
-        for i in range(len(md_files)):
-            md_file = md_files[i]
-            
-            # 更新进度
-            progress.update(overall_task, advance=1)
-            
-            # 获取集合名称
-            collection_name = md_file["collection_name"]
-            
-            console.print(f"\n[{i+1}/{len(md_files)}] 处理: {md_file['name']}")
-            console.print(f"  集合名: {collection_name}")
-            
-            # 确保集合存在
-            create_result = qdrant.create_collection(collection_name)
-            if create_result["status"] == "error":
-                console.print(f"  [red]创建集合失败: {create_result.get('error')}[/red]")
-                stats["failed"] += 1
-                continue
-            elif create_result["status"] == "created":
-                console.print(f"  [dim]创建新集合[/dim]")
-            
-            # 读取 Markdown 文件
-            md_result = read_markdown_file(md_file["path"])
-            
-            if not md_result["success"]:
-                console.print(f"  [red]读取失败: {md_result.get('error')}[/red]")
-                stats["failed"] += 1
-                continue
-            
-            console.print(f"  提取到 {md_result['char_count']} 个字符")
-            
-            # 分块
-            chunks = chunk_markdown(
-                md_result["text"], 
-                args.chunk_size, 
-                args.chunk_overlap
-            )
-            
-            console.print(f"  分块: {len(chunks)} 个")
-            
-            if not chunks:
-                console.print(f"  [yellow]警告: 没有生成任何文本块[/yellow]")
-                stats["failed"] += 1
-                continue
-            
-            # 为每个块添加源文件信息
-            for chunk in chunks:
-                chunk["source_file"] = md_file["name"]
-            
-            # 存入向量
-            result = qdrant.add_points(
-                collection_name=collection_name,
-                points=chunks,
-                batch_size=10
-            )
-            
-            if result["status"] == "success":
-                stats["success"] += 1
-                stats["total_chunks"] += len(chunks)
-                stats["collections"].append({
-                    "name": collection_name,
-                    "chunks": len(chunks)
-                })
-                console.print(f"  [green]成功: {len(chunks)} 个块[/green]")
-            else:
-                stats["failed"] += 1
-                console.print(f"  [red]存入失败: {result.get('error')}[/red]")
+        if result["success"]:
+            console.print(f"  [green]成功: {result['chunk_count']} 个块[/green]")
+            console.print(f"  字符数: {result['char_count']}")
+            console.print(f"  集合名: {result['collection_name']}")
+        else:
+            console.print(f"  [red]失败: {result.get('error')}[/red]")
+    else:
+        console.print(f"\n[bold]处理目录: {args.md_dir}[/bold]")
+        result = chunk_all_files(
+            args.md_dir,
+            args.chunk_size,
+            args.chunk_overlap,
+            args.min_chunk_size
+        )
+        
+        console.print(f"\n找到 {result['total_files']} 个文件")
+        console.print(f"成功: {result['success_count']}")
+        console.print(f"失败: {result['failed_count']}")
+        console.print(f"总块数: {result['total_chunks']}")
     
-    # 显示统计
-    console.print("\n")
-    console.print("=" * 60)
-    console.print(Panel.fit(
-        "[bold green]存入完成统计[/bold green]",
-        border_style="green"
-    ))
+    # 保存输出
+    if args.output:
+        import json
+        with open(args.output, 'w', encoding='utf-8') as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        console.print(f"\n[green]结果已保存到: {args.output}[/green]")
     
-    # 创建统计表格
-    table = Table(show_header=True, header_style="bold")
-    table.add_column("统计项", style="cyan")
-    table.add_column("值", style="green")
-    table.add_row("总文件数", str(stats["total"]))
-    table.add_row("成功", str(stats["success"]))
-    table.add_row("失败", str(stats["failed"]))
-    table.add_row("总块数", str(stats["total_chunks"]))
-    
-    console.print(table)
-    
-    # 显示集合列表
-    if stats["collections"]:
-        console.print("\n[bold]创建的集合:[/bold]")
-        for col in stats["collections"]:
-            console.print(f"  - {col['name']}: {col['chunks']} 个块")
-    
-    # 提示访问 Qdrant Dashboard
-    console.print("\n")
-    console.print(Panel(
-        "[bold cyan]访问 Qdrant Dashboard[/bold cyan]\n\n"
-        "地址: http://localhost:6333/dashboard\n\n"
-        "可以在 Dashboard 中查看和管理数据。",
-        border_style="cyan"
-    ))
-    
-    # 提示如何使用命令行查询
-    console.print(Panel(
-        "[bold yellow]使用方法[/bold yellow]\n\n"
-        "查询数据:\n"
-        "  python src/query_pdfs.py --collection <集合名> --query <查询文本>\n\n"
-        "列出所有集合:\n"
-        "  python src/query_pdfs.py --list",
-        border_style="yellow"
-    ))
+    return result
 
 
 if __name__ == "__main__":
     main()
-

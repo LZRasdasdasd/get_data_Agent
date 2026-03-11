@@ -4,9 +4,14 @@ PDF 数据提取工具注册模块
 该模块从 pdf_qdrant_mvp/src/ 目录导入已经添加了 Agent 可识别 docstring 的函数，
 并将它们注册为 deepagents 工具。
 
+核心功能：
+1. 文本分块 (Text Chunking) - 将长文本智能分割成适合向量嵌入的文本块
+2. 向量存储 (Vector Storage) - 将分块后的文本存入 Qdrant 向量数据库
+
 工具列表：
 - convert_pdf_to_markdown: PDF 转 Markdown
 - chunk_markdown: Markdown 文本分块
+- chunk_and_store_to_qdrant: 分块并存入向量数据库（一步完成）
 - QdrantManager.search: 向量数据库语义搜索
 - CatalystInfoExtractor.search_related_content: 单原子催化剂信息搜索
 - query_and_extract: 双原子催化剂合成信息提取
@@ -78,6 +83,44 @@ def _import_delete_collections():
     return delete_collections_by_pattern
 
 
+def _import_chunk_text_tool():
+    """延迟导入文本分块工具"""
+    from chunk_text_tool import (
+        chunk_text,
+        chunk_single_file,
+        chunk_all_files,
+        get_markdown_files,
+        read_markdown_file,
+        sanitize_collection_name,
+    )
+    return {
+        "chunk_text": chunk_text,
+        "chunk_single_file": chunk_single_file,
+        "chunk_all_files": chunk_all_files,
+        "get_markdown_files": get_markdown_files,
+        "read_markdown_file": read_markdown_file,
+        "sanitize_collection_name": sanitize_collection_name,
+    }
+
+
+def _import_vector_store_tool():
+    """延迟导入向量数据库存储工具"""
+    from vector_store_tool import (
+        store_chunks_to_qdrant,
+        store_single_file,
+        store_all_files,
+        list_stored_collections,
+        get_qdrant_manager,
+    )
+    return {
+        "store_chunks_to_qdrant": store_chunks_to_qdrant,
+        "store_single_file": store_single_file,
+        "store_all_files": store_all_files,
+        "list_stored_collections": list_stored_collections,
+        "get_qdrant_manager": get_qdrant_manager,
+    }
+
+
 # ============================================
 # 包装函数（提供稳定的对外接口）
 # ============================================
@@ -111,12 +154,17 @@ def convert_pdf_to_markdown(pdf_path: str, output_dir: str = None) -> dict:
 
 def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_chunk_size: int = 500) -> list:
     """
-    将 Markdown 文本智能分割成适合向量嵌入的文本块。
+    【文本分块工具】将 Markdown 文本智能分割成适合向量嵌入的文本块。
     
-    该工具用于将长文本分割成适当大小的块，以便进行向量嵌入和语义搜索。
-    采用智能分块策略：在句号位置分割、合并小段落、保留标题上下文。
+    核心功能：Text Chunking / 文本分块
+    - 将长文本分割成适当大小的块，以便进行向量嵌入和语义搜索
+    - 采用智能分块策略：在句号位置分割、合并小段落、保留标题上下文
+    
+    这是向量数据库存储流程中的第一步：文本分块 (Text Chunking)
+    分块后的文本可通过 chunk_and_store_to_qdrant() 存入 Qdrant 向量数据库
     
     Use this tool when you need to:
+    - Chunk text / 分块文本：将长文档分割成小块
     - Split long Markdown documents into chunks for vector embedding
     - Prepare text data for semantic search in Qdrant
     
@@ -134,9 +182,6 @@ def chunk_markdown(text: str, chunk_size: int = 1000, overlap: int = 200, min_ch
     """
     funcs = _import_ingest_markdown()
     return funcs["chunk_markdown"](text, chunk_size, overlap, min_chunk_size)
-
-
-def get_markdown_files(md_dir: str) -> list:
     """
     获取目录下所有 Markdown 文件。
     
@@ -176,6 +221,135 @@ def sanitize_collection_name(filename: str) -> str:
     """
     funcs = _import_ingest_markdown()
     return funcs["sanitize_collection_name"](filename)
+
+
+def chunk_and_store_to_qdrant(
+    markdown_text: str,
+    collection_name: str,
+    source_file: str = "",
+    chunk_size: int = 1000,
+    chunk_overlap: int = 200,
+    min_chunk_size: int = 500,
+    batch_size: int = 10
+) -> dict[str, Any]:
+    """
+    【分块并存入向量数据库】一步完成文本分块和向量存储。
+    
+    核心功能：Text Chunking + Vector Database Storage
+    ================================================
+    步骤1: 文本分块 (Text Chunking)
+        - 将 Markdown 文本智能分割成适当大小的文本块
+        - 保持语义完整性，在句号位置分割、合并小段落
+    
+    步骤2: 向量存储 (Vector Storage)
+        - 为每个文本块生成向量嵌入 (Embedding)
+        - 将向量数据存入 Qdrant 向量数据库
+        - 支持后续的语义搜索和检索
+    
+    Use this tool when you need to:
+    - 分块文本并存入向量数据库 (Chunk text and store to vector database)
+    - Ingest Markdown content into Qdrant vector database
+    - Prepare document corpus for semantic search
+    - Store text chunks with embeddings for retrieval
+    
+    Args:
+        markdown_text: 要处理的 Markdown 文本内容
+        collection_name: Qdrant 集合名称（用于存储向量）
+        source_file: 源文件名（可选，用于元数据）
+        chunk_size: 目标块大小（字符数），默认 1000
+        chunk_overlap: 块之间的重叠字符数，默认 200
+        min_chunk_size: 最小块大小，默认 500
+        batch_size: 批量存储大小，默认 10
+        
+    Returns:
+        dict: 包含操作结果的字典：
+            - status (str): 操作状态 ("success" 或 "error")
+            - collection_name (str): 集合名称
+            - chunks_count (int): 生成的文本块数量
+            - points_added (int): 成功存入的向量点数量
+            - message (str): 结果描述
+            - error (str): 错误信息（如果失败）
+    
+    Example:
+        >>> result = chunk_and_store_to_qdrant(
+        ...     markdown_text="# Title\\n\\nContent...",
+        ...     collection_name="my_document",
+        ...     source_file="my_document.md"
+        ... )
+        >>> print(result["status"])  # "success" 或 "error"
+    """
+    try:
+        # 步骤1: 文本分块
+        chunks = chunk_markdown(
+            text=markdown_text,
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+            min_chunk_size=min_chunk_size
+        )
+        
+        if not chunks:
+            return {
+                "status": "error",
+                "collection_name": collection_name,
+                "chunks_count": 0,
+                "points_added": 0,
+                "message": "文本分块失败：没有生成任何文本块",
+                "error": "No chunks generated from input text"
+            }
+        
+        # 为每个块添加源文件信息
+        for chunk in chunks:
+            chunk["source_file"] = source_file
+        
+        # 步骤2: 获取 Qdrant 管理器并创建集合
+        qdrant = get_qdrant_manager()
+        
+        create_result = qdrant.create_collection(collection_name)
+        if create_result["status"] == "error":
+            return {
+                "status": "error",
+                "collection_name": collection_name,
+                "chunks_count": len(chunks),
+                "points_added": 0,
+                "message": f"创建集合失败: {create_result.get('error')}",
+                "error": create_result.get("error")
+            }
+        
+        # 步骤3: 存入向量
+        store_result = qdrant.add_points(
+            collection_name=collection_name,
+            points=chunks,
+            batch_size=batch_size
+        )
+        
+        if store_result["status"] == "success":
+            return {
+                "status": "success",
+                "collection_name": collection_name,
+                "chunks_count": len(chunks),
+                "points_added": store_result.get("points_added", len(chunks)),
+                "message": f"成功将 {len(chunks)} 个文本块存入集合 {collection_name}",
+                "error": None
+            }
+        else:
+            return {
+                "status": "error",
+                "collection_name": collection_name,
+                "chunks_count": len(chunks),
+                "points_added": 0,
+                "message": f"存入向量失败: {store_result.get('error')}",
+                "error": store_result.get("error")
+            }
+            
+    except Exception as e:
+        return {
+            "status": "error",
+            "collection_name": collection_name,
+            "chunks_count": 0,
+            "points_added": 0,
+            "message": f"操作失败: {str(e)}",
+            "error": str(e)
+        }
 
 
 def get_qdrant_manager():
@@ -369,6 +543,180 @@ def extract_dual_atom_catalyst(collection_name: str = None) -> dict[str, Any]:
 
 
 # ============================================
+# 新增工具：文本分块工具（独立）
+# ============================================
+
+def chunk_text_only(
+    text: str,
+    chunk_size: int = 1000,
+    overlap: int = 200,
+    min_chunk_size: int = 500
+) -> list[dict[str, Any]]:
+    """
+    【文本分块工具】将 Markdown 文本智能分割成适合向量嵌入的文本块。
+    
+    这是独立的分块工具，只负责文本分块，不涉及向量数据库操作。
+    分块后的结果可通过 store_chunks_to_vector_db 存入向量数据库。
+    
+    Use this tool when you need to:
+    - Chunk text / 分块文本：将长文档分割成小块
+    - Split long Markdown documents into chunks for vector embedding
+    - Prepare text data for semantic search
+    
+    Args:
+        text: 要分割的 Markdown 文本
+        chunk_size: 目标块大小（字符数），默认 1000
+        overlap: 块之间的重叠字符数，默认 200
+        min_chunk_size: 最小块大小，默认 500
+        
+    Returns:
+        list: 文本块列表，每个块包含 text, chunk_index, char_count
+    """
+    funcs = _import_chunk_text_tool()
+    return funcs["chunk_text"](text, chunk_size, overlap, min_chunk_size)
+
+
+def chunk_single_markdown_file(
+    md_path: str,
+    chunk_size: int = 1000,
+    overlap: int = 200,
+    min_chunk_size: int = 500
+) -> dict[str, Any]:
+    """
+    对单个 Markdown 文件进行分块（不存入向量数据库）。
+    
+    Use this tool when you need to:
+    - Chunk a single markdown file without storing to vector database
+    - Preview chunking results before ingestion
+    
+    Args:
+        md_path: Markdown 文件路径
+        chunk_size: 目标块大小，默认 1000
+        overlap: 块之间的重叠，默认 200
+        min_chunk_size: 最小块大小，默认 500
+        
+    Returns:
+        dict: 包含分块结果和元数据的字典
+    """
+    funcs = _import_chunk_text_tool()
+    return funcs["chunk_single_file"](md_path, chunk_size, overlap, min_chunk_size)
+
+
+# ============================================
+# 新增工具：向量数据库存储工具（独立）
+# ============================================
+
+def store_chunks_to_vector_db(
+    chunks: list[dict[str, Any]],
+    collection_name: str,
+    source_file: str = "",
+    batch_size: int = 10
+) -> dict[str, Any]:
+    """
+    【向量存储工具】将文本块存入 Qdrant 向量数据库。
+    
+    这是独立的向量存储工具，只负责向量数据库操作。
+    需要先通过 chunk_text_only 或 chunk_single_markdown_file 进行文本分块。
+    
+    Use this tool when you need to:
+    - Store text chunks into Qdrant vector database
+    - Ingest chunked content into vector store
+    - Prepare document corpus for semantic search
+    
+    Args:
+        chunks: 文本块列表（来自 chunk_text_only 的输出）
+        collection_name: Qdrant 集合名称
+        source_file: 源文件名（可选）
+        batch_size: 批量存储大小，默认 10
+        
+    Returns:
+        dict: 包含操作结果的字典
+    """
+    funcs = _import_vector_store_tool()
+    return funcs["store_chunks_to_qdrant"](chunks, collection_name, source_file, batch_size)
+
+
+def store_single_file_to_vector_db(
+    md_path: str,
+    collection_name: str = None,
+    chunk_size: int = 1000,
+    chunk_overlap: int = 200,
+    min_chunk_size: int = 500,
+    batch_size: int = 10
+) -> dict[str, Any]:
+    """
+    【按名称存入单个文件】将单个 Markdown 文件分块并存入 Qdrant 向量数据库。
+    
+    Use this tool when you need to:
+    - Store a single document into vector database by name
+    - Ingest one specific file
+    - Create or update a collection with single document
+    
+    Args:
+        md_path: Markdown 文件路径
+        collection_name: Qdrant 集合名称（可选，默认根据文件名生成）
+        chunk_size: 目标块大小，默认 1000
+        chunk_overlap: 块之间的重叠，默认 200
+        min_chunk_size: 最小块大小，默认 500
+        batch_size: 批量存储大小，默认 10
+        
+    Returns:
+        dict: 包含操作结果的字典
+    """
+    funcs = _import_vector_store_tool()
+    return funcs["store_single_file"](
+        md_path, collection_name, chunk_size, chunk_overlap, min_chunk_size, batch_size
+    )
+
+
+def store_all_files_to_vector_db(
+    md_dir: str,
+    chunk_size: int = 1000,
+    chunk_overlap: int = 200,
+    min_chunk_size: int = 500,
+    batch_size: int = 10
+) -> dict[str, Any]:
+    """
+    【全部存入】将目录下所有 Markdown 文件分块并存入 Qdrant 向量数据库。
+    
+    Use this tool when you need to:
+    - Store all documents in a directory into vector database
+    - Batch ingest multiple files at once
+    - Build complete document corpus for semantic search
+    
+    Args:
+        md_dir: Markdown 文件目录
+        chunk_size: 目标块大小，默认 1000
+        chunk_overlap: 块之间的重叠，默认 200
+        min_chunk_size: 最小块大小，默认 500
+        batch_size: 批量存储大小，默认 10
+        
+    Returns:
+        dict: 包含批量操作结果的字典
+    """
+    funcs = _import_vector_store_tool()
+    return funcs["store_all_files"](
+        md_dir, chunk_size, chunk_overlap, min_chunk_size, batch_size
+    )
+
+
+def list_vector_db_collections() -> dict[str, Any]:
+    """
+    列出 Qdrant 中已存储的所有集合。
+    
+    Use this tool when you need to:
+    - Check which documents have been indexed
+    - Get overview of available collections
+    - Verify document processing status
+    
+    Returns:
+        dict: 包含集合列表的字典
+    """
+    funcs = _import_vector_store_tool()
+    return funcs["list_stored_collections"]()
+
+
+# ============================================
 # 工具注册列表
 # ============================================
 
@@ -377,12 +725,22 @@ PDF_EXTRACTION_TOOLS: list[Callable[..., Any]] = [
     # PDF 处理工具
     convert_pdf_to_markdown,
     
-    # 文本处理工具
-    chunk_markdown,
+    # 文本分块工具（独立）
+    chunk_text_only,  # 独立的文本分块工具
+    chunk_single_markdown_file,  # 单文件分块
+    
+    # 向量数据库存储工具（独立）
+    store_chunks_to_vector_db,  # 独立的向量存储工具
+    store_single_file_to_vector_db,  # 按名称存入单个文件
+    store_all_files_to_vector_db,  # 全部存入
+    
+    # 文本分块与向量存储工具（一步完成）
+    chunk_and_store_to_qdrant,
     
     # 向量数据库工具
     search_qdrant_collection,
     list_qdrant_collections,
+    list_vector_db_collections,  # 新增：列出集合
     delete_collections_by_pattern,
     
     # 催化剂信息提取工具
