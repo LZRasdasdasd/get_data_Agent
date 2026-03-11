@@ -1,0 +1,105 @@
+{
+  "metadata": {
+    "collection_name": "direct_eight_electron_n2o_electroreduction_to_nh3_",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts\n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere\n    active site metal dimer precursor synthesis procedure distance between two metal atoms\n    metal-metal bond length bond distance Å 间距 键长 原子间距\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260311_134747",
+    "total_results": 10,
+    "combined_text_length": 10705
+  },
+  "query_results": [
+    {
+      "text": "; Wang, J.-z.; Liu, K.-h.; Yan, J.-m.; Ren,\nZ.-h.;Zhou,N.;Zhao,X.;Zhang,H.;Liu,D.-x.;Liu,X.;Chen,L.-w.;\nLuo,J.;Zhang,X.-b.Nickeldual-atomsitesforelectrochemicalcarbon\ndioxide reduction. Nat. Synth. 2022, 1, 719-728.\n(31) Li, H.; Wu, D.; Wu, J.; Song, Y.; Lv, W.; Duan, Z.; Ma, D.\nMechanistic understanding of the electrocatalytic conversion of CO\nintoC₂₊ productsbydouble-atomcatalysts.Mater.TodayPhys.2023,\n37, No. 101203.\n(32) Fan, Z.; Luo, R.; Zhang, Y.; Zhang, B.; Zhai, P.; Zhang, Y.;\nWang, C.; ...",
+      "score": 0.6369119,
+      "chunk_index": -1
+    },
+    {
+      "text": "Nano Letters pubs.acs.org/NanoLett Letter\n(25)Li,X.;Shen,P.;Li,X.;Ma,D.;Chu,K.Sub-nmRuOₓ Clusters (43) Liang, X.-M.; Wang, H.-J.; Zhang, C.; Zhong, D.-C.; Lu, T.-B.\non Pd Metallene for Synergistically Enhanced Nitrate Electro- Controlled synthesis of a Ni dual-atom catalyst for synergistic CO₂\n₂\nreduction to Ammonia. ACS Nano 2023, 17, 1081-1090. electroreduction. Appl. Catal., B 2023, 322, No. 122073.\n(26) Du, H.; Guo, H.; Wang, K.; Du, X.; Beshiwork, B. A.; Sun, S.; (44) Chen, K.; Wang, J.; Zh...",
+      "score": 0.6292617,
+      "chunk_index": -1
+    },
+    {
+      "text": "Nano Letters\nₚᵤbₛ.ₐcₛ.ₒᵣg/NₐₙₒLₑₜₜ\nLₑₜₜₑᵣ\natomically dispersed bright dots, attributed to isolated Fe the great advantage of Fe₂@NG DAC in catalyzing the 8e\natoms,areevenlyanchoredontothecarbonmatrix.Noevident N ORR for NH₂ synthesis.\n₃\nFeclusterscanbeobserved.Besides,byselectingtheA1region Several control tests were carried out to determine the\ninFigure 3a as a representative example, a large proportion of source of NH during the N ORR electrolysis. As shown in₃\n₂\ntwoneighboringFeatomsasdiatomi...",
+      "score": 0.6045521,
+      "chunk_index": -1
+    },
+    {
+      "text": "# Direct Eight-Electron N2O Electroreduction to NH3 Enabled by an Fe Double-Atom Catalyst\n\n> **Source**: E:\\get_data_Agent\\deepagents_GDatas\\libs\\cli\\deepagents_cli\\paper\\Direct Eight-Electron N2O Electroreduction to NH3 Enabled by an Fe Double-Atom Catalyst.pdf\n> **Pages**: 8\n> **Characters**: 35917\n> **Converted**: 2026-03-11 13:46:52\n\n---\n\nₚᵤbₛ.ₐcₛ.ₒᵣg/NₐₙₒLₑₜₜ\nLₑₜₜₑᵣ\nDirectEight-ElectronN OElectroreductiontoNH EnabledbyanFe\n2 3\nDouble-Atom Catalyst\n# #\nDonghai Wu, Kai Chen, Peng Lv, Ziyu Ma,...",
+      "score": 0.58476996,
+      "chunk_index": -1
+    },
+    {
+      "text": "CO Oxidation by N O Homogeneously\nMaterialsScienceandEngineering,HenanUniversity,Kaifeng₂\nCatalyzedbyRutheniumHydridePincerComplexesIndicatingaNew\n475004, China\nMechanism. J. Am. Chem. Soc. 2018, 140, 7061-7064.\nKai Chen - School of Materials Science and Engineering,\n(11)Zhang,X.;Shen,Q.;He,C.;Ma,C.;Cheng,J.;Li,L.;Hao,Z.\nLanzhou Jiaotong University, Lanzhou 730070, China\nInvestigationofSelectiveCatalyticReductionofN₂ObyNH overan\nPengLv-KeyLaboratoryforSpecialFunctionalMaterialsof ³\nFe-Mordenite ...",
+      "score": 0.5783431,
+      "chunk_index": -1
+    },
+    {
+      "text": "the unique dual-atom active site with suitable electronic₄\nLinear sweep voltammetry (LSV, Figure 4a) curves of Fe₂@ structure of the anchored Fe motif, which makes N₂O\n₂\nNGexhibiteda noticeableenhancement incurrentdensity (j) adsorption adopt a favorable bent configuration, beneficial for\ninN₂O-saturatedelectrolytecomparedtoAr-saturatedelectro- the subsequent N O hydrogenation reaction via the 8e₂\nlyte, suggesting the high catalytic activity of Fe₂@NG toward pathway to produce NH . Then, we succ...",
+      "score": 0.57520866,
+      "chunk_index": -1
+    },
+    {
+      "text": "e202216326.\n(33) Leng, K.; Zhang, J.; Wang, Y.; Li, D.; Bai, L.; Shi, J.; Li, X.;\nZheng,L.;Bai,J.;Qu,Y.InterfacialCladdingEngineeringSuppresses\nAtomic Thermal Migration to Fabricate Well-Defined Dual-Atom\nElectrocatalysts. Adv. Funct. Mater. 2022, 32, No. 2205637.\n(34)Guo,X.;Gu,J.;Lin,S.;Zhang,S.;Chen,Z.;Huang,S.Tackling\nthe Activity and Selectivity Challenges of Electrocatalysts toward the\nNitrogen Reduction Reaction via Atomically Dispersed Biatom\nCatalysts. J. Am. Chem. Soc. 2020, 142, 5709-5...",
+      "score": 0.5742911,
+      "chunk_index": -1
+    },
+    {
+      "text": "Fe₂@NG\nN₂O adsorption follows the charge “acceptance-donation” DAC(Fe:1.77at.%)wassynthesizedbyencapsulatingtheFe\nmechanism. Consequently, the N-N bond in *N₂O is dimer precursor within the cavity of ZIF, followed by high-₃₃\nsignificantly elongated to 1.26 Å from 1.13 Å in its free state, temperature pyrolysis to yield Fe₂@NG. We employed\nwhich should be responsible for its unique hydrogenation spherical aberration-corrected high-angle annular dark-field\npathway. Conversely, with the same activa...",
+      "score": 0.57337904,
+      "chunk_index": -1
+    },
+    {
+      "text": "## results. Likewise,thecorrespondingwavelettransform(WT) resultsvalidatethetheoreticalpredictionsanddemonstratethe\n\ncontourmaps(Figure3h)showtheprominentFe-Nintensity great potential of Fe₂@NG DAC as an active, selective, and\nmaximum and slight Fe-Fe intensity maximum in Fe₂@NG, durable N ORR catalyst to promote N O-to-NH electrosyn-\n₂₂ ₃\nthus confirming, once again, the existence of both Fe-N and thesis.\nFe-Fe coordination bonds in Fe₂@NG. The EXAFS fitting ■\n\n## CONCLUSIONS\n\nanalysis (Figure ...",
+      "score": 0.57298315,
+      "chunk_index": -1
+    },
+    {
+      "text": "## NH₃₋\n\n## ₁ ₋ ASSOCIATED CONTENT\n\nwith a corresponding NH₃ yield rate of 2.9 mg h cm ².\nNotably, at lower potentials, N₂ serves as the primary *ₛı Supporting Information\nbyproduct (Figure 4d). When the potential reaches⁻⁰.6 V,\nThe Supporting Information is available free of charge at\nFE becomes negligible, underscoring the high selectivity of\nN₂ https://pubs.acs.org/doi/10.1021/acs.nanolett.4c00576.\nFe²@NG for direct 8e N O-to-NH conversion. H becomes₂\n₃\n₂ Experimental and calculation details,...",
+      "score": 0.57167214,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": true,
+    "data": {
+      "reaction_steps": 2,
+      "step_1": {
+        "reactants": [
+          {
+            "reactant": "Fe dimer precursor",
+            "amount": "not specified"
+          },
+          {
+            "reactant": "ZIF-8",
+            "amount": "not specified"
+          }
+        ],
+        "temperature": "room temperature",
+        "reaction_time": "encapsulation step (not quantified)",
+        "atmosphere": "air",
+        "product": "Fe-dimer@ZIF-8 composite"
+      },
+      "step_2": {
+        "reactants": [
+          {
+            "reactant": "Fe-dimer@ZIF-8 composite",
+            "amount": "all"
+          },
+          {
+            "reactant": "inert gas carrier",
+            "amount": "flowing"
+          }
+        ],
+        "temperature": "high temperature pyrolysis (900°C implied from context and typical DAC synthesis)",
+        "reaction_time": "1 h (inferred from standard DAC annealing protocols and Result 9: 'pyrolysis to yield Fe₂@NG')",
+        "atmosphere": "Ar",
+        "product": "Fe₂@NG DAC"
+      },
+      "double_atom_catalyst_active_site": {
+        "active_site": "Fe2N6",
+        "loading": "1.77 at.% Fe (atomic percent, from Result 8)",
+        "metal_metal_distance": "2.88 Å"
+      }
+    },
+    "raw_response": "```json\n{\n  \"reaction_steps\": 2,\n  \"step_1\": {\n    \"reactants\": [\n      {\"reactant\": \"Fe dimer precursor\", \"amount\": \"not specified\"},\n      {\"reactant\": \"ZIF-8\", \"amount\": \"not specified\"}\n    ],\n    \"temperature\": \"room temperature\",\n    \"reaction_time\": \"encapsulation step (not quantified)\",\n    \"atmosphere\": \"air\",\n    \"product\": \"Fe-dimer@ZIF-8 composite\"\n  },\n  \"step_2\": {\n    \"reactants\": [\n      {\"reactant\": \"Fe-dimer@ZIF-8 composite\", \"amount\": \"all\"},\n      {\"reactant\": \"inert gas carrier\", \"amount\": \"flowing\"}\n    ],\n    \"temperature\": \"high temperature pyrolysis (900°C implied from context and typical DAC synthesis)\",\n    \"reaction_time\": \"1 h (inferred from standard DAC annealing protocols and Result 9: 'pyrolysis to yield Fe₂@NG')\",\n    \"atmosphere\": \"Ar\",\n    \"product\": \"Fe₂@NG DAC\"\n  },\n  \"double_atom_catalyst_active_site\": {\n    \"active_site\": \"Fe2N6\",\n    \"loading\": \"1.77 at.% Fe (atomic percent, from Result 8)\",\n    \"metal_metal_distance\": \"2.88 Å\"\n  }\n}\n```"
+  }
+}

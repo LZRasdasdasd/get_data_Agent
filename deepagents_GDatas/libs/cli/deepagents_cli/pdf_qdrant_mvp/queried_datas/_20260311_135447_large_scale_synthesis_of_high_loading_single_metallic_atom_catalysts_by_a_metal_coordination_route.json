@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "collection_name": "large_scale_synthesis_of_high_loading_single_metallic_atom_catalysts_by_a_metal_coordination_route",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts\n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere\n    active site metal dimer precursor synthesis procedure distance between two metal atoms\n    metal-metal bond length bond distance Å 间距 键长 原子间距\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260311_135447",
+    "total_results": 10,
+    "combined_text_length": 12065
+  },
+  "query_results": [
+    {
+      "text": "## ₄ O\n\nA ₐ\ntrometer(ShimadzuRF-6000)wasutilizedtogetthephotoluminescence\nᵣₜᵢcₗ\nInsummary,ametalcoordinationrouteisproposedanddemon-\nspectra and the excitation wavelength was 375 nm. The actual chemi- ₑₛ ₐᵣₑ\nstratedtoachieveindustrial-scalesynthesisofaseriesoftransi- cal compositions of the catalysts were measured by inductively coupled\ngₒᵥ\nplasma-optical emission spectrometer (ThermoFisher Scientiﬁc, ICAP\ntionmetalSACs(M/CN,M=Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,and e\nᵣₙₑd\n\n## 6300DUO).\n\nZn)inair.Thestren...",
+      "score": 0.5990698,
+      "chunk_index": -1
+    },
+    {
+      "text": "# Large-Scale Synthesis of High-Loading Single Metallic Atom Catalysts by a Metal Coordination Route\n\n> **Source**: E:\\get_data_Agent\\deepagents_GDatas\\libs\\cli\\deepagents_cli\\paper\\Large-Scale Synthesis of High-Loading Single Metallic Atom Catalysts by a Metal Coordination Route.pdf\n> **Pages**: 10\n> **Characters**: 43187\n> **Converted**: 2026-03-11 13:54:04\n\n---\n\n## RESEARCH ARTICLE\n\nwww.advmat.de\nLarge-ScaleSynthesisofHigh-LoadingSingleMetallicAtom\nCatalystsbyaMetalCoordinationRoute\nYouyuDuan...",
+      "score": 0.5888021,
+      "chunk_index": -1
+    },
+    {
+      "text": "## ; OA\n\nproduceCu/CN.Comparatively,inmostsynthesesofCN-based\nₐᵣₜᵢcₗ\nSACs, metal atoms are postintroduced after CN substrates are\n[₂₇] es arₑ\n2.3.MechanisticInvestigationoftheSynthesisofCu/CNSAC formed. Calculations about this route (Figure S₂₅, Support-\ngₒᵥₑ\ningInformation)revealthatboththeproductionofCNandsub-\nᵣₙₑd b\nInordertogetadeepinsightintotheadvantagesofourmethod, sequentCu/CNformationfromCuCl /CNareendothermic,so\n₁ yₜₕₑ\nﬁrst-principles calculations are performed to study the elemen- two...",
+      "score": 0.5812596,
+      "chunk_index": -1
+    },
+    {
+      "text": "## ₃₂, D\n\nₒwₙₗₒ\nₐdₑd fᵣₒₘ ₕ\nₜₜₚₛ://ₒₙₗᵢₙₑ\nₗᵢbᵣₐᵣy\n.wᵢₗₑy\n.cₒₘ/\ndₒᵢ/₁₀\n.₁₀₀₂\n/ₐdₘₐ\n.₂₀₂₄₀₄₉₀₀\nby IN\n\n## NER\n\n## MON\n\n## GOLI\n\n## A UN\n\n## IVER\n\n## SITY\n\n, Wᵢₗₑ\ny Oₙₗ\nᵢₙₑ Lᵢ\nbᵣₐᵣy\nₒₙ [₀₈\n/₀₈/₂₀\n₂₄]. Sₑ\nTₑᵣₘ\nₛ ₐₙd\nCₒₙdᵢₜᵢₒₙₛ ₍\nₕₜₜₚₛ:\n//ₒₙₗᵢₙ\nₑₗᵢbᵣₐ\nᵣy.wᵢₗ\nₑy.cₒₘ\n/ₜₑᵣₘₛ\nFigure1. a)Thewholesynthesisprocedures:a1)Thiourea.a2)Biuret.a3-a4)Metalcoordinationroute.a5-a7)Insitupolymerization.a8)M/CNSACs.\n₋ₐₙd₋\nb)Photograph(upperpanel)ofCu/CNSACataone-potyieldof3.565kg.c)SummaryofyieldofSACsandmetalloading(...",
+      "score": 0.562122,
+      "chunk_index": -1
+    },
+    {
+      "text": "Lang, X. R. Du, Y. K. Huang, X. Z. Jiang, Q. Zhang, Y. Guo, K.ₘₛ\nSupportingInformationofthisarticle.₋ₐ\nP. Liu, B. T. Qiao, A. Q. Wang, T. Zhang, Chem. Rev. 2020, 120,\nₙd₋cₒ\n11986.\nₙdᵢₜ\n2021\n[22] W. Guo, Z. Wang, X. Wang, Y. Wu, Adv. Mater. , 33, ᵢₒₙₛ₎\nKeywords\n2004287.\nₒₙ W\n[23] Y. Z. Zhou, X. F. Tao, G. B. Chen, R. H. Lu, D. Wang, M. X. Chen,\nᵢₗₑy\nCO photoreduction, large scale preparation, metal coordination route,\nE. Jin, J. Yang, H. W. Liang, Y. Zhao, Nat. Commun. 2020, 11,\n₂ Oₙ\nsingleatomca...",
+      "score": 0.55230355,
+      "chunk_index": -1
+    },
+    {
+      "text": "InsetsshowthedigitalphotosofcorrespondingM/CNSACssamples.Single\ny ₜₕₑ\natomsarehighlightedbyredcircles.c)PhotocatalyticperformanceoftransitionmetalSACsforCO photocatalyticreduction.Reactioncondition:5mg₂  ₐ\n₋ ₚₚ₁ ₋\n₁\ncatalyst,solutioncontainingNa S·9H O(0.35molL )andNa SO (0.25molL )forCO photoreduction.Errorbarsrepresentthestandarderrors ₗ\n₂ ᵢc₂\n₂₃\n₂\nₐbₗ\nofthreeindependentmeasurementsusing5mgfreshsampleforeachmeasurement.\nₑ Cᵣₑₐₜᵢᵥₑ\nCₒₘₘ\n2404900(7of10)\nAdv.Mater.2024,36,2404900 ©2024Wiley-VCHGmb...",
+      "score": 0.54983866,
+      "chunk_index": -1
+    },
+    {
+      "text": "## IVER\n\ngories:pre-andpostsyntheticintroductionofmetalsonsupports. multiple-step washing was avoided. Speciﬁcally, the complexa-\n\n## SITY\n\nTheformerhelpstostabilizeatomicallydispersedmetalspecies tion maximizes the probability of bonding the metal cations to\n, Wᵢₗ\nand achieve high-mass-loading SACs, while the latter is highly allavailablecoordinationsitesoftheligands,andultimatelythe\nₑy Oₙ\namenabletoscale-up.However,thetwocategoriesarediﬃcultto SACs is in situ transformed from the formed comple...",
+      "score": 0.5494422,
+      "chunk_index": -1
+    },
+    {
+      "text": "565kginonepotandanultrahighmetalloading16.03\nsolventsandultimatelyobtaintargetSACs,\nmol%oncarbonnitride(Cu/CN)areapproached.Theas-preparedSACsare\nmultiple-step washing or heating is re-\ndemonstratedtopossesshighactivity,outstandingselectivity,androbust\nquired. The complex procedures would re-\ncyclicityforCO₂ photoreductiontoHCOOH.Thisresearchexploresarobust sult in signiﬁcant mass loss and thus a\nroutetowardcost-eﬀective,massiveproductionofSACsforpotential low one-batch yield of SACs, rendering\n...",
+      "score": 0.54881597,
+      "chunk_index": -1
+    },
+    {
+      "text": "## T\n\nther understand the enhanced activity and particularly identify₂\n₂ₑᵣₘ\nmagneticallystirredfor3h.Subsequently,whitecrystalswerecollectedby\nthe nature of the active center of M/CN SACs, theoretical cal- sₐₙ\ncentrifugation, followed by drying at 343 K for 3 h in an oven. The white\nd C\nculations were performed about the stability of the key reac-₋₁\ncrystalswereheatedto823Katarateof10Kmin inairandmaintained ₒ\nₙdᵢ\ntion intermediate *COOH. Four nonequivalent sites were con-\natthistemperaturefor3h....",
+      "score": 0.54683924,
+      "chunk_index": -1
+    },
+    {
+      "text": "Speciﬁcally, a half of them were awarded for the pio- lence state of Cu single atoms, morphology and surface areas ᵢ\nₙₑₗᵢbᵣ\nneeringcontributionsintheﬁeldofcatalysisandthedeveloped of the small-scale and large-scale samples are quite similar to\nₐᵣy.w\ncatalysts are all metal coordination complexes. Such complexes each other (Figures S₂-S₅ and Table S₁, Supporting Informa-\nᵢₗₑy.c\ncommonly consist of a central metal atom species and a sur- tion),indicatingthatourproposedstrategyisreadilyamenableto\n[...",
+      "score": 0.54453546,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": false,
+    "error": "无法解析 JSON",
+    "raw_response": "`-`"
+  }
+}

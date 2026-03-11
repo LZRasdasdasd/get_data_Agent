@@ -1,0 +1,73 @@
+{
+  "metadata": {
+    "collection_name": "the_synergistic_effect_in_the_heteronuclear_double_atom_catalysts_on_co_activation_insights_from_dft_calculations",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts\n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere\n    active site metal dimer precursor synthesis procedure distance between two metal atoms\n    metal-metal bond length bond distance Å 间距 键长 原子间距\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260311_135922",
+    "total_results": 10,
+    "combined_text_length": 10340
+  },
+  "query_results": [
+    {
+      "text": "# The synergistic effect in the heteronuclear double-atom catalysts on CO activation Insights from DFT calculations\n\n> **Source**: E:\\get_data_Agent\\deepagents_GDatas\\libs\\cli\\deepagents_cli\\paper\\The synergistic effect in the heteronuclear double-atom catalysts on CO activation Insights from DFT calculations.pdf\n> **Pages**: 12\n> **Characters**: 58072\n> **Converted**: 2026-03-11 13:58:30\n\n---\n\nMolecularCatalysis557(2024)114005\nContents lists available at ScienceDirect\nMolecular Catalysis\njourna...",
+      "score": 0.6240081,
+      "chunk_index": -1
+    },
+    {
+      "text": "## theoretical research, the following method has been used for the sake of  Eₐ of 2Ag@NC catalyst is⁸.66 eV, which is the greatest among them.\n\n=\ndiscussing the stability of the SACs [37,38] or DACs [39,40]: compared  And the C O distance is².68 Å at the transition state. Based on the\nthe binding energies of metal on the substrate with the cohesive energies  activation  energy  Eₐ,  it  displays  the  following  sequence:₃\n|  |\n| --- |\n|  |\n|  |\n|  |\n\nG. Jᵢₐ ₑₜ ₐₗ.                              ...",
+      "score": 0.61963296,
+      "chunk_index": -1
+    },
+    {
+      "text": "## ₂Y@NC\n\n₄.₀₅\n₁.₆₉\n₂.₈₀\n₂Zᵣ@NC  ScMo@NC,  MnMo@NC  and  YMo@NC  catalysts  are  dramatically\n₂.₂₀\n₁.₀₅\n₂.₀₈\n₂Nb@NC  elevated. It can be concluded that other transition metals can be used to\n₂.₁₉\n₀.₂₇\n₂.₁₈\n₂Mₒ@NC  improve the stability of 2Mo@NC catalyst.\n₁.₅₂\n₀.₉₇\n₂Tc@NC  ¹.⁸⁸\n₃.₀₁\n₁.₆₅\n₂Rᵤ@NC  ¹.⁷³\n₃.₆₇\n₂.₈₅\n₁.₈₁\n²Rh@NC  3.3. CO activation on the homonuclear DACs\n₆.₃₃\n₅.₃₄\n₂Pd@NC  ².²²\n₆.₇₂\n₅.₄₄\n₂Ag@NC  ².²⁸\n₈.₆₆\n₇.₄₄\n².⁶⁸   3.3.1. CO direct dissociation mechanism\nThe activation energy Eₐ, the...",
+      "score": 0.60572034,
+      "chunk_index": -1
+    },
+    {
+      "text": "(2021) 111826.\n[15] X.Y. Liang, S.P. Ng, N. Ding, C.M.L. Wu, Strain-induced switch for hydrogen\nstorage in cobalt-decorated nitrogen-doped grapheme, Appl. Surf. Sci. 473 (2019)\nCRediT authorship contribution statement  174-181.\n[16] X.Y. Li, W.H. Zhong, J.Li Peng.Cui, J. Jiang, Design of efficient catalysts with\ndouble transition metal atoms on C₂N layer, J. Phys. Chem. Lett. 7 (2016)\nGuorong Jia: Writing - original draft, Validation, Investigation,\n1750-1755.\nFormal analysis, Data curation. Lix...",
+      "score": 0.602257,
+      "chunk_index": -1
+    },
+    {
+      "text": "However, the Bader charge displays that there is a strong electronic\ninteraction between Mo atom and other transition metals of dimer for the heteronuclear DACs. The synergistic\neffect of the heteronuclear DACs originates from the enhancement of the intermetallic interaction between the\nMo atom and other transition metals. The work offers rational guideline for the synthesis of DACs with excellent\ncatalytic performances, and has great potential for application in various catalytic fields.\n\n## 1....",
+      "score": 0.6006707,
+      "chunk_index": -1
+    },
+    {
+      "text": "## TS\n\n## IS\n\nand heteronuclear DACs will be evaluated. In view of the activation\nbarriers Eₐ of carbon monoxide activation, the catalytic ability of the  ΔH =E (cid:0) (cid:0) E (5)\n\n## FS\n\n## IS\n\nhomonuclear and heteronuclear DACs will be analyzed and sequenced.\nBased on the Bader charge, the coordination environment and the  where EIS, E and E corresponds to the total energy of the initial,\n\n## TS,\n\n## FS\n\nelectron transfer between two transition metals of dimer will be char- transition and f...",
+      "score": 0.5988976,
+      "chunk_index": -1
+    },
+    {
+      "text": "And the three CO\nHₑₜₑᵣₒₙᵤcₗₑₐᵣ  dissociation pathways have been considered using the density functional theory (DFT) calculation. It reveals that\nDₒᵤbₗₑ₋ₐₜₒₘ cₐₜₐₗyₛₜₛ  the heteronuclear DACs (MoX@NC) possesses higher catalytic ability than the homonuclear DACs (2X@NC) for\nSyₙₑᵣgᵢₛₜᵢc ₑffₑcₜ  CO activation. And the unpaired d-orbital electron plays a significant role on CO activation, which can change\nthe magnetic moment of the DACs. The coordination atoms offer similar local coordination enviro...",
+      "score": 0.5909709,
+      "chunk_index": -1
+    },
+    {
+      "text": "## experimental evidence of CO activation over single-phase cobalt catalysts, ACS\n\nActa 77 (1990) 123-141.\nCatal. 8 (2018) 7787-7798.\n[32] A. Bergner, M. Dolg, W. Küchle, H. Stoll, H. Preu, Ab initio energy-adjusted\n[4] Q. Zhang, L. Guo, Z.J. Hao, CO hydrogenation on M₁/W S (M =Co and Ni) single-₆\n⁸  pseudopotentials for elements of groups 13-17, Mol. Phys. 80 (1993) 1431-1441.\natom catalysts: competition between C² hydrocarbons and methanol synthesis\n[33] S. Grimme, Semiempirical GGA-type densi...",
+      "score": 0.58948517,
+      "chunk_index": -1
+    },
+    {
+      "text": "74 eV, and it is the greatest among\ncan  offer  adequate  hydrogen  atom  for  H-assisted  CO  activation\n=\nthem, and the C O distance is².27 Å at the transition state. Based on the\nmechanism.\nactivation  energy  Eₐ,  it  displays  the  following  sequence:\n< < < < < < < <\nTi V Cr Mn Sc Fe Co Ni Cu. For the 4d-TM homonuclear DACs,\n3.2. The stability of DACs  the 2Mo@NC catalyst exhibits the highest CO activation performance.\n=\nThe activation energy Eₐ of 2Mo@NC catalyst is¹.52 eV, and the C O\nSt...",
+      "score": 0.5878235,
+      "chunk_index": -1
+    },
+    {
+      "text": "G. Jia et al.                                                                                                                                                                                                           M   o  l e  c u  l a  r  C  a  t a  ly  s i s557(2024)114005\n\n## Fig. 3. The total activation energy (eV) of three CO activation mechanism for the homonuclear and heteronuclear DACs.\n\n## Fig. 4. The density of states (DOS) of CO, CO on 2Mo@NC, MoY@NC, MoNb@NC and MoAg@NC catalysts.\n\n...",
+      "score": 0.5851895,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": true,
+    "data": {
+      "reaction_steps": -1,
+      "step_1": -1,
+      "step_2": -1,
+      "step_3": -1,
+      "step_4": -1,
+      "double_atom_catalyst_active_site": -1
+    },
+    "raw_response": "```json\n{\n  \"reaction_steps\": -1,\n  \"step_1\": -1,\n  \"step_2\": -1,\n  \"step_3\": -1,\n  \"step_4\": -1,\n  \"double_atom_catalyst_active_site\": -1\n}\n```"
+  }
+}

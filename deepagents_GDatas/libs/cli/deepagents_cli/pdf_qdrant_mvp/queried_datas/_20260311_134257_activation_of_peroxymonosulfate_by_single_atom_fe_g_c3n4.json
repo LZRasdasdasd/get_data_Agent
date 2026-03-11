@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "collection_name": "activation_of_peroxymonosulfate_by_single_atom_fe_g_c3n4",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts\n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere\n    active site metal dimer precursor synthesis procedure distance between two metal atoms\n    metal-metal bond length bond distance Å 间距 键长 原子间距\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260311_134257",
+    "total_results": 10,
+    "combined_text_length": 10931
+  },
+  "query_results": [
+    {
+      "text": "The resulting catalysts pyrolyzed at 400, 500 and 600  C  and 600  C), indicating that Fe species are highly dispersed as single Fe\nwere denoted as SAFe-g-C₃N (400), SA Fe-g-C N (500) and SA Fe-g-  atoms or tiny Fe clusters, which was consistent with the XAS and AC-₄\n₃₄\nC₃N (600),  respectively.  For  comparison,  melamine  was  directly  HAADF-STEM results [25].₄\ncalcined use the same method to obtain g-C₃N , and SA Fe-g-C N (600)  Raman spectroscopy was conducted to investigate the surface def...",
+      "score": 0.6208192,
+      "chunk_index": -1
+    },
+    {
+      "text": "X. Pₑₙg ₑₜ ₐₗ.                                                                                                                                                                                           C  ₕ  ₑ ₘ   ᵢ c ₐ  ₗ  E  ₙ  g ᵢ ₙ  ₑ ₑ  ᵣ ᵢ ₙ  g  J  ₒ  ᵤ  ᵣ ₙ  ₐ ₗ₄₂₇₍₂₀₂₂₎₁₃₀₈₀₃\n◦\nfollowed by drying in vacuum at 60  C for 12 h. The obtained product  distributed on the catalyst. As shown in F◦ig. 2a, the XRD analysis in-\n(Fe ICC) was mixed with melamine in a definite weight ratio (melamine/  ...",
+      "score": 0.6204002,
+      "chunk_index": -1
+    },
+    {
+      "text": "were not identified.\nIn this study, a single Fe atom catalyst (SA Fe-g-C₃N ) was prepared\n⁴ 2.2. Synthesis of catalysts\nusing Fe imidazole coordination compound (Fe ICC) as a precursor and\ng-C₃N as support. This study obtained deeper insights into the perfor-₄\nThe single Fe-atom catalyst was synthesized according to the previ-\nmance of SA Fe-g-C₃N as PMS activator for tetracycline (TC) in Fenton-₄\nous report with some modifications [22] (see Fig. 1a). Briefly, 0.172 M\nlike catalytic oxidation re...",
+      "score": 0.5941788,
+      "chunk_index": -1
+    },
+    {
+      "text": "117 M of PVP and 0.036 M of FeSO₄⋅7H O were added into a₂\nand N in the catalytic process. Furthermore, the dominant responsibility\nzirconia milling jars, and then blended at 480 rpm for 2 h. The obtained\nof a single atom and clusters in the SA Fe-g-C₃N catalyst for TC₄\ndark green solid was centrifuged and washed 5 times with ethanol,\nFig.1. (a) Schematic illustration of the preparation of SA Fe-g-C₃N catalysts; (b)STEM image, (c) AC-HAADF-STEM images and the (d) corresponding EDX elemental₄\nmapp...",
+      "score": 0.57048875,
+      "chunk_index": -1
+    },
+    {
+      "text": "In the process of catalytic  were added to the reaction system, which can form a metal carboxyl₄\noxidation, because of the peroxy bond in the PMS molecule, the PMS  complex to block the Fe sites, and quench the reaction strongly [48].\nbond combines with Fe-N₄  site and functions as an electron donor,  Fig. 8a-b show that TC degradation was significantly inhibited with the\n•₍cᵢd:₀₎\nwhich was decomposed to generate SO₅ (Eq. (1)). The produced Fe (II)  increasing concentration of oxalate and NaSCN,...",
+      "score": 0.5590214,
+      "chunk_index": -1
+    },
+    {
+      "text": "4d), which is consistent with EXAFS fitting results.\nsingle Fe atoms with the incorporation of SA Fe-g-C₃N (600). The FT₃ ₄\nk -weighted χ(k) function EXAFS spectra (Fig. 3b) of SA Fe-g-C₃N\n₄  3.2. Catalytic degradation activity of the synthesized catalysts\n(600) showed an Fe ligand peak at 2.52 Å, distinguishing the Fe-Fe\ncoordination peak at 2.21 Å in the Fe foil and the Fe-O coordination\nThe adsorption and catalytic performances of the catalysts prepared\npeak at 2.70 Å in the FeO sample and 2....",
+      "score": 0.55812883,
+      "chunk_index": -1
+    },
+    {
+      "text": "activating PMS to degrade organic pollutants.\nVarious PMS activation methods, including ultraviolet, carbon cat- In transition metal and N co-doped carbon materials, the electron-\nalysts, transition metals, and so on have been reported [9,58]. For the  rich  N  dopants  can  create  Lewis  basic  sites,  which  are  prone  to\n(cid:0)\ntransition metals, Co, Fe, or Mn are the most effective activators for PMS  combine with the transition metal (Lewis acid) to form a strong M N (M\n* Corresponding a...",
+      "score": 0.5559046,
+      "chunk_index": -1
+    },
+    {
+      "text": "99) of the corresponding first-order reaction rate  degradation followed first-order kinetics. TC removal can be signifi-\nconstants (kₒbₛ) and Fe content on the samples, indicating that more  cantly enhanced as the dosage of the catalyst increases. As shown in the\nsingle Fe atoms could be coordinated with the 2-MI-derived N, forming  inset of Fig. S6b, the TC degradation rate increased linea₍cᵢd:₀₎rly as the\nmore Fe-N₄ sites for PMS activation with increase in pyrolysis temper- dosage of SA Fe-g...",
+      "score": 0.5540427,
+      "chunk_index": -1
+    },
+    {
+      "text": "## D\n\n## G\n\ndetailed in the Supplementary Information.  ratios of the D band to the G band increased from 1.04 to 1.07 and 1.29\nwith increasing pyrolysis temperature. Therefore, the defect density of\n\n## 3. Results and discussion  synthesized catalysts, including vacancies, edges, and topologic defects,\n\ncan be increased with the increase in pyrolysis temperature because of\n3.1. Characterization of SA Fe-g-C₃N the reconstruction of the carbon substrate in the reduction process of Fe₄\nspecies, re...",
+      "score": 0.5539226,
+      "chunk_index": -1
+    },
+    {
+      "text": "## Fig. 5.₍cᵢd:₀₎(a) Adsorption and (b) catalytic properties of the catalysts prepared at different pyrolysis temperatures. Reaction conditions: TC =10 g L ¹, catalyst dosage =\n\n0.1 g L ¹, PMS concentration = 0.5 mM, initial pH = 6.5 and temperature = 25 ◦C.₅\n\nX. Pₑₙg ₑₜ ₐₗ.                                                                                                                                                                                           C  ₕ  ₑ ₘ   ᵢ c ₐ  ₗ  E  ₙ  g ᵢ ₙ  ₑ ₑ...",
+      "score": 0.55376947,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": false,
+    "error": "无法解析 JSON",
+    "raw_response": "根据提供的论文内容，我们需判断其是否涉及**双原子催化剂（Dual-Atom Catalyst, DAC）**的合成，并提取与**模型反应**相关的结构化信息。\n\n---\n\n### 🔍 **关键判断依据分析：**\n\n1. **催化剂命名与表征：**  \n   - 全文反复出现的是 **\"SA Fe-g-C₃N\"**（Single-Atom Fe on graphitic carbon nitride），如：\n     - *\"single Fe atom catalyst (SA Fe-g-C₃N)\"*（结果3）\n     - *\"SA Fe-g-C₃N (400), SA Fe-g-C₃N (500), SA Fe-g-C₃N (600)\"*（结果1）\n     - *\"Fe-N₄ site\"*（结果5）、*\"Fe ligand peak at 2.52 Å\"*（结果6）、*\"no Fe–Fe coordination peak at 2.21 Å in the Fe foil\"*（结果6）——明确排除了Fe–Fe键合，支持**单原子分散**。\n\n2. **EXAFS证据：**  \n   - 结果6指出：FT k³-weighted χ(k) EXAFS谱中仅观察到 **Fe–N/O 配位峰（2.52 Å）**，而**未见 Fe–Fe 散射峰（2.21 Å）**，这是单原子催化剂的典型判据；若为双原子，则应出现明确的金属–金属散射路径（~2.4–2.9 Å），但文中**未报告任何 Fe–Fe 距离**，也无双金属配位构型（如 Fe₂N₆、FeCoN₆ 等）描述。\n\n3. **前驱体与合成方法：**  \n   - 使用 **Fe imidazole coordination compound (Fe ICC)** 作为 Fe 源（结果3），与 melamine 混合后高温热解（N₂气氛，6 h，400–600 °C）（结果2）。  \n   - 该路线是典型的**单原子锚定策略**（利用含N有机基质捕获并隔离金属），**非定向构筑双原子对**。\n\n4. **术语使用：**  \n   - 全文统一使用 **\"single Fe atom\"**, **\"SA Fe\"**, **\"Fe-N₄ sites\"**, **\"atomically dispersed Fe\"**, **\"no metallic Fe diffraction peaks\"**, **\"no Fe–Fe coordination\"** —— **无一处提及“dual-atom”、“diatomic”、“Fe–Fe pair”、“heteronuclear diatom”等双原子特征表述**。\n\n5. **结论部分（隐含在结果与讨论中）：**  \n   - 强调活性源于 **Fe–N₄ 单原子位点** 对 PMS 的活化（结果5、8、10）；\n   - 动力学与自由基捕获实验证明反应路径以 **非自由基（¹O₂）和高价铁氧物种为主**，仍基于单原子中心；\n   - 所有性能对比（如不同热解温度）均归因于 **单原子密度/Fe–N₄ 数量变化**（结果8）。\n\n---\n\n### ✅ **结论：该论文研究的是单原子催化剂（SA Fe-g-C₃N），而非双原子催化剂。**\n\n因此，**不满足“与双原子催化剂合成相关”的前提条件**。\n\n---\n\n### 📌 最终输出：\n\n```json\n-\n```"
+  }
+}

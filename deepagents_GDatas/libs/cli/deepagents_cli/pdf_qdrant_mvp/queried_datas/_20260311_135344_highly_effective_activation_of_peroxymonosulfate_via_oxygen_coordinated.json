@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "collection_name": "highly_effective_activation_of_peroxymonosulfate_via_oxygen_coordinated",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts\n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere\n    active site metal dimer precursor synthesis procedure distance between two metal atoms\n    metal-metal bond length bond distance Å 间距 键长 原子间距\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260311_135344",
+    "total_results": 10,
+    "combined_text_length": 8678
+  },
+  "query_results": [
+    {
+      "text": "## FFA,₁\n\nFe-N2O1/OCN@ceramsite was synthesized using a similar method  O₂\nas Fe-N2O1/OCN, with the addition of commercial ceramsite.\n′₁\nwhere kFFA,₁ represents the second-order rate constants of  O₂ reacting\n\n## O₂\n\n₍cᵢd:₀₎\n₁ ′ ₍cᵢd:₀₎₈\n₁\n= × ₁\n2.2. Activity evaluation  with FFA (as the probe compound of  O , k 1.2  10 M s ).₂\n\n## FFA,¹\n\n## O₂₁\n\nk , represents the first-order rate constants of  O reacting with FFA.\nₒbₛFFA  ₂\nThe catalytic activity was evaluated in magnetically stirred conical\n′...",
+      "score": 0.6011009,
+      "chunk_index": -1
+    },
+    {
+      "text": "## Fig. 4. Unraveling the mechanism of the reaction on Fe-N2O1/OCN catalyst. (A) Amperometric i (cid:0) t curve measurements using CN, OCN, and Fe-N2O1/OCN as the\n\nworking electrode, respectively. (B) EPR spectra of generated R•in Fe-N2O1/OCN-PMS-BPA systems. This experiment was conducted by combining PMS, Fe-N2O1/\nOCN, and BPA and reacting for 5 min. Before detecting the EPR signal, the samples should be filtered and combined with DMPO. (C) The open-circuit potential of Fe-\nN2O1/OCN as the work...",
+      "score": 0.5973023,
+      "chunk_index": -1
+    },
+    {
+      "text": "## Fig. 1. The mechanism and the synthesis method of Fe-N2O1/OCN for achieving excellent performance. (A) Schematic representation of the preparation strategy,\n\nand (B) Synthetic procedure of Fe-N2O1/OCN.₂\n\nY. Dₑₙg ₑₜ ₐₗ.                                                                                                                                                                                          C   ₕ ₑ  ₘ   ᵢc  ₐ  ₗ  E  ₙ g  ᵢ ₙ  ₑ ₑ  ᵣ ᵢ ₙ  g  J  ₒ ᵤ  ᵣ ₙ  ₐ  ₗ₄₈₅₍₂₀₂₄₎₁₄₉₇₈₂\ntemperatu...",
+      "score": 0.592359,
+      "chunk_index": -1
+    },
+    {
+      "text": "Furthermore, the most recent\nreports indicate that the optimal utilization efficiency of PMS has  Fe-based carbon catalyst (designated as Fe-N₄/OCN) was synthe-\nreached 82 % [23].  sized using a simple method. Specifically, urea (15 g) was thoroughly\nHerein, inspired by metal oxides, we have introduced oxygen doping  mixed with oxalic acid (0.25 g) and FeCl₃⋅6H O (0.1 g) in a mortar. The₂\ninto graphic carbon nitride to create a Fe-based single-atom catalyst  mixture was then transferred to a por...",
+      "score": 0.58288145,
+      "chunk_index": -1
+    },
+    {
+      "text": "Electrochemical experiments\nThe kinetics equation is as follows:\ncₜ\nLn = (cid:0) kₒbₛt (1)   All  electrochemical  measurements  were  conducted  in  a  three-\nc\n₀ electrode  cell  using  an  electrochemical  workstation  (CHI6009E,\n′ China). The activator-coated GCE, Ag/AgCl/KCl, and platinum elec-\nCertain am′ounts of scavengers such as MeOH (k⋅OH,MₑOH=1.6-7.7 ×10⁷  trodes acted as the working, reference, and counter electrode, respec-\n₍cᵢd:₀₎ ′ = ±\n₍cᵢd:₀₎\n₍cᵢd:₀₎\n₁ ₍cᵢd:₀₎₁\n₉₁\n₁\nM s , k ⋅⁽cⁱd...",
+      "score": 0.5767983,
+      "chunk_index": -1
+    },
+    {
+      "text": "## Fig. 3. Catalytic performances of several materials in PMS-assisted systems. (A) BPA degradation rate in different catalysts-activated PMS systems. Reaction con-\n\ndition: [BPA] =2 μM, [catalyst] =0.1 g/L, [PMS] =0.2 mM, initial solution pH 7.0 ±0.2. (B) The oxidant utilization of Fe-N2O1/OCN and other recently reported\ncatalysts. (1 Cu₁/NG, 2 CNTs, 3 CNT, 4 Cu-N₄/C-B, 5 Cu-N₄/C-P, 6 ZnFe-LDH, 7 ZnFeMnO₄, 8 Fe/O-doped g-C N , 9 Fe(III)-doped g C N , 10 PEI-MWCNT, 11 Co-₃\n₄₃\n₄\nN₃O , 12 CoN ₊ , ...",
+      "score": 0.5705466,
+      "chunk_index": -1
+    },
+    {
+      "text": "9 mg/L BPA, surpassing most\nO and 2 for Fe-N, with bond lengths of 1.90 Å and 2.11 Å, respectively.  state-of-the-art  heterogeneous  catalysts  and  single-atom  catalysts\nMoreover, theoretical modeling was conducted to identify potential  (Fig. S₁₂, Table S₆, and Table S₇). The impact of the initial concentra-\noxygen-doped sites for coupling with the Fe-N2O1 center on the OCN  tion of BPA (ranging from 2 μM to 100 μM) is illustrated in Fig. S₁₃. As\nsurface in the structures of Fe-N2O1/OCN. Bas...",
+      "score": 0.57049215,
+      "chunk_index": -1
+    },
+    {
+      "text": "## SO ⋅ ,\n\nMₑOH\n\n## ₄ OHTBA\n\n⁽cⁱd:⁰⁾ electrolyte. The activator-coated GCE was prepared by drying samples\n₍cᵢd:₀₎\n₍cᵢd:₀₎\n′ ₍cᵢd:₀₎\n₁ ′₁\n₅₁\n₁\nM s , kSO •⁽cⁱd:⁰⁾ , =(4-9.5) ×10 M s ), and FFA (k =1.2 ×10⁸\n\n## TBA\n\n## FFA,₁\n\n₍cᵢd:₀₎ ₄ O₂ suspension on the GCE. The sample suspension was prepared by mixing\n₍cᵢd:₀₎\n₁ ₍cᵢd:₀₎₁\n• • ₁\nM s ), were used to distinguish the role of  OH, SO₄ and  O ,  μ\n₂ 10 mg sample with⁰.5 mL ethanol and 50  L of Nafion perfluorinated\nrespectively. SOD, Catalase, K₂Cr O ,...",
+      "score": 0.56740505,
+      "chunk_index": -1
+    },
+    {
+      "text": "## O\n\n## BPA\n\n,₁\nBPA ₛₛ\n\n## ₂ O₂\n\ncertain amount of PMS was added into 100 mL BPA (2 μM) solution to\nk₁\n\n## O ,\n\nachieve the desired concentration (0.2 mM). The pH of the solution was  η= BPA\n² (6)\n= ± k\nadjusted to neutral (pH  7  0.2) by adding 0.1 M NaOH or 0.1 M  ₒbₛ,BPA\nH₂SO . The experiment was started after adding 10 mg catalyst to the₄\n′₁\nsample. At predetermined time intervals, 1 mL of the reaction solution  where k represents the second-order rate constant of  O with\n\n## ₁O , ₂\n\n## ₂ B...",
+      "score": 0.5639979,
+      "chunk_index": -1
+    },
+    {
+      "text": "45 μM hydrophilic filter. The concentration of PMS was\nand subsequently stored at room temperature.  analyzed by the iodometric titration method using a spectrophotometer\nFe-based single-atom catalyst (designated as Fe-N2O1/OCN) was  (Shimadzu UV-1800, Japan) at the wavelength of 352 nm. The con-\nsynthesized by protonating Fe-N₄/OCN. Specifically, Fe-N₄/OCN (150  centration of total Fe was measu₁red by ICP-MS (Agilent 7700(MS)).\nmg) was mixed with⁴ mL of 6 M HCl and stirred at room temperature f...",
+      "score": 0.5634401,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": false,
+    "error": "无法解析 JSON",
+    "raw_response": "从提供的10段论文内容中，我们需判断是否涉及**双原子催化剂（Dual-Atom Catalyst, DAC）的合成**，并提取其**模型反应**的结构化信息。\n\n---\n\n### 🔍 **关键判断依据：**\n\n- 文中反复出现的催化剂名称为：**Fe-N2O1/OCN**  \n- 描述其为 **\"Fe-based single-atom catalyst\"**（见结果4、结果10）  \n- 明确指出其是 **single-atom**（单原子），而非双原子；例如：\n  > *\"Fe-based single-atom catalyst (designated as Fe-N2O1/OCN)\"* （结果4 & 10）  \n  > *\"protonating Fe-N₄/OCN\"* → 前驱体为 Fe-N₄ 单原子位点  \n- 活性位点描述为 **Fe-N₂O₁**（一个Fe原子配位2个N + 1个O），非两个金属原子构成的双原子位点  \n- 无任何关于 **M₁-M₂ 距离、双金属协同、M–M 键、双原子嵌入等双原子特征** 的表述  \n- 所有反应评估均围绕 **PMS活化降解BPA/FFA**，属催化性能测试，**非合成步骤描述**\n\n✅ 结论：**该论文研究的是单原子铁催化剂（Fe-N₂O₁），不是双原子催化剂（DAC）**。  \n❌ 因此，**不满足“与双原子催化剂合成相关”的前提条件**。\n\n---\n\n### ✅ 最终输出：\n\n```json\n\"-\"\n```"
+  }
+}

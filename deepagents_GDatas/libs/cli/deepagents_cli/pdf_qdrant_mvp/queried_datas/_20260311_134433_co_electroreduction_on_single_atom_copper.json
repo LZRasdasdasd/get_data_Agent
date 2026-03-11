@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "collection_name": "co_electroreduction_on_single_atom_copper",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts\n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere\n    active site metal dimer precursor synthesis procedure distance between two metal atoms\n    metal-metal bond length bond distance Å 间距 键长 原子间距\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260311_134433",
+    "total_results": 10,
+    "combined_text_length": 10496
+  },
+  "query_results": [
+    {
+      "text": "## 9. S.Ma,M.Sadakiyo,M.Heima,R.Luo,R.T.Haasch,J.I.Gold,M.Yamauchi,P.J.A.Kenis,\n\ntionviatheE-Rmechanismat300K.Thesimulationwasconducted m\nElectroreductionofcarbondioxidetohydrocarbonsusingbimetallicCu-Pdcatalystswithₕ\nusing the canonical ensemblewithout considering the interactionₜₜ\ndifferentmixingpatterns.J.Am.Chem.Soc. 139, 47-50(2017).ₚₛ\nbetween CO molecules. Nose-Hoover thermostat was used to\n\n## 10. M.Jouny,W.Luc,F.Jiao, High-rateelectroreductionofcarbonmonoxidetomulti-carbon :\n\n//\nw\nkeepte...",
+      "score": 0.60036194,
+      "chunk_index": -1
+    },
+    {
+      "text": "## ₁ D₃\n\n₄ₒ\nCu) and gas-phase CO. This E-R mechanism can explain the ob- amountofCuCl ·2H Ochanged to67mg,whiletheothercondi-\n₂ w₂\nₙₗ\nservedcatalyticactivityandselectivityenhancements,aswellasre- tionsremainthesame,andtheobtainedproductwasreferredtoas\nₒₐd\naction kinetics in terms of₁ reaction order with respect to CO and Cu @n-C N -10%. Last, a product synthesized without a copper\n₃₄\nd\nTafel slope foracetate production. Moreover, we have also deter- salt while the other conditions remain the sam...",
+      "score": 0.5848045,
+      "chunk_index": -1
+    },
+    {
+      "text": "## DISCUSSION remove water. The dried mixture was calcined at 550°C for 2\n\nInsummary,wehaverevealedanewC─Ccouplingmechanismfor hourswitha rampingrateof25°C/minundera highpurityargon\nthe electroreduction of CO on single-atom Cu electrocatalysts, (≥99.999%) atmosphere. After pyrolysis, a dark-yellow power\nCu₁@n-C N . This type of catalyst contains Cu(I)-N active derived was used directly for characterization and catalysis test₃\n₄₂\ncenters, on which E-R type of C─C coupling takes place between with...",
+      "score": 0.5843593,
+      "chunk_index": -1
+    },
+    {
+      "text": "It is notedₜₜₚ\nscribedintheRDS(reaction2)differsfromthepreviouslyreportedₛ\nthat, in the Cu @n-C N catalyst, adsorption of CO on the N and\n₁ :/₃\n─ ₄\nC Ccouplingmechanismbetween*COandCO(g)(51)via /\nw\nCsitesadjacenttoCuisnotfavorable(e.g.,0.24eVfor*COonC,\nww\nₖ while*COontheNsitewilltransfertotheneighboringCsitespon-\n� .\n₃ �\nCOþCOðgÞ ! C O ð3Þ ₛ\n₂ c\n² taneously; table S₈), and, thereby, Cu is likely the onlyactive site\nᵢₑₙc\nReaction3hasbeenproposedasapossiblepathwaytowardeth- accommodatingCOadsorpti...",
+      "score": 0.5733155,
+      "chunk_index": -1
+    },
+    {
+      "text": "## 15. S.Mezzavilla,S.Horch,I.E.L.Stephens,B.Seger,I.Chorkendorff, Structuresensitivityinthe ₜ\n\ny ₒ\nwaterasthehydrogensource,respectively(fig.S35andnoteS2). electrocatalyticreductionofCO withgoldcatalysts.Angew.Chem.Int.Ed. 58,₂ ₙ\n\n## 3774-3778(2019).  O\n\nCalculationsformethanepathway\ncₜ\n\n## 16. Q.Lu,J.Rosen,Y.Zhou,G.S.Hutchings,Y.C.Kimmel,J.G.Chen,F.Jiao, Aselectiveandₒ\n\nThe bifurcation step between methane pathway and C₂ product\nb\nefficientelectrocatalystforcarbondioxidereduction.Nat.Commun. 5...",
+      "score": 0.5640626,
+      "chunk_index": -1
+    },
+    {
+      "text": "## T\n\nCucenterswasinferredbyfittingtheextendedx-rayadsorptionfine\ntheatomicallydispersedCuisnotonlytheactivesiteforactivation ₛ\nᵢₙg\nstructure(EXAFS)spectra(Fig.2F).Thefirst-shellfitdemonstrates of CO but also accounts for C─C coupling and restriction of theₕᵤ\nthatCu @n-C N -27%andCu @n-C N -10%contain1.8and1.7\nconsequentreactionpathwaytowardaspecificC product.Thisis ₐ₁\n₃₄\n₁₃\n₄₂\n\n## U\n\nCu─Nbonds,respectively,withabondlengthof1.91Å(tableS2;\ncongruentwiththecontrolexperimentperformedonCunanopar- ₙᵢ...",
+      "score": 0.5567908,
+      "chunk_index": -1
+    },
+    {
+      "text": "## O\n\nethanol(55),thepossibleinvolvementofE-RmechanismforC─C 2)takesplacebetweenthe*CHOadsorbingonCuandanothergas-\ncₜₒ\ncouplingwasnotexplicitlydiscussedinthosestudies.Astobedis- phaseCOmolecule(ordissolvedintheelectrolyte)toforma*CO-\nbₑᵣ\ncussedbelow,theCuSAECsdonotonlyexhibitauniqueC─Ccou- CHO.ThisC intermediateisfurtherhydrogenatedtoform*CO-₂  ₃\n₀,\npling mechanism, but are also advantageous in its high selectivity CHOH, *CHCO, and *CH CO, sequentially. Eventually, *CH CO₂  ₂\n₂₀\ntoward a specifi...",
+      "score": 0.5513139,
+      "chunk_index": -1
+    },
+    {
+      "text": "## C₂\n\n₂₃₀\nstudies, which showed nearly no change in either XANES or lyzedthereactionorder(n)withrespecttoCOforthereductionof\n, ₂\nEXAFS spectra under reaction conditions (Fig. 4, C and D and COtoacetate,themajorC product.nisfoundtoexhibitdivergent₂ ₀\n₂₃\nfig. S₂₁). The structural fitting parameters derived from the in valuesatdifferentPCO values(Fig.4F).Inthelow-P region(0to\n\n## CO\n\nsituEXAFSspectraareincludedintableS2.Wefoundthattheco- 0.15 atm), the rate of acetate production is nearly first or...",
+      "score": 0.55112374,
+      "chunk_index": -1
+    },
+    {
+      "text": "## 7. B.A.Rosen,A.Salehi-Khojin,M.R.Thorson,W.Zhu,D.T.Whipple,P.J.A.Kenis,R.I.Masel,\n\nCalculationsforenergybarrier/activationenergy Ionicliquid-mediatedselectiveconversionofCO₂ toCOatlowoverpotentials.Science Dₒ\nMoreover, the constrained ab initio molecular dynamics (AIMD) 334, 643-644(2011). wₙₗ\ncalculation (76) with reaction coordination gradually changing 8. K.J.P.Schouten,Z.Qin,E.PérezGallent,M.T.M.Koper, Twopathwaysfortheformationof\nₒₐd\nfrom the initial to the final state (slow growth metho...",
+      "score": 0.55015016,
+      "chunk_index": -1
+    },
+    {
+      "text": ",KHCO ),forwhich withalternativeC─Ccouplingmechanismsandenhancedselectiv-\n₃ Uₙ\n>90% Faradaic efficiency (FE) toward CO has been demonstrated itywardaspecificC productremaintobedevelopedforCO /CO\n₂₊ v₂\nₑᵣ\nusing metal catalysts such as Au (13-15) and Ag (16) or single- reductionelectrocatalysis.\nₛᵢₜy\nmetal-atom(17,18)electrocatalysts.Meanwhile,theelectroreduc- Here,wereportasingle-copper-atomelectrocatalystforselectiveₒₙ\ntionofCOcanbedoneusinghigh-alkalinityelectrolytestotakead- reductionofCOtoace...",
+      "score": 0.54295075,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": false,
+    "error": "无法解析 JSON",
+    "raw_response": "根据提供的论文内容，经过逐条分析，**未发现任何明确描述双原子催化剂（Dual-Atom Catalyst, DAC）合成过程的实验细节**。所有结果片段均围绕 **单原子铜催化剂（Cu₁@n-C₃N₄）** 展开，核心证据如下：\n\n- 多次明确使用术语 **\"single-atom Cu\"**, **\"Cu₁@n-C₃N₄\"**, **\"SAECs\" (Single-Atom Electrocatalysts)**（见结果 3、4、6、7、8、10）；\n- EXAFS拟合显示 **第一壳层为 Cu–N 键（~1.91 Å），配位数 ~1.7–1.8（ex situ）→ ~2.7–2.8（in situ under CO）**，符合单原子位点吸附CO后局部配位微调，**无双金属键（如 Cu–Cu）特征峰或拟合参数**（结果 6、8）；\n- 所有合成描述（结果 2）仅涉及 **CuCl₂·2H₂O 负载于 g-C₃N₄ 后 NaBH₄ 还原 → 得到 Cu clusters 或 Cu₁@n-C₃N₄**，未提及**两种不同金属前驱体共负载、空间限域双金属锚定、或双原子特异性热解策略**等 DAC 合成关键步骤；\n- 活性位点被明确定义为 **\"Cu(I)–N active centers\"**（结果 3），反应机理聚焦于 *CHO 与气相 CO 的 E-R 偶联（非两个吸附态中间体的 L-H 偶联），进一步佐证为单一位点催化；\n- 文中未出现 **\"dual-atom\"、\"diatomic\"、\"bimetallic single-site\"、\"M₁M₂@support\"** 等 DAC 典型表述，也**未提供任何两个金属原子间距离（metal–metal distance）数据**。\n\n因此，该文献**不涉及双原子催化剂的合成**，其研究对象为**单原子铜催化剂（Cu SAEC）**。\n\n---\n\n✅ **最终判断：与双原子催化剂合成无关**\n\n```json\n\"-\"\n```"
+  }
+}

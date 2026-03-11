@@ -79,8 +79,11 @@ def _import_extract_dac_synthesis():
 
 def _import_delete_collections():
     """延迟导入集合管理工具"""
-    from delete_collections import delete_collections_by_pattern
-    return delete_collections_by_pattern
+    from delete_collections import delete_collections_by_pattern, delete_all_collections
+    return {
+        "delete_collections_by_pattern": delete_collections_by_pattern,
+        "delete_all_collections": delete_all_collections,
+    }
 
 
 def _import_chunk_text_tool():
@@ -379,21 +382,60 @@ def query_and_extract_wrapper(collection_name: str = None) -> dict[str, Any]:
         dict: 包含提取结果的字典，包括反应步数、每步详情、活性位点等
     """
     func = _import_extract_dac_synthesis()
-    return func(collection_name)
+    # 使用 silent=True 避免打印输出触发 Rich markup 解析错误
+    return func(collection_name, silent=True)
 
 
 def delete_collections_by_pattern(pattern: str = None) -> dict:
     """
     删除匹配模式的 Qdrant 集合。
     
+    该工具用于批量清理 Qdrant 数据库中的集合。它会查找所有名称中
+    包含指定模式的集合，然后逐一删除。这是一个破坏性操作，请谨慎使用。
+    
+    Use this tool when you need to:
+    - Clean up test collections from the database
+    - Remove outdated document collections
+    - Batch delete collections with similar names
+    - Manage database storage by removing unwanted collections
+    
     Args:
-        pattern: 集合名称匹配模式（可选）
+        pattern: 集合名称匹配模式，所有名称中包含此字符串的集合都会被删除
         
     Returns:
         dict: 删除结果
     """
-    func = _import_delete_collections()
-    return func(pattern)
+    funcs = _import_delete_collections()
+    return funcs["delete_collections_by_pattern"](pattern)
+
+
+def delete_all_vector_db_collections() -> dict[str, Any]:
+    """
+    删除 Qdrant 向量数据库中的所有集合。
+    
+    该工具用于完全清空 Qdrant 数据库中的所有集合。它会获取所有
+    现有集合并逐一删除。这是一个极其破坏性的操作，请非常谨慎使用！
+    
+    警告：此操作不可逆！删除后数据将无法恢复。
+    
+    Use this tool when you need to:
+    - Reset the entire vector database
+    - Clean up all collections before starting fresh
+    - Clear all indexed documents from Qdrant
+    - Prepare database for a complete re-ingestion
+    
+    Returns:
+        dict: 操作结果，包含以下字段：
+            - status (str): 操作状态 ("success" 或 "partial")
+            - total_count (int): 数据库中的集合总数
+            - deleted_count (int): 成功删除的集合数量
+            - failed_count (int): 删除失败的集合数量
+            - deleted_collections (list): 已删除的集合名称列表
+            - failed_collections (list): 删除失败的集合名称列表
+            - message (str): 操作摘要信息
+    """
+    funcs = _import_delete_collections()
+    return funcs["delete_all_collections"]()
 
 
 # ============================================
@@ -499,21 +541,69 @@ def search_catalyst_content(
     )
 
 
-def _escape_value(value: Any) -> Any:
+def _escape_value(value: Any, max_str_length: int = 2000) -> Any:
     """转义值中的 rich markup 特殊字符
     
     Args:
         value: 要转义的值
+        max_str_length: 字符串最大长度，超过此长度会被截断（防止超大文本导致渲染问题）
         
     Returns:
         转义后的值
     """
     if isinstance(value, str):
-        return escape(value)
+        # 截断过长的字符串以避免渲染问题
+        if len(value) > max_str_length:
+            value = value[:max_str_length] + f"... [已截断，原始长度: {len(value)}]"
+        
+        # 使用 rich.markup.escape 转义特殊字符
+        # 这会将 [ 转义为 \[，] 转义为 \]，\ 转义为 \\
+        escaped = escape(value)
+        
+        # 处理可能导致 Rich 解析错误的 Unicode 字符组合
+        # 将一些科学文献中常见的特殊 Unicode 字符替换为 ASCII 等价形式
+        # 这样可以避免 Rich 解析器误解这些字符
+        unicode_replacements = {
+            # 下标数字
+            '\u2080': '0', '\u2081': '1', '\u2082': '2', '\u2083': '3', '\u2084': '4',
+            '\u2085': '5', '\u2086': '6', '\u2087': '7', '\u2088': '8', '\u2089': '9',
+            # 上标数字
+            '\u2070': '0', '\u00b9': '1', '\u00b2': '2', '\u00b3': '3', '\u2074': '4',
+            '\u2075': '5', '\u2076': '6', '\u2077': '7', '\u2078': '8', '\u2079': '9',
+            # 上下标字母和符号
+            '\u2090': 'a', '\u2091': 'e', '\u2092': 'o', '\u2093': 'x', '\u2094': 'schwa',
+            '\u2095': 'h', '\u2096': 'k', '\u2097': 'l', '\u2098': 'm', '\u2099': 'n',
+            '\u209a': 'p', '\u209b': 's', '\u209c': 't',
+            # 数学符号
+            '\u00d7': 'x',  # × 乘号
+            '\u00f7': '/',  # ÷ 除号
+            '\u00b0': ' deg',  # ° 度
+            '\u2032': "'",   # ′ 撇号
+            '\u2033': "''",  # ″ 双撇号
+            '\u2103': 'C',   # ℃ 摄氏度
+            '\u2109': 'F',   # ℉ 华氏度
+            '\u212b': 'A',   # Å 埃
+            '\u03bc': 'u',   # μ 希腊字母
+            '\u03b1': 'alpha', '\u03b2': 'beta', '\u03b3': 'gamma', '\u03b4': 'delta',
+            '\u0394': 'Delta',
+            # 特殊引号和破折号
+            '\u2018': "'", '\u2019': "'",  # 弯引号
+            '\u201c': '"', '\u201d': '"',  # 弯双引号
+            '\u2013': '-', '\u2014': '--',  # 短破折号和长破折号
+            # 其他常见特殊字符
+            '\u2026': '...',  # 省略号
+            '\u00a0': ' ',    # 不换行空格
+            '\u2022': '*',    # 项目符号
+        }
+        
+        for unicode_char, replacement in unicode_replacements.items():
+            escaped = escaped.replace(unicode_char, replacement)
+        
+        return escaped
     elif isinstance(value, dict):
-        return {k: _escape_value(v) for k, v in value.items()}
+        return {k: _escape_value(v, max_str_length) for k, v in value.items()}
     elif isinstance(value, list):
-        return [_escape_value(item) for item in value]
+        return [_escape_value(item, max_str_length) for item in value]
     else:
         return value
 
@@ -537,9 +627,31 @@ def extract_dual_atom_catalyst(collection_name: str = None) -> dict[str, Any]:
     Returns:
         dict: 包含提取结果的字典，包括反应步数、每步详情、活性位点等
     """
-    result = query_and_extract_wrapper(collection_name)
-    # 转义结果中的文本以避免 rich markup 解析错误
-    return _escape_value(result)
+    try:
+        result = query_and_extract_wrapper(collection_name)
+        
+        # 处理 None 结果
+        if result is None:
+            return {
+                "status": "error",
+                "error": "未找到相关数据或处理失败",
+                "collection_name": collection_name,
+                "message": "集合可能不存在或查询未返回任何结果"
+            }
+        
+        # 转义结果中的文本以避免 rich markup 解析错误
+        return _escape_value(result)
+        
+    except Exception as e:
+        # 捕获并转义异常信息
+        error_msg = str(e)
+        escaped_error = escape(error_msg) if error_msg else "未知错误"
+        return {
+            "status": "error",
+            "error": escaped_error,
+            "collection_name": collection_name,
+            "message": f"提取过程中发生错误: {escaped_error}"
+        }
 
 
 # ============================================
@@ -741,7 +853,8 @@ PDF_EXTRACTION_TOOLS: list[Callable[..., Any]] = [
     search_qdrant_collection,
     list_qdrant_collections,
     list_vector_db_collections,  # 新增：列出集合
-    delete_collections_by_pattern,
+    delete_collections_by_pattern,  # 按模式删除集合
+    delete_all_vector_db_collections,  # 删除所有集合
     
     # 催化剂信息提取工具
     search_catalyst_content,

@@ -220,7 +220,7 @@ def call_llm_for_extraction(client: OpenAI, text_content: str, model: str = "qwe
         }
 
 
-def query_and_extract(collection_name: str = None):
+def query_and_extract(collection_name: str = None, silent: bool = False):
     """
     从 Qdrant 集合中提取双原子催化剂（DAC）合成的结构化数据。
     
@@ -237,6 +237,7 @@ def query_and_extract(collection_name: str = None):
     Args:
         collection_name: Qdrant 集合名称，通常是 PDF 文件名的小写下划线形式。
                         如果为 None，则使用默认值 "nl4c00576_si_001"
+        silent: 静默模式，为 True 时禁用所有打印输出（用于工具调用时避免 markup 错误）
                         
     Returns:
         dict: 包含提取结果的字典，结构如下：
@@ -252,6 +253,11 @@ def query_and_extract(collection_name: str = None):
         >>> print(result["extraction"]["data"]["reaction_steps"])
     """
     import sys
+    
+    # 辅助函数：仅在非静默模式下打印
+    def log(msg: str = ""):
+        if not silent:
+            print(msg)
     
     # 如果没有指定集合名称，从命令行参数获取
     if collection_name is None:
@@ -275,13 +281,13 @@ def query_and_extract(collection_name: str = None):
     collection_names = [col['name'] for col in collections]
     
     if collection_name not in collection_names:
-        print(f"[ERROR] 集合 '{collection_name}' 不存在！")
-        print(f"\n可用的集合: {', '.join(collection_names)}")
+        log(f"[ERROR] 集合 '{collection_name}' 不存在！")
+        log(f"\n可用的集合: {', '.join(collection_names)}")
         return None
     
-    print(f"\n{'=' * 80}")
-    print(f"查询集合: {collection_name}")
-    print(f"{'=' * 80}")
+    log(f"\n{'=' * 80}")
+    log(f"查询集合: {collection_name}")
+    log(f"{'=' * 80}")
     
     # 查询关键词 - 针对双原子催化剂合成
     query = """双原子催化剂合成实验 experimental synthesis of dual-atom catalysts
@@ -291,7 +297,7 @@ def query_and_extract(collection_name: str = None):
     实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2
     synthesis procedure experimental section"""
     
-    print(f"\n查询关键词:\n{query[:200]}...")
+    log(f"\n查询关键词:\n{query[:200]}...")
     
     # 执行查询
     try:
@@ -304,10 +310,10 @@ def query_and_extract(collection_name: str = None):
         )
         
         if not search_results:
-            print("没有找到相关结果")
+            log("没有找到相关结果")
             return None
         
-        print(f"\n找到 {len(search_results)} 个结果")
+        log(f"\n找到 {len(search_results)} 个结果")
         
         # 合并所有查询结果的文本
         combined_text = ""
@@ -316,7 +322,7 @@ def query_and_extract(collection_name: str = None):
             score = result.get("score", 0)
             combined_text += f"\n\n--- 结果 {i+1} (相似度: {score:.2%}) ---\n{text}"
         
-        print(f"\n合并文本总长度: {len(combined_text)} 字符")
+        log(f"\n合并文本总长度: {len(combined_text)} 字符")
         
         # 调用 LLM 提取结构化数据
         extraction_result = call_llm_for_extraction(client, combined_text)
@@ -351,23 +357,24 @@ def query_and_extract(collection_name: str = None):
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, ensure_ascii=False, indent=2)
         
-        print(f"\n{'=' * 80}")
-        print(f"结果已保存到: {output_path}")
-        print(f"{'=' * 80}")
+        log(f"\n{'=' * 80}")
+        log(f"结果已保存到: {output_path}")
+        log(f"{'=' * 80}")
         
         # 打印提取的结构化数据
         if extraction_result.get("success"):
-            print("\n提取的结构化数据:")
-            print(json.dumps(extraction_result.get("data", {}), ensure_ascii=False, indent=2))
+            log("\n提取的结构化数据:")
+            log(json.dumps(extraction_result.get("data", {}), ensure_ascii=False, indent=2))
         else:
-            print(f"\n提取失败: {extraction_result.get('error', '未知错误')}")
+            log(f"\n提取失败: {extraction_result.get('error', '未知错误')}")
         
         return output_data
         
     except Exception as e:
-        print(f"[ERROR] 处理过程中出错: {e}")
-        import traceback
-        traceback.print_exc()
+        log(f"[ERROR] 处理过程中出错: {e}")
+        if not silent:
+            import traceback
+            traceback.print_exc()
         return None
 
 

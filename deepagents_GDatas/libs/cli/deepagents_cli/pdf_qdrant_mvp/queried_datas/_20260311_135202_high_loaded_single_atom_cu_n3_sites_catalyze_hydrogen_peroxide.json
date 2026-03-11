@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "collection_name": "high_loaded_single_atom_cu_n3_sites_catalyze_hydrogen_peroxide",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts\n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere\n    active site metal dimer precursor synthesis procedure distance between two metal atoms\n    metal-metal bond length bond distance Å 间距 键长 原子间距\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260311_135202",
+    "total_results": 10,
+    "combined_text_length": 11984
+  },
+  "query_results": [
+    {
+      "text": "F. Xᵤ ₑₜ ₐₗ.                                                                                                                                                                                      A   ₚ ₚ  ₗ ᵢ ₑ d   C  ₐ  ₜ ₐ  ₗ y ₛ  ᵢ ₛ  B  :  E  ₙ  ᵥ ᵢ ᵣ ₒ  ₙ  ₘ  ₑ  ₙ  ₜ ₐ ₗ₃₃₉₍₂₀₂₃₎₁₂₃₀₇₅\n\n## Fig. 4. Mechanism diagram of the Cu-CN/H₂O system for MB removal.₂\n\n₋  ₂⁺\nHO₂⋅/⋅O through the reaction between H O and Cu-CN (Eq. 3). To be  TBA  into  Cu /H O and  CuO/H O Fenton-like  systems  almost₂\n₂₂\n...",
+      "score": 0.5865118,
+      "chunk_index": -1
+    },
+    {
+      "text": "and Cu atoms, leading to a slight decrease in electron density of N atom\nHerein, carbon nitride (CN) supported Cu single-atom catalyst (Cu-  [34]. For the Cu 2p spectrum of Cu-CN, two obvious splitting peaks\nCN) with M-N-C structure was used as a heterogeneous catalyst for H₂O (934.42eV and 932.68eV) are observed at Cu 2p (Fig. 2b), which₂\n₃/₂\nactivation. The characterization results proved that Cu-CN was suc- could be attributed to Cu (II) and Cu(I), respectively [31]. Additionally,\ncessfully  ...",
+      "score": 0.57383937,
+      "chunk_index": -1
+    },
+    {
+      "text": "Herein, a carbon nitride supported high-loaded₂\n₂₂\nSᵢₙgₗₑₜ ₒₓygₑₙ  ²\nsingle-atom Cu-N₃  catalyst (Cu-CN, Cu load is 15.46 wt%) is prepared to activate H O to selectively form₂\nHᵢgₕ₋ₗₒₐd Cᵤ ₛᵢₙgₗₑ₋ₐₜₒₘ cₐₜₐₗyₛₜ  ²₁\n₁\nO₂. Experimental and DFT calculation results reveal that the key factor for  O₂ production is the Cu-N coor-\nCᵤ₋N ³³ ₛᵢₜₑₛ\ndination structure. Specifically, Cu-N₃ coordination structure is conducive to decomposing H O into⋅OOH/⋅O⁻.₂\n₂₂\nBesides, the density of Cu-N₃ sites is another k...",
+      "score": 0.5697421,
+      "chunk_index": -1
+    },
+    {
+      "text": "32 (2020), e2002246.  simultaneous enhancement of Fenton-like catalytic activity and selective H₂O₂\n[32] X. Gao, W. Ma, J. Mao, C.T. He, W. Ji, Z. Chen, W. Chen, W. Wu, P. Yu, L. Mao,  conversion to hydroxyl radicals, Appl. Catal. B-Environ. 234 (2018) 223-233.\nA single-atom Cu-N₂ catalyst eliminates oxygen interference for electrochemical  [54] Y.X. Mao, J.L. Liang, L. Jiang, Q.S. Shen, Q. Zhang, C.C. Liu, H. Zheng, Y. Liao, X.\nsensing of hydrogen peroxide in a living animal brain, Chem. Sci. 1...",
+      "score": 0.5643071,
+      "chunk_index": -1
+    },
+    {
+      "text": "Gao, Hb Yang, X. Huang, S.-F. Hung, W. Cai, C. Jia, S. Miao, H.M. Chen, X. Yang,  chloride and bicarbonate, Water Res. 214 (2022), 118182.\nY. Huang, T. Zhang, B. Liu, Enabling direct H₂O production in acidic media  [55] Z. Zhu, H. Pan, M. Murugananthan, J. Gong, Y. Zhang, Visible light-driven₂\nthrough rational design of transition metal single atom catalyst, Chem 6 (2020)  photocatalytically active g-C₃N material for enhanced generation of H O , Appl.₄\n₂₂\n658-674.  Catal. B-Environ. 232 (2018) 1...",
+      "score": 0.55611324,
+      "chunk_index": -1
+    },
+    {
+      "text": "5 times, and 5.6 times of CN (0.0042min ), CuO (0.0119min ),  of reaction time (Fig. 3d), indicating the production of  O during the\n₍cᵢd:₀₎ ₂₊\n₁ ₍cᵢd:₀₎₂\n₁\nCu₂O (0.0049min ), and Cu (0.0127min ), respectively (Fig. 3b,  reaction. In addition, the active species in Cu-CN/H O /MB Fenton₂\n₂\nTable S₂). Furthermore, the normalized k based on metal molar amount  system were further identified by electron spin resonance (EPR) tech-\n(kₚₑᵣ₋ₘₒₗ Cᵤ), specific surface area (k ), and turnover frequency  niq...",
+      "score": 0.5543951,
+      "chunk_index": -1
+    },
+    {
+      "text": "4. The formation mechanism of  O₂\noccurred between MB and catalyst surface [44]. In addition, in the salt\nbridge primary cell experiment (Fig. S₆) the current is only 1.4 μA after\nTo further understand the activation mechanism of H₂O by Cu-CN,₂\nadding  H O and  gradually  decreased₂ over  time,  and MB   has  no\n²  the formation mechanism of  O₂ is then discussed in detail. According to\napparent degradation in the primary cell, which further confirms that\nFig. S₇, O₂ does not affect the degradat...",
+      "score": 0.5543021,
+      "chunk_index": -1
+    },
+    {
+      "text": "On the con-\ntrary, the energy barrier for the conversion of H²O to⋅OH on CuO is₂\nmuch lower than that of⋅OOH, which makes it more inclined to gen-\n₁ erate⋅OH. Based on the above DFT calculation results, it is known that\n3.5. Relationship between catalyst structure and  O₂ formation\ncompared with the traditional Cu-based catalysts, Cu-CN is easier to\nactivate H₂O to⋅OOH, which makes the key reaction for the formation\nAccording  to  the  reported  literature,  Cu-based  catalysts  always  ₂₁\n⋅ < =...",
+      "score": 0.55130386,
+      "chunk_index": -1
+    },
+    {
+      "text": "₁\n₄₁\n₁\n= × ⋅ ⋅ ₋₂\nM s , k₇  1 10 M s ) [53], while the generation of HO /O ,  ₂₂\n₂\n₁ Although based on the above analysis, it is concluded that one of the\nwhich is the key procedure for  O₂ generation, is usually very slow. Due₁\n⋅ ⋅ ⁻ ⋅ vital factors that CuCN can selectively induce H O to generate  O is₂\n₂\nto the lack of HO² /O , the rapidly generatedOH will react directly with  ₂₂\nthat the Cu-N₃ structure is easier to convert H O into the key inter-₂\npollutants. Therefore, conventional Cu-base...",
+      "score": 0.5369716,
+      "chunk_index": -1
+    },
+    {
+      "text": "ₐₑ₋bₐcₜₑᵣᵢₐ cₒₙₛₒᵣₜᵢᵤₘ₋A ᵣₑᵥᵢₑw, Bᵢₒᵣₑₛₒᵤᵣ. Tₑcₕₙₒₗ. ₃₄₄ ₍₂₀₂₂₎,\ninto CO² and H O over time. The analysis of the degradation pathways₂\n[₂]\n₁ Y. Fᵤ, Z. Yᵢₙ, L. Qᵢₙ, D. Hᵤₐₙg, H. Yᵢ, X. Lᵢᵤ, S. Lᵢᵤ, M. Zₕₐₙg, B. Lᵢ, L. Lᵢ, W. Wₐₙg,\nof MB reveals that  O₂ plays an important role in the degradation of MB.\nXfₑ.ₐ Zₜᵤhᵣoₑuₛ, ᵢ ₙY .c ₐLₜⁱ,ₐ ₗGy.ₜ ᵢZc eₒⁿₓgᵢd, ₐCₜ.ᵢ ₒLₙa ⁱf,ₒ Rᵣ eₒcᵣegⁿₐtₙ ᵢpcr oₚgₒrₗₗeᵤsₜsₐ oₙfₜ ₛⁿ doₑbgleᵣₐ mdₐeₜtᵢaₒlₙs , wJ.ⁱ tHhₐ tzaₐⁱᵣlodr. eMd ₐₜₑᵣ.\n\n## 4. Conclusion  ₄₂₂ ₍₂₀₂₂₎, ₁...",
+      "score": 0.5348221,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": false,
+    "error": "无法解析 JSON",
+    "raw_response": "根据提供的论文内容，所有结果片段均围绕 **Cu单原子催化剂（Cu-CN）** 展开，其活性位点为 **Cu-N₃** 结构（即一个 Cu 原子配位于三个 N 原子），明确属于**单原子催化剂（SACs）**，而非**双原子催化剂（DACs）**。\n\n关键证据如下：\n\n- 多处明确表述为 **\"Cu single-atom catalyst\"**（结果3、结果10）、**\"single-atom Cu-N₃ catalyst\"**（结果3）、**\"Cu-N₃ coordination structure\"**（结果2、结果3、结果9）、**\"Cu-N₃ sites\"**（结果10）；\n- EXAFS拟合显示 **Cu–N 平均键长为 1.915 Å / 1.970 ± 0.062 Å**（结果1、结果2），无任何 Cu–Cu 散射路径或金属–金属距离（如 Cu–Cu 键长、间距）的报道；\n- DFT建模基于 **\"CuCN model with Cu-N₃ coordination\"**（结果1），未涉及双金属中心；\n- 全文未出现 “diatomic”、“dual-atom”、“Cu₂”、“Cu–Cu”、“bimetallic site”、“M₁M₂” 等双原子特征描述；\n- 所有催化行为归因于 **孤立 Cu 位点对 H₂O₂ 的选择性活化生成 ·OOH / ¹O₂**，机制讨论聚焦于单原子电子结构（如电荷密度分布 Fig.5b）、吸附能、能垒等，无双金属协同效应分析。\n\n✅ 因此，该论文**不涉及双原子催化剂的合成**，与题目要求的“双原子催化剂合成”无关。\n\n---\n\n```json\n\"-\"\n```"
+  }
+}

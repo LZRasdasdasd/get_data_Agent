@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "collection_name": "design_of_palladium_doped_g_c3n4_for_enhanced_photocatalytic_activity_toward_hydrogen_evolution_reaction",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts\n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere\n    active site metal dimer precursor synthesis procedure distance between two metal atoms\n    metal-metal bond length bond distance Å 间距 键长 原子间距\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260311_134621",
+    "total_results": 10,
+    "combined_text_length": 10394
+  },
+  "query_results": [
+    {
+      "text": "## ₃₃₃₄ EXPERIMENTAL SECTION₃₅\n\n₃₆ All the chemicals were of analytical grade and used as-received without further purification.₃₇\n₃₈ Deionized water was used throughout the experiment.₃₄₉₀\nPreparation of catalysts. The synthesis of g-C₃N -Pd was carried out by modifying the₄₁ ⁴\n₄₂₄₈\npreviously reported method for g-C₃N .  The samples were prepared by thermal condensation.₄₃ ⁴\n₄₄\n₄₅ Dicyandiamide (2 g) was added into different volumes of H PdCl  aqueous solution (0.01 M).₂\n₄₆ ⁴\n₄⁴₇⁸ After stirre...",
+      "score": 0.57912064,
+      "chunk_index": -1
+    },
+    {
+      "text": "Pₐgₑ ₅ ₒf ₂₇\nACS Aₚₚₗᵢₑd Eₙₑᵣgy Mₐₜₑᵣᵢₐₗₛ₁₂\n₃₄₅₆\n₇₈⁹₁₀\n₁₁₁₂₁₁₃₄\n₁₁₅₆₁₁₇₈\n₁₂₉₀\n\n## Figure 1. a) Schematic of₂ synthesis of g-C₃N -Pd phototcatalysts. b) HAADF-STEM image of\n\ng-C₃N -Pd₂₀. c-e) Elemental maps of C, N and Pd in the region shown in (b), respectively.₂₂ ⁴\n₂₃\nThe contents of Pd can be tuned by varying the amount of H₂PdCl  used in the preparation₂₂₄₅ ⁴\n₂₆ of precursors. We have prepared four catalyst samples by using H PdCl  aqueous solution (0.01₂\n₂₇ ⁴\n₂₈ M) of 0, 10, 20, and 30 mL, w...",
+      "score": 0.56837785,
+      "chunk_index": -1
+    },
+    {
+      "text": "J. Mater. Chem. 2008, 18, 4893-4908.₃₀\n₃₁ (43)Dong, F.; Zhao, Z.; Xiong, T.; Ni, Z.; Zhang, W.; Sun, Y.; Ho, W.-K. In Situ Construction₃₃₂₃\nof g-C₃N /g-C N  Metal-Free Heterojunction for Enhanced Visible-Light Photocatalysis.₄\n₃₃₄ ⁴\n₃₅\n₃₆ ACS Appl. Mater. Interfaces 2013, 5, 11392-11401.₃₇\n³⁸ (44)Vanýsek, P. Electrochemical Series; CRC PRESS: USA, 2000.₃₉\n₄₄₀₁ (45)Hinnemann, B.; Moses, P. G.; Bonde, J.; Jørgensen, K. P.; Nielsen, J. H.; Horch, S.;₄₂\n₄₃ Chorkendorff, I.; Nørskov, J. K. Biomimetic...",
+      "score": 0.5642444,
+      "chunk_index": -1
+    },
+    {
+      "text": "ACS Aₚₚₗᵢₑd Eₙₑᵣgy Mₐₜₑᵣᵢₐₗₛ\nPₐgₑ ₂₆ ₒf ₂₇₁₂\n₃\n₄ (47)Deng, J.; Li, H.; Xiao, J.; Tu, Y.; Deng, D.; Yang, H.; Tian, H.; Li, J.; Ren, P.; Bao, X.₅\n₆ Triggering the Electrocatalytic Hydrogen Evolution Activity of the Inert Two-Dimensional₇\n₈ MoS  Surface Via Single-Atom Metal Doping. Energy Environ. Sci. 2015, 8, 1594-1601.₉ ₂\n₁₀\n₁₁ (48)Wang, X.; Chen, X.; Thomas, A.; Fu, X.; Antonietti, M. Metal-Containing Carbon Nitride₁₂\n₁₃ Compounds: A New Functional Organic-Metal Hybrid Material. Adv. Mater. 2...",
+      "score": 0.5622641,
+      "chunk_index": -1
+    },
+    {
+      "text": "Sci.₃\n₂₅ ⁴\n²₂⁶₇ 2018, 433, 1175-1183.₂₈\n₂₉ (36)Ding, Z.; Chen, X.; Antonietti, M.; Wang, X. Synthesis of Transition Metal-Modified₃₀\n₃₁ Carbon Nitride Polymers for Selective Hydrocarbon Oxidation. ChemSusChem 2011, 4,₃₃₂₃\n₃₄ 274-281.₃₅\n₃₆ (37)Vilé, G.; Albani, D.; Nachtegaal, M.; Chen, Z.; Dontsova, D.; Antonietti, M.; López, N.;₃₇\n₃₈ Pérez-Ramírez, J. A Stable Single-Site Palladium Catalyst for Hydrogenations. Angew.₃₉\n₄₄₀₁ Chem. Int. Ed. 2015, 54, 11265-11269.₄₂\n₄₃ (38)Li, Y.; Wang, Z.; Xia, T...",
+      "score": 0.53164744,
+      "chunk_index": -1
+    },
+    {
+      "text": "The working₃₀\n₃₃₁₂ electrodes were prepared by dispersing photocatalysts (1.8 mg) into 1 mL of N,N-₃₃\n₃₄ dimethylformamide to get a slurry and then spreading the slurry onto FTO glass. The slurry₃₅\n₃₆ cover FTO glass was dried at 80 °C, followed by heated at 300 °C for 2 h in a muffle furnace to₃₇\n₃₈ improve adhesion. The electrolyte was Na SO  (0.5 M). The light source was a 300 W xenon₂\n₃₉ ⁴₄₀\n₄₁ lamp (PLS-SXE 300, PerfectLight) equipped with a 420 nm long-pass filter.₄₂\n₄₃ DFT Calculations. D...",
+      "score": 0.5307219,
+      "chunk_index": -1
+    },
+    {
+      "text": "ACS Aₚₚₗᵢₑd Eₙₑᵣgy Mₐₜₑᵣᵢₐₗₛ\nPₐgₑ ₄ ₒf ₂₇₁₂\n³ the main structure of g-C₃N , while enhances the photocatalytic performance for hydrogen₄ ₄\n₅\n₆ evolution by 15 times. Further experimental and theoretical studies confirm our speculation that₇\n₈ the Pd doping alters the excitation manner of electrons and accelerates the kinetics of hydrogen⁹₁₀\n₁₁ evolution, which enhances the photocatalytic activity for hydrogen evolution.₁₁₂₃\n\n## ₁₄ RESULTS AND DISCUSSION₁₅\n\n₁₆ The g-C N -Pd photocatalysts were pre...",
+      "score": 0.5257691,
+      "chunk_index": -1
+    },
+    {
+      "text": "## ₅₂ AUTHOR INFORMATION₅₅₃₄\n\n₅₅₅₆ Corresponding Author₅₅₇₈\n₅₉\n₆₀ ACS Pₐᵣₐgₒₙ Pₗᵤₛ Eₙᵥᵢᵣₒₙₘₑₙₜ\n19\n\nACS Aₚₚₗᵢₑd Eₙₑᵣgy Mₐₜₑᵣᵢₐₗₛ\nPₐgₑ ₂₀ ₒf ₂₇₁₂\n³₄ *E-mail: luxq@upc.edu.cn.₅\n₆ *E-mail: rbjiang@snnu.edu.cn.₇₈\n⁹ Notes₁₀\n₁₁₁₂ The authors declare no competing financial interest.₁₁₃₄\n\n## ₁₅ ACKNOWLEDGMENTS₁₆\n\n₁₇ This work was supported by the National Natural Science Foundation of China (61505102 and₁₈\n₁₉ 61775129) and Fundamental Research Funds for the Central Universities (GK201602004 and₂₂₀₁\n\n## ₂...",
+      "score": 0.5237727,
+      "chunk_index": -1
+    },
+    {
+      "text": "Chem. Mater. 2012, 24, 3659-3666.₂₈\n₂₉ (11)Sivula, K.; van de Krol, R. Semiconducting Materials for Photoelectrochemical Energy₃₀\n₃₁ Conversion. Nat. Rev. Mater. 2016, 1, 15010.₃₂\n₃₃\n₃₄ (12)Guo, S.; Li, X.; Zhu, J.; Tong, T.; Wei, B. Au NPs@MoS₂ Sub-Micrometer Sphere-ZnO₃₅\n₃₆ Nanorod Hybrid Structures for Efficient Photocatalytic Hydrogen Evolution with Excellent₃₇\n₃₈ Stability. Small 2016, 12, 5692-5701.₃₉\n₄₄₀₁ (13)Li, X.; Guo, S.; Kan, C.; Zhu, J.; Tong, T.; Ke, S.; Choy, W. C.; Wei, B. Au₄\n₄₃...",
+      "score": 0.52287364,
+      "chunk_index": -1
+    },
+    {
+      "text": "Pₐgₑ ₂₅ ₒf ₂₇\nACS Aₚₚₗᵢₑd Eₙₑᵣgy Mₐₜₑᵣᵢₐₗₛ₁₂\n₃\n₄ (39)Gao, G.; Jiao, Y.; Waclawik, E. R.; Du, A. Single Atom (Pd/Pt) Supported on Graphitic₅\n₆ Carbon Nitride as an Efficient Photocatalyst for Visible-Light Reduction of Carbon Dioxide.₇\n₈ J. Am. Chem. Soc. 2016, 138, 6292-6297.₉\n₁₀\n₁₁ (40)Zheng, Y.; Jiao, Y.; Zhu, Y.; Cai, Q.; Vasileff, A.; Li, L. H.; Han, Y.; Chen, Y.; Qiao, S.-Z.₁₂\nMolecule-Level g-C³N  Coordinated Transition Metals as a New Class of Electrocatalysts₁₃ ⁴\n₁₄\n₁₅ for Oxygen Electro...",
+      "score": 0.5133109,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": false,
+    "error": "无法解析 JSON",
+    "raw_response": "根据提供的论文内容，我们需判断其是否涉及**双原子催化剂（Dual-Atom Catalyst, DAC）的合成**，并提取模型反应相关结构化信息。\n\n---\n\n### 🔍 **关键判断依据分析：**\n\n- 文中反复出现的催化剂命名是 **g-C₃N₄-Pdₓ₀**（如 g-C₃N₄-Pd₁₀、g-C₃N₄-Pd₂₀、g-C₃N₄-Pd₃₀），其中下标“10/20/30”指代加入的 H₂PdCl₄ 溶液体积（mL），对应 Pd 负载量为 **0.9–1.9 wt.%**（结果2）。\n- 合成方法为：  \n  - 将 **dicyandiamide（2 g）** 溶于不同体积的 **H₂PdCl₄ 水溶液（0.01 M）**；  \n  - **80 °C 搅拌 3 h** → 干燥 → 研磨 → **550 °C、Ar 气氛下煅烧 4 h**（结果1、结果7）。\n- 表征包括 HAADF-STEM（图1b）和元素分布图（C/N/Pd），但**未明确显示 Pd 原子对（Pd–Pd）的存在**，也**未提供 Pd–Pd 间距（如 Å 级键长或配位结构如 Pd₂N₆）**；\n- 所有描述均指向 **单原子 Pd 掺杂的石墨相氮化碳（g-C₃N₄）**，例如：\n  - “*single-site palladium catalyst*”（结果5 引文37）；\n  - “*single atom (Pd/Pt) supported on graphitic carbon nitride*”（结果10 引文39）；\n  - Pd 含量仅 ~1 wt.%，且通过 ICP-OES 测定为整体负载量，无 EXAFS 或拟合证实 Pd–Pd 配位。\n- **全文未出现 “dual-atom”、“diatomic”、“heterobimetallic”、“M₁M₂”、“M–M distance”、“Fe₂N₆”、“Ni–Co” 等双原子特征关键词**；\n- 所有引文（如引文37、39、40）均聚焦于 **单原子催化（SACs）** 或金属修饰 g-C₃N₄，而非 DAC。\n\n✅ **结论：该论文报道的是单原子 Pd/g-C₃N₄ 光催化剂，不涉及双原子催化剂的合成。**\n\n---\n\n### 🚫 最终输出：\n\n```json\n\"-\"\n```"
+  }
+}
