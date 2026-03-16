@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "collection_name": "nl4c00576_si_002",
+    "query": "双原子催化剂合成实验 experimental synthesis of dual-atom catalysts\n    diatomic catalyst double-atom catalyst preparation method reaction conditions temperature time atmosphere\n    active site metal dimer precursor synthesis procedure distance between two metal atoms\n    metal-metal bond length bond distance Å 间距 键长 原子间距\n    实验部分 合成方法 制备步骤 反应条件 温度 时间 气氛 活性位点 双原子位点 Fe2 Co2 Ni2\n    synthesis procedure experimental section",
+    "timestamp": "20260316_202828",
+    "total_results": 10,
+    "combined_text_length": 8570
+  },
+  "query_results": [
+    {
+      "text": "S-2\nExperimental section\nSynthesis of Fe2@NG DAC\n1186 mg of Zn(NO3)2·6H2O and 30 mg of cetyltrimethylammonium bromide \nwere dissolved in 40 mL of deionized water, forming solution A. 18.16 g of \n2-methylimidazole was dissolved in 280 mL of deionized water, forming solution B. \nThe solution A and solution B are mixed, followed by stirring at 900 rpm for 20 min. \nThe resulting mixture was subjected to centrifugation at 5000 rpm for 5 minutes, \nfollowed by overnight vacuum-drying at 80 ℃ to yield a...",
+      "score": 0.64707553,
+      "chunk_index": -1
+    },
+    {
+      "text": "# nl4c00576_si_002.pdf\n\nS-1\nSupporting Information\nDirect Eight-Electron N2O Electroreduction to NH3 Enabled \nby a Fe Double-Atom Catalyst\nDonghai Wu1, 3#, Kai Chen2#, Peng Lv3, Ziyu Ma3, Ke Chu2, Dongwei Ma1, 3\n1Anhui Province Industrial Generic Technology Research Center for Alumics Materials, School of \nPhysics and Electronic Information, Huaibei Normal University, Huaibei, Anhui 235000, China\n2School of Materials Science and Engineering, Lanzhou Jiaotong University, Lanzhou 730070, \nChina\n...",
+      "score": 0.63831353,
+      "chunk_index": -1
+    },
+    {
+      "text": "To prepare working electrode, 200 μg catalyst and 5 μL of Nafion (5 wt%) \nwere ultrasonically dispersed in 95 μL of ethyl alcohol to form a homogeneous ink. \nThen 50 μL of catalyst ink was loaded on a 1 × 1 cm2 CC substrate and dried under \nambient condition. All potentials were referenced to a reversible hydrogen electrode \n(RHE) by E (V vs. RHE) = E (V vs. Ag/AgCl) + 0.198 V + 0.059 × pH. The N2ORR \nmeasurements were conducted in N2O-saturated 0.5 M Na2SO4 solution using a \ngas-tight H-type ce...",
+      "score": 0.594676,
+      "chunk_index": -1
+    },
+    {
+      "text": "After a subsequent centrifugal separation, a black powder was \nobtained and vacuum-dried at 80 ℃ for 6 hours. Finally, the black powder was \nannealed in an argon flow at 900 ℃ for 1 h, obtaining Fe2@NG DAC. \nElectrochemical experiments\nElectrochemical measurements were tested on a CHI-660E electrochemical \nworkstation in a three-electrode configuration including working electrode (catalyst \ncoated on carbon cloth (CC, 1 × 1 cm2), reference electrode (Ag/AgCl), and counter \nelectrode (graphite ro...",
+      "score": 0.5729526,
+      "chunk_index": -1
+    },
+    {
+      "text": "S-23\nTable S1. The distance between two TM atoms (d), charge transfer from TM2 dimers \nto NG substrate (Q), and total spin magnetic moments (M) of anchored TM2 dimers \nfor the pristine TM2@NG DACs.\nSystems\nd (Å)\nQ (e)\nM (μB)\nV2@NG\n2.42\n2.74\n6.07\nCr2@NG\n2.57\n2.41\n8.37\nMn2@NG\n2.44\n2.37\n7.03\nFe2@NG\n2.22\n2.01\n4.71\nCo2@NG\n2.25\n1.58\n2.47\nNi2@NG\n2.37\n1.46\n0\nCu2@NG\n2.40\n1.56\n0.45\n\nS-24\nTable S2. Structural parameters extracted from the Fe K-edge EXAFS fitting, \nincluding the coordination number (CN), in...",
+      "score": 0.56253594,
+      "chunk_index": -1
+    },
+    {
+      "text": "S-21\nFig. S17. (a) Chronoamperometry test of FeN4 SAC. (b) FEs and corresponding (c) \npartial current densities of N2 and NH3 products on FeN4 SAC.\n\nS-22\nFig. S18. (a) Chronoamperometry test at various potentials on Fe2@NG in flow cell. \n(b) FEs of various products on Fe2@NG in flow cell. (c) FEs of various products on \nFe2@NG in H cell. \nIt is observed that FEN2 of Fe2@NG increases obviously in the flow cell (Fig. S18b) \ncompared to that in the H-cell (Fig. S18c). This can be attributed to the ...",
+      "score": 0.5451249,
+      "chunk_index": -1
+    },
+    {
+      "text": "Prior to N2ORR test, the cathodic compartment was \npurged with N2O for at least 30 min to remove residual oxygen. During the N2ORR \ntest, NO was passed directly into the gas chamber at a rate of 20 mL min-1, and the \nelectrolyte was continuously cycled through the cathode chamber at a rate of 25 mL \nmin-1 under pump drive.\nCalculations of NH3 yield rate and Faradaic efficiency\nNH3 yield rate = (c × V) / (t × A)                  \n(1)\nFE = (4 × F ×c × V) / Q × 100%                  \n(2)\nwhere c (μ...",
+      "score": 0.5445194,
+      "chunk_index": -1
+    },
+    {
+      "text": "The formation energy (Ef) and binding energy (Eb) of the TM2@NG DACs can \nbe calculated as follows: \nEf = E(total) – 6(N) – 88(C) – 2(TM)                   \n(4)\nEb = E(total) – E(NG) – 2E(TM)                   \n(5)\nwhere (TM), (N), and (C) are the chemical potential of the involved species, \nwhich is taken from the TM bulk, N2 molecules, and graphene, respectively; E(total), \nE(NG), and E(TM) are the total energies of DAC system, N-doped porous graphene \nsubstrate, and isolated TM atom, re...",
+      "score": 0.5435734,
+      "chunk_index": -1
+    },
+    {
+      "text": "S-5\nFig. S1. Calculated formation energy (Ef) of the studied TM2@NG DACs, where the \nshadow fills denote the experimentally synthesized systems.\n\nS-6\nFig. S2. Calculated binding energy (Eb) of the studied TM2@NG DACs.\n\nS-7\nFig. S3. Calculated total DOS (TDOS) of the studied TM2@NG DACs. The vertical \ndashed lines denote Fermi level (EF).\n\nS-8\nFig. S4. The possible initial configurations for N2O adsorption on the TM2@NG \nDACs.\n\nS-9\nFig. S5. The most stable configurations for N2O adsorption on the...",
+      "score": 0.54138184,
+      "chunk_index": -1
+    },
+    {
+      "text": "S-3\noxygen. During the chronoamperometry test, a flow of N2O (99.99%) with a rate of \n20 mL min−1 was continuously fed to the cathodic compartment. After each \nelectrolysis for 1 h, the aqueous and gas products were detected by the colorimetric \nmethod and gas chromatography (GC, Shimadzu GC2010), respectively.1 \nFlow cell measurements were carried out using a commercial flow cell \nelectrolyser (101017, Gaoss Union Technology Co., LTD) comprising a gas chamber, \ncathode, and anode compartments (...",
+      "score": 0.52487874,
+      "chunk_index": -1
+    }
+  ],
+  "extraction": {
+    "success": true,
+    "data": {
+      "reaction_steps": 5,
+      "step_1": {
+        "reactants": [
+          {
+            "reactant": "Zn(NO3)2·6H2O",
+            "amount": "1186 mg"
+          },
+          {
+            "reactant": "cetyltrimethylammonium bromide",
+            "amount": "30 mg"
+          },
+          {
+            "reactant": "deionized water",
+            "amount": "40 mL"
+          }
+        ],
+        "temperature": "room temperature",
+        "reaction_time": "dissolved",
+        "atmosphere": "air",
+        "product": "solution A"
+      },
+      "step_2": {
+        "reactants": [
+          {
+            "reactant": "2-methylimidazole",
+            "amount": "18.16 g"
+          },
+          {
+            "reactant": "deionized water",
+            "amount": "280 mL"
+          }
+        ],
+        "temperature": "room temperature",
+        "reaction_time": "dissolved",
+        "atmosphere": "air",
+        "product": "solution B"
+      },
+      "step_3": {
+        "reactants": [
+          {
+            "reactant": "solution A",
+            "amount": "all"
+          },
+          {
+            "reactant": "solution B",
+            "amount": "all"
+          }
+        ],
+        "temperature": "room temperature",
+        "reaction_time": "stirred at 900 rpm for 20 min, centrifuged at 5000 rpm for 5 min, vacuum-dried at 80°C overnight",
+        "atmosphere": "air",
+        "product": "white powder (ZIF-8)"
+      },
+      "step_4": {
+        "reactants": [
+          {
+            "reactant": "cyclopentadienyliron dicarbonyl dimer (Fe dimer)",
+            "amount": "2.1 mg"
+          },
+          {
+            "reactant": "dimethyl formamide",
+            "amount": "150 mL"
+          },
+          {
+            "reactant": "white powder (ZIF-8)",
+            "amount": "150 mg"
+          },
+          {
+            "reactant": "dopamine hydrochloride",
+            "amount": "45 mg"
+          },
+          {
+            "reactant": "Tris-HCl buffer (0.05:0.015 M)",
+            "amount": "300 mL"
+          }
+        ],
+        "temperature": "room temperature",
+        "reaction_time": "stirred at 800 rpm for 12 h (Fe loading), ultrasonicated 25 min + 10 min (dopamine coating), stirred 6 h",
+        "atmosphere": "air",
+        "product": "dopamine-coated Fe-ZIF composite"
+      },
+      "step_5": {
+        "reactants": [
+          {
+            "reactant": "dopamine-coated Fe-ZIF composite",
+            "amount": "120 mg"
+          }
+        ],
+        "temperature": "900°C",
+        "reaction_time": "annealed for 1 h",
+        "atmosphere": "Ar",
+        "product": "Fe2@NG DAC"
+      },
+      "double_atom_catalyst_active_site": {
+        "active_site": "Fe2N6",
+        "loading": "not specified for bulk catalyst",
+        "metal_metal_distance": "2.41 Å"
+      }
+    },
+    "raw_response": "根据提供的论文内容，我们需判断其是否涉及**双原子催化剂（DAC）的合成**，并提取与**模型反应**相关的结构化信息。以下为系统性分析与提取：\n\n---\n\n### ✅ **判断：与双原子催化剂合成相关**\n- 多处明确提及 **Fe₂@NG DAC**（Fe double-atom catalyst on N-doped graphene），如结果1、4、5、6；\n- 合成流程完整覆盖前驱体制备（ZIF-8类MOF）、金属引入（Fe dimer）、表面修饰（dopamine/Tris-HCl）、**高温热解（900 °C, Ar）**，最终获得双原子结构；\n- 结果5（S-24）EXAFS拟合数据明确给出 **Fe–Fe配位壳层**：`CN = 0.92`, `R = 2.41 Å` → 直接证实**Fe–Fe双原子活性位点存在**，且金属间距为 **2.41 Å**；\n- 结果5（S-23）Table S1中列出 `Fe2@NG` 的 `d (Å) = 2.22`（理论计算值），但实验EXAFS值 `2.41 Å` 更具权威性，应以实验为准；\n- 所有步骤服务于**Fe₂双原子位点在N掺杂石墨烯（NG）上的锚定**，符合双原子催化剂合成定义。\n\n✅ 因此，该文献**属于双原子催化剂合成研究**，需按要求提取模型反应信息。\n\n---\n\n### 🔍 **关键信息提取依据**\n\n| 字段 | 提取来源 | 说明 |\n|------|----------|------|\n| **反应步数** | 结果1 + 结果4 | 共 **5 步**：(1) 制备溶液A；(2) 制备溶液B；(3) 混合得ZIF-8白粉；(4) Fe dimer负载+多巴胺包覆；(5) **Ar中900 °C退火**得Fe₂@NG DAC。注意：结果4明确“Finally, the black powder was annealed… obtaining Fe₂@NG DAC”，此为**决定性成键步骤**，必须单列。 |\n| **反应单体** | 结果1（Zn(NO₃)₂·6H₂O, CTAB, 2-MeIm, Fe dimer, DMF, dopamine, Tris-HCl）、结果4（Ar气氛、900 °C） | 所有化学试剂均需按步骤归类；Fe dimer是双原子前驱体；dopamine用于碳/氮源及表面功能化；Tris-HCl为缓冲体系；**无外加催化剂**（所有反应物均为反应物或溶剂，非催化用途）。 |\n| **双原子催化剂活性位点** | 结果5（S-24 EXAFS）→ `Fe–Fe distance = 2.41 Å`；命名 `Fe₂@NG DAC`；结果2标题明确为“Fe Double-Atom Catalyst”；未提负载量（电极负载见结果3/10为0.1 mg/cm²，但属电极制备，非催化剂本体负载量）→ **loading字段留空或标注“not specified for bulk catalyst”**；活性位结构由EXAFS和命名推断为 **Fe₂Nₓ**，结合典型NG载体及Fe–N配位（S-24中Fe–N壳层也存在），主流文献支持 **Fe₂N₆**（如Nat. Catal. 2021, 4, 714），且结果5 Table S1中Fe₂@NG对应N配位环境（88C+6N模型），故取 `Fe₂N₆`。 |\n| **温度** | 结果1：室温（溶解、搅拌、超声、聚合）、80 °C（干燥）；结果4：**900 °C（annealing）**；需分步标注。 |\n| **反应时间** | 结果1：20 min搅拌、5 min离心、overnight drying（≈12 h）、12 h搅拌、6 h stirring（dopamine）、25+10 min超声；结果4：1 h annealing。需整合为各步操作时长。 |\n| **反应产物** | 结果1→白粉（ZIF-8）；结果4→black powder → **Fe₂@NG DAC**；中间“solid sample”“dopamine-coated ZIF-8”等可简化为过渡态。 |\n| **气氛** | 结果1：未注明 → 默认 **air**；结果4：**Ar**（关键热解步）。 |\n| **催化剂（外加）** | 全程**无额外催化剂**；Fe dimer是前驱体，非催化作用。 |\n\n---\n\n### ✅ 最终结构化 JSON 输出\n\n```json\n{\n  \"reaction_steps\": 5,\n  \"step_1\": {\n    \"reactants\": [\n      {\"reactant\": \"Zn(NO3)2·6H2O\", \"amount\": \"1186 mg\"},\n      {\"reactant\": \"cetyltrimethylammonium bromide\", \"amount\": \"30 mg\"},\n      {\"reactant\": \"deionized water\", \"amount\": \"40 mL\"}\n    ],\n    \"temperature\": \"room temperature\",\n    \"reaction_time\": \"dissolved\",\n    \"atmosphere\": \"air\",\n    \"product\": \"solution A\"\n  },\n  \"step_2\": {\n    \"reactants\": [\n      {\"reactant\": \"2-methylimidazole\", \"amount\": \"18.16 g\"},\n      {\"reactant\": \"deionized water\", \"amount\": \"280 mL\"}\n    ],\n    \"temperature\": \"room temperature\",\n    \"reaction_time\": \"dissolved\",\n    \"atmosphere\": \"air\",\n    \"product\": \"solution B\"\n  },\n  \"step_3\": {\n    \"reactants\": [\n      {\"reactant\": \"solution A\", \"amount\": \"all\"},\n      {\"reactant\": \"solution B\", \"amount\": \"all\"}\n    ],\n    \"temperature\": \"room temperature\",\n    \"reaction_time\": \"stirred at 900 rpm for 20 min, centrifuged at 5000 rpm for 5 min, vacuum-dried at 80°C overnight\",\n    \"atmosphere\": \"air\",\n    \"product\": \"white powder (ZIF-8)\"\n  },\n  \"step_4\": {\n    \"reactants\": [\n      {\"reactant\": \"cyclopentadienyliron dicarbonyl dimer (Fe dimer)\", \"amount\": \"2.1 mg\"},\n      {\"reactant\": \"dimethyl formamide\", \"amount\": \"150 mL\"},\n      {\"reactant\": \"white powder (ZIF-8)\", \"amount\": \"150 mg\"},\n      {\"reactant\": \"dopamine hydrochloride\", \"amount\": \"45 mg\"},\n      {\"reactant\": \"Tris-HCl buffer (0.05:0.015 M)\", \"amount\": \"300 mL\"}\n    ],\n    \"temperature\": \"room temperature\",\n    \"reaction_time\": \"stirred at 800 rpm for 12 h (Fe loading), ultrasonicated 25 min + 10 min (dopamine coating), stirred 6 h\",\n    \"atmosphere\": \"air\",\n    \"product\": \"dopamine-coated Fe-ZIF composite\"\n  },\n  \"step_5\": {\n    \"reactants\": [\n      {\"reactant\": \"dopamine-coated Fe-ZIF composite\", \"amount\": \"120 mg\"}\n    ],\n    \"temperature\": \"900°C\",\n    \"reaction_time\": \"annealed for 1 h\",\n    \"atmosphere\": \"Ar\",\n    \"product\": \"Fe2@NG DAC\"\n  },\n  \"double_atom_catalyst_active_site\": {\n    \"active_site\": \"Fe2N6\",\n    \"loading\": \"not specified for bulk catalyst\",\n    \"metal_metal_distance\": \"2.41 Å\"\n  }\n}\n```"
+  }
+}

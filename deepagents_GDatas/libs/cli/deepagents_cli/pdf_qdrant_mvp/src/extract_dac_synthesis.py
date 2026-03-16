@@ -327,7 +327,15 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
         # 调用 LLM 提取结构化数据
         extraction_result = call_llm_for_extraction(client, combined_text)
         
-        # 准备输出数据
+        # 检查是否成功提取数据
+        if not extraction_result.get("success"):
+            log(f"\n{'=' * 80}")
+            log(f"JSON 解析失败: {extraction_result.get('error', '未知错误')}")
+            log(f"未生成 JSON 文件（跳过保存）")
+            log(f"{'=' * 80}")
+            return None
+        
+        # 只有成功提取数据时才准备并保存输出
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_filename = f"_{timestamp}_{collection_name}.json"
         output_dir = Path(__file__).parent.parent / "queried_datas"
@@ -362,11 +370,8 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
         log(f"{'=' * 80}")
         
         # 打印提取的结构化数据
-        if extraction_result.get("success"):
-            log("\n提取的结构化数据:")
-            log(json.dumps(extraction_result.get("data", {}), ensure_ascii=False, indent=2))
-        else:
-            log(f"\n提取失败: {extraction_result.get('error', '未知错误')}")
+        log("\n提取的结构化数据:")
+        log(json.dumps(extraction_result.get("data", {}), ensure_ascii=False, indent=2))
         
         return output_data
         
