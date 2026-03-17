@@ -7,6 +7,7 @@ description:
   2. Markdown 文件分块 (chunk_single_markdown_file)
   3. 存入向量数据库 (store_single_file_to_vector_db)
   4. 提取双原子催化剂信息 (extract_dual_atom_catalyst)
+  5. 导出 JSON 到 Excel/CSV (extract_single_json_to_excel / process_json_directory_to_excel)
   当用户需要从科学论文 PDF 中提取催化剂合成信息时使用此技能。
 tools:
   - convert_pdf_to_markdown
@@ -16,6 +17,8 @@ tools:
   - delete_collections_by_pattern
   - delete_all_vector_db_collections
   - extract_dual_atom_catalyst
+  - extract_single_json_to_excel
+  - process_json_directory_to_excel
 ---
 
 # PDF 数据提取技能

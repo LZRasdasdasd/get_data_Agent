@@ -44,7 +44,7 @@ EXPERT_PROMPT = """你是一位化学合成领域的资深专家。你的任务�
 3. **双原子催化剂活性位点：**
    - 提取最终催化剂中活性位点的结构（通常由两个金属原子及其邻近的配位原子构成），并注明金属负载量（若提供）。
    - **如果文中明确给出了两个金属原子之间的距离（如键长、间距），请一并提取，单位应为 Å（埃），并记录在 `metal_metal_distance` 字段中。**
-   - 示例：`{"active_site": "Fe2N6", "loading": "0.1 mg/cm²", "metal_metal_distance": "2.88 Å"}`
+   - 示例：`{"active_site": "Fe2N6", "loading": "0.1 mg/cm²", "metal_metal_distance": "2.41 Å"}`
 
 4. **温度：**
    - 提取每一步的反应温度。若有多个温度，用逗号分隔。
@@ -119,7 +119,7 @@ EXPERT_PROMPT = """你是一位化学合成领域的资深专家。你的任务�
   "double_atom_catalyst_active_site": {
     "active_site": "Fe2N6",
     "loading": "0.1 mg/cm² (on electrode)",
-    "metal_metal_distance": "2.88 Å"
+    "metal_metal_distance": "2.41 Å"
   }
 }
 ```
@@ -236,7 +236,7 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
     
     Args:
         collection_name: Qdrant 集合名称，通常是 PDF 文件名的小写下划线形式。
-                        如果为 None，则使用默认值 "nl4c00576_si_001"
+                        如果为 None，则使用默认值 "nl4c00576_si_002"
         silent: 静默模式，为 True 时禁用所有打印输出（用于工具调用时避免 markup 错误）
                         
     Returns:
@@ -264,7 +264,7 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
         if len(sys.argv) > 1:
             collection_name = sys.argv[1]
         else:
-            collection_name = "nl4c00576_si_001"
+            collection_name = "nl4c00576_si_002"
     
     # 初始化配置和客户端
     config = Config()

@@ -77,6 +77,26 @@ def _import_extract_dac_synthesis():
     return query_and_extract
 
 
+def _import_extract_json_to_excel():
+    """延迟导入 JSON 到 Excel 转换工具"""
+    from extract_json_to_excel import (
+        extract_json_data,
+        process_all_json_files,
+        parse_temperature,
+        parse_time,
+        extract_atmosphere,
+        determine_step_type,
+    )
+    return {
+        "extract_json_data": extract_json_data,
+        "process_all_json_files": process_all_json_files,
+        "parse_temperature": parse_temperature,
+        "parse_time": parse_time,
+        "extract_atmosphere": extract_atmosphere,
+        "determine_step_type": determine_step_type,
+    }
+
+
 def _import_delete_collections():
     """延迟导入集合管理工具"""
     from delete_collections import delete_collections_by_pattern, delete_all_collections
@@ -810,8 +830,6 @@ def store_all_files_to_vector_db(
     return funcs["store_all_files"](
         md_dir, chunk_size, chunk_overlap, min_chunk_size, batch_size
     )
-
-
 def list_vector_db_collections() -> dict[str, Any]:
     """
     列出 Qdrant 中已存储的所有集合。
@@ -826,6 +844,112 @@ def list_vector_db_collections() -> dict[str, Any]:
     """
     funcs = _import_vector_store_tool()
     return funcs["list_stored_collections"]()
+
+
+# ============================================
+# JSON 到 Excel/CSV 导换工具
+# ============================================
+
+def extract_single_json_to_excel(json_file_path: str) -> dict[str, Any]:
+    """
+    将单个 JSON 文件中的催化剂提取数据转换为 Excel/CSV 格式的结构化数据。
+    
+    该工具用于将 LLM 提取的 JSON 结果数据转换为适合导入 Excel 的表格格式。
+    支持解析温度（开尔文/摄氏度转换）、时间单位转换、气氛提取等。
+    
+    Use this tool when you need to:
+    - Convert JSON extraction results to Excel/CSV format
+    - Export catalyst synthesis data to spreadsheet
+    - Structure extracted data for analysis
+    
+    Args:
+        json_file_path: JSON 文件的完整路径
+        
+    Returns:
+        dict: 包含结构化数据的字典：
+            - status (str): 操作状态
+            - file_name (str): 源文件名
+            - rows (list): 提取的数据行列表
+            - row_count (int): 总行数
+            - error (str): 错误信息（如果失败）
+    """
+    try:
+        funcs = _import_extract_json_to_excel()
+        results = funcs["extract_json_data"](json_file_path)
+        if results:
+            return {
+                "status": "success",
+                "file_name": json_file_path,
+                "rows": results,
+                "row_count": len(results),
+                "error": None
+            }
+        else:
+            return {
+                "status": "error",
+                "file_name": json_file_path,
+                "rows": [],
+                "row_count": 0,
+                "error": "无法从 JSON 文件中提取数据"
+            }
+    except Exception as e:
+        return {
+            "status": "error",
+            "file_name": json_file_path,
+            "rows": [],
+            "row_count": 0,
+            "error": str(e)
+        }
+
+
+def process_json_directory_to_excel(json_dir: str, output_dir: str = None) -> dict[str, Any]:
+    """
+    处理目录中所有 JSON 文件并将提取的数据导出为 CSV 文件。
+    
+    该工具会扫描指定目录中的所有 JSON 文件（排除 batch_summary 文件），
+    提取催化剂合成数据，并将所有数据合并到一个 CSV 文件中。
+    
+    Use this tool when you need to:
+    - Batch convert JSON files to CSV format
+    - Process multiple extraction results at once
+    - Create consolidated dataset from multiple papers
+    
+    Args:
+        json_dir: 包含 JSON 文件的目录路径
+        output_dir: 输出目录（可选，默认为 json_dir/excel_datas）
+        
+    Returns:
+        dict: 包含处理结果的字典：
+            - status (str): 操作状态
+            - total_files (int): 处理的文件总数
+            - processed_files (int): 成功处理的文件数
+            - total_rows (int): 提取的总行数
+            - output_file (str): 输出文件路径
+            - error (str): 错误信息（如果失败）
+    """
+    try:
+        from pathlib import Path
+        
+        if output_dir is None:
+            output_dir = str(Path(json_dir) / "excel_datas")
+        
+        funcs = _import_extract_json_to_excel()
+        funcs["process_all_json_files"](json_dir, output_dir)
+        
+        return {
+            "status": "success",
+            "total_files": 0,
+            "processed_files": 0,
+            "total_rows": 0,
+            "output_file": str(Path(output_dir) / "synthesis_data_updated.csv"),
+            "error": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "json_dir": json_dir,
+            "error": str(e)
+        }
 
 
 # ============================================
@@ -859,4 +983,8 @@ PDF_EXTRACTION_TOOLS: list[Callable[..., Any]] = [
     # 催化剂信息提取工具
     search_catalyst_content,
     extract_dual_atom_catalyst,
+    
+    # JSON 到 Excel/CSV 导换工具
+    extract_single_json_to_excel,  # 单个 JSON 文件转换
+    process_json_directory_to_excel,  # 批量处理 JSON 目录
 ]
