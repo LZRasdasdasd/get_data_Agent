@@ -110,6 +110,13 @@ tools:
 | `delete_collections_by_pattern` | 按模式删除集合 |
 | `delete_all_vector_db_collections` | 删除所有集合（⚠️ 危险操作） |
 
+### 数据导出工具
+
+| 序号 | 工具 | 描述 |
+|------|------|------|
+| 5 | `extract_single_json_to_excel` | 将单个 JSON 提取结果转换为 Excel/CSV 格式 |
+| 6 | `process_json_directory_to_excel` | 批量处理目录中所有 JSON 文件并导出为 CSV |
+
 ## 使用示例
 
 ### 完整流程示例
@@ -298,3 +305,85 @@ result = store_single_file_to_vector_db("doc.md")
 if result.get("status") == "error":
     print(f"存入失败: {result.get('error')}")
 ```
+
+## 5. 数据导出工具 (JSON → Excel/CSV)
+
+### extract_single_json_to_excel
+
+将单个 JSON 提取结果文件转换为 Excel/CSV 格式的结构化数据。
+
+```python
+result = extract_single_json_to_excel(
+    json_file_path="extraction_result.json"
+)
+print(f"提取了 {result['row_count']} 行数据")
+for row in result['rows']:
+    print(row)
+```
+
+返回值结构：
+```python
+{
+    "status": "success",
+    "file_name": "extraction_result.json",
+    "rows": [
+        {
+            "step_i": 1,
+            "ReactantA": "Zn(NO3)2·6H2O",
+            "amountA": "8000 mg",
+            "temperature": "25.00",  # 摄氏度
+            "time": "1.00",  # 小时
+            "atmosphere": "N2",
+            "active_site": "Fe2N6",
+            "metal_metal_distance": "2.88",
+            # ... 更多字段
+        }
+    ],
+    "row_count": 1
+}
+```
+
+### process_json_directory_to_excel
+
+批量处理目录中所有 JSON 文件并导出为 CSV。
+
+```python
+result = process_json_directory_to_excel(
+    json_dir="/path/to/json_files",
+    output_dir="/path/to/output"  # 可选
+)
+print(f"输出文件: {result['output_file']}")
+```
+
+返回值结构：
+```python
+{
+    "status": "success",
+    "total_files": 10,
+    "processed_files": 8,
+    "total_rows": 25,
+    "output_file": "/path/to/output/synthesis_data_updated.csv"
+}
+```
+
+### 数据字段说明
+
+导出的 CSV 文件包含以下字段：
+
+| 字段 | 描述 |
+|------|------|
+| `step_i` | 反应步骤编号 |
+| `ReactantA-F` | 反应物名称（最多6个） |
+| `amountA-F` | 反应物用量 |
+| `Intermediate` | 中间产物 |
+| `temperature` | 最终温度（摄氏度） |
+| `time` | 反应时间（小时） |
+| `atmosphere` | 反应气氛 |
+| `active_site` | 活性位点结构 |
+| `metal_metal_distance` | 金属-金属距离 |
+| `coordinationtypeA-C` | 配位类型 |
+| `numbersA-C` | 配位数量 |
+| `stir` | 是否搅拌 |
+| `stir_time` | 搅拌时间 |
+| `stir_temperature` | 搅拌温度 |
+| `FileName` | 源文件名 |
