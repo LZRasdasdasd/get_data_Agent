@@ -1,4 +1,4 @@
-wu!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -70,20 +70,17 @@ try:
     # 获取嵌入模型
     print("正在初始化OpenAI嵌入模型...")
     EMBEDDING_MODEL = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY") if os.getenv("OPENAI_API_KEY") else None,
-    embedding_model="text-embedding-3-small",
-    embedding_dim=1536
+        api_key=os.getenv("OPENAI_API_KEY") if os.getenv("OPENAI_API_KEY") else None
+    )
+    EMBEDDING_MODEL.embedding_model = "text-embedding-3-small"
+    EMBEDDING_MODEL.embedding_dim = 1536
     print(f"已加载OpenAI嵌入模型: {EMBEDDING_MODEL}")
-except Exception as e:
-    print(f"警告: 无法加载OpenAI嵌入模型: {e}")
-        EMBEDDING_MODEL = None
-
-except ImportError:
-    print("警告: 无法导入openai，将使用简单分词统计替代向量嵌入")
+except ImportError as e:
+    print(f"警告: 无法导入openai，将使用简单分词统计替代向量嵌入: {e}")
     EMBEDDING_MODEL = None
 except Exception as e:
     print(f"警告: 无法初始化OpenAI客户端: {e}")
-        EMBEDDING_MODEL = None
+    EMBEDDING_MODEL = None
 
 # 导入 ingest_markdown中的函数
 try:
@@ -227,7 +224,9 @@ def main():
                     success_count += 1
 
             except Exception as e:
-                console.print(f"[red]✗[/red] {md_file.name[:50]}... ({type(e).__name__}[:30]}: {str(e)[:50]})")
+                error_name = type(e).__name__[:30]
+                error_msg = str(e)[:50]
+                console.print(f"[red]✗[/red] {md_file.name[:50]}... ({error_name}: {error_msg})")
                 failed_count += 1
 
     # 输出统计信息
