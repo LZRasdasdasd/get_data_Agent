@@ -956,9 +956,10 @@ def main():
         if args.pdf_dir:
             config.pdf_dir = args.pdf_dir
         
-        if not config.validate():
-            console.print("[red]配置验证失败![/red]")
-            console.print(config)
+        # PDF转Markdown不需要OpenAI API，跳过配置验证
+        pdf_dir_path = Path(config.pdf_dir)
+        if not pdf_dir_path.exists():
+            console.print(f"[red]PDF 目录不存在: {config.pdf_dir}[/red]")
             sys.exit(1)
         
         console.print(f"PDF 目录: {config.pdf_dir}")

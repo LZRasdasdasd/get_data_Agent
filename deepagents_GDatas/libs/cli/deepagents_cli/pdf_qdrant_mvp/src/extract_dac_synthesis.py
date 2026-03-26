@@ -192,6 +192,7 @@ def call_llm_for_extraction(client: OpenAI, text_content: str, model: str = "qwe
         
         response_text = response.choices[0].message.content
         print(f"\nLLM 原始响应长度: {len(response_text)} 字符")
+        print(f"\nLLM 原始响应内容:\n{response_text[:500]}...")
         
         # 提取 JSON
         extracted_data = extract_json_from_response(response_text)
@@ -273,7 +274,9 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
     # 初始化 OpenAI 客户端
     client = OpenAI(
         api_key=config.openai_api_key,
-        base_url=config.openai_api_base
+        base_url=config.openai_api_base,
+        timeout=60.0,  # 设置超时时间为 60 秒
+        max_retries=2  # 失败后重试 2 次
     )
     
     # 检查集合是否存在
@@ -304,8 +307,8 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
         # search 方法直接返回列表
         search_results = manager.search(
             collection_name=collection_name,
-            query_text=query,
-            n_results=10,
+            query=query,
+            limit=10,
             score_threshold=0.3
         )
         
@@ -318,7 +321,8 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
         # 合并所有查询结果的文本
         combined_text = ""
         for i, result in enumerate(search_results):
-            text = result.get("text", "")
+            # 文本存储在payload字典中
+            text = result.get("payload", {}).get("text", "")
             score = result.get("score", 0)
             combined_text += f"\n\n--- 结果 {i+1} (相似度: {score:.2%}) ---\n{text}"
         
@@ -352,7 +356,7 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
             },
             "query_results": [
                 {
-                    "text": r.get("text", "")[:500] + "..." if len(r.get("text", "")) > 500 else r.get("text", ""),
+                    "text": (r.get("payload", {}).get("text", "")[:500] + "..." if len(r.get("payload", {}).get("text", "")) > 500 else r.get("payload", {}).get("text", "")),
                     "score": r.get("score", 0),
                     "chunk_index": r.get("payload", {}).get("chunk_index", -1)
                 }

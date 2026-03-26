@@ -1,19 +1,20 @@
 """
-Qdrant 向量数据库工具模块
+Qdrant 向量数据库工具模块 (HTTP直接版本)
 
-提供与 Qdrant 的连接、集合管理和和向量操作
+使用requests直接调用HTTP API，绕过QdrantClient兼容性问题
 """
 
 import uuid
 import requests
+import json
 from typing import List, Dict, Any, Optional
-from openai import OpenAI
 
+from openai import OpenAI
 from qdrant_config import config
 
 
 class QdrantManager:
-    """Qdrant 管理器"""
+    """Qdrant 管理器 - 使用HTTP直接访问"""
     
     def __init__(self):
         """初始化 Qdrant HTTP客户端"""
@@ -24,7 +25,9 @@ class QdrantManager:
         try:
             response = requests.get(f"{self.base_url}/", timeout=self.timeout)
             if response.status_code == 200:
+                server_info = response.json()
                 print(f"[OK] Qdrant 连接成功: {self.base_url}")
+                print(f"[OK] Qdrant 版本: {server_info.get('version', 'Unknown')}")
             else:
                 raise Exception(f"状态码: {response.status_code}")
         except Exception as e:
@@ -143,7 +146,7 @@ class QdrantManager:
                         "status": info.get('status', 'Unknown')
                     })
                 except:
-                    # 如果获取详细信息失败,至少返回基本信息
+                    # 如果获取详细信息失败，至少返回基本信息
                     collections.append({
                         "name": col['name'],
                         "vector_count": 0,
@@ -210,9 +213,7 @@ class QdrantManager:
     def add_points(
         self,
         collection_name: str,
-        texts: Optional[List[str]] = None,
-        points: Optional[List[Dict[str, Any]]] = None,
-        batch_size: int = 100,
+        texts: List[str],
         metadatas: Optional[List[Dict[str, Any]]] = None
     ) -> Dict[str, Any]:
         """
@@ -220,86 +221,62 @@ class QdrantManager:
         
         Args:
             collection_name: 集合名称
-            texts: 文本列表(用于生成嵌入)
-            points: 直接的点列表(用于兼容旧版本)
-            batch_size: 批量大小
+            texts: 文本列表
             metadatas: 元数据列表(可选)
             
         Returns:
             dict: 添加结果
         """
         try:
-            # 确保提供了texts或points
-            if not texts and not points:
+            if not texts:
                 return {
                     "status": "error",
                     "error": "没有文本需要添加"
                 }
-            
-            # 如果提供了points,需要转换为 Qdrant 格式(兼容模式)
-            if points:
-                # points 是来自 chunk_markdown 的字典列表,需要转换为 Qdrant point 格式
-                texts_to_process = [p["text"] for p in points if "text" in p]
-                existing_points = None
-            else:
-                texts_to_process = texts
-                existing_points = None
             
             # 确保集合存在
             create_result = self.create_collection(collection_name)
             if create_result["status"] == "error" and "exists" not in create_result["status"]:
                 return create_result
             
-            # 如果需要,生成嵌入
-            if texts_to_process:
-                print(f"[INFO] 正在生成 {len(texts_to_process)} 个向量嵌入...")
+            # 批量生成嵌入
+            print(f"[INFO] 正在生成 {len(texts)} 个向量嵌入...")
+            
+            points = []
+            for i, text in enumerate(texts, start=1):
+                if i % 10 == 0:
+                    print(f"[INFO] 进度: {i}/{len(texts)}")
                 
-                existing_points = []
-                for i, text in enumerate(texts_to_process, start=1):
-                    if i % 10 == 0:
-                        print(f"[INFO] 进度: {i}/{len(texts_to_process)}")
-                    
-                    try:
-                        embedding = self.generate_embedding(text)
-                        print(f"[INFO] 已生成嵌入: {len(embedding)}维")
-                    except Exception as e:
-                        print(f"[ERROR] 生成嵌入失败: {e}")
-                        raise
-                    
-                    point = {
-                        "id": str(uuid.uuid4()),
-                        "vector": embedding,
-                        "payload": {
-                            "text": text,
-                            "index": i
-                        }
+                embedding = self.generate_embedding(text)
+                
+                point = {
+                    "id": str(uuid.uuid4()),
+                    "vector": embedding,
+                    "payload": {
+                        "text": text,
+                        "index": i
                     }
-                    
-                    # 如果是通过 points 参数传入的,复制原始 chunk 的其他字段
-                    if points and "text" in points[i-1]:
-                        # 复制 chunk 的其他字段到 payload
-                        for key, value in points[i-1].items():
-                            if key not in ["text"]:
-                                point["payload"][key] = value
-                    
-                    # 添加外部提供的元数据
-                    if metadatas and i <= len(metadatas):
-                        point["payload"].update(metadatas[i-1])
-                    
-                    existing_points.append(point)
+                }
+                
+                # 添加元数据
+                if metadatas and i <= len(metadatas):
+                    point["payload"].update(metadatas[i-1])
+                
+                points.append(point)
             
-            print(f"[INFO] 正在上传 {len(existing_points)} 个向量到Qdrant...")
+            print(f"[INFO] 正在上传 {len(points)} 个向量到Qdrant...")
             
-            # 分批上传
+            # 分批上传(每批100个)
+            batch_size = 100
             total_uploaded = 0
             
-            for i in range(0, len(existing_points), batch_size):
-                batch = existing_points[i:i+batch_size]
+            for i in range(0, len(points), batch_size):
+                batch = points[i:i+batch_size]
                 payload = {"points": batch}
                 
                 self._make_request("PUT", f"/collections/{collection_name}/points", payload)
                 total_uploaded += len(batch)
-                print(f"[INFO] 已上传: {total_uploaded}/{len(existing_points)}")
+                print(f"[INFO] 已上传: {total_uploaded}/{len(points)}")
             
             return {
                 "status": "success",

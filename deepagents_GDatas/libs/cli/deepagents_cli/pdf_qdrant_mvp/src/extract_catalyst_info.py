@@ -125,7 +125,9 @@ class CatalystInfoExtractor:
         self.qdrant = QdrantManager()
         self.llm_client = OpenAI(
             api_key=config.openai_api_key,
-            base_url=config.openai_api_base
+            base_url=config.openai_api_base,
+            timeout=60.0,  # 设置超时时间为 60 秒
+            max_retries=2  # 失败后重试 2 次
         )
     
     def search_related_content(self, query: str = None, top_k_per_collection: int = 5, total_top_k: int = 20, score_threshold: float = 0.35):

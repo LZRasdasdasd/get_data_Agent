@@ -42,8 +42,8 @@ def extract_from_all_collections(output_prefix: str = "dac_batch"):
     
     print(f"\n发现 {len(collection_names)} 个集合:")
     for i, col_name in enumerate(collection_names, 1):
-        points_count = next((col['points_count'] for col in collections if col['name'] == col_name), 0)
-        print(f"  {i}. {col_name} ({points_count} 条记录)")
+        vector_count = next((col['vector_count'] for col in collections if col['name'] == col_name), 0)
+        print(f"  {i}. {col_name} ({vector_count} 条记录)")
     
     print("\n" + "-"*80)
     print("开始处理各个集合...")
