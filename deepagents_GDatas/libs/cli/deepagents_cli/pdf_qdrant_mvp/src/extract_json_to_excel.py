@@ -390,7 +390,7 @@ if __name__ == '__main__':
     current_dir = Path(__file__).parent
     
     json_dir = current_dir.parent / 'queried_datas'
-    output_dir = current_dir / 'excel_datas'
+    output_dir = current_dir.parent / 'excel_datas'
     
     print(f"输入目录: {json_dir}")
     print(f"输出目录: {output_dir}\n")

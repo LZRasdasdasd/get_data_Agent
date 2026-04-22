@@ -1475,10 +1475,72 @@ def _is_likely_heading(line: str) -> bool:
     return False
 
 
+def _extract_paper_title_with_llm(text: str, api_key: str, api_base: str, model: str = "qwen-plus") -> str:
+    """使用 LLM 从论文文本中提取标题（模仿 ingest_markdown.py 的逻辑）
+    
+    Args:
+        text: Markdown 文本（建议传入前 2000 字符以节省 token）
+        api_key: OpenAI 兼容 API 的密钥
+        api_base: OpenAI 兼容 API 的基础 URL
+        model: 使用的 LLM 模型名称，默认 qwen-plus
+        
+    Returns:
+        str: 提取到的论文标题，失败时返回空字符串
+    """
+    if not text or not text.strip():
+        return ""
+    
+    try:
+        from openai import OpenAI
+        
+        client = OpenAI(api_key=api_key, base_url=api_base)
+        
+        # 截取前 2000 字符以节省 token
+        head_text = text[:2000]
+        
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "你是一个学术论文标题提取助手。"
+                        "从用户提供的论文文本中提取论文标题。"
+                        "只返回标题的纯文本，不要包含任何其他内容（如引号、解释、前缀等）。"
+                        "如果找不到明确的论文标题，返回空字符串。"
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": f"请从以下学术论文文本中提取论文标题：\n\n{head_text}"
+                }
+            ],
+            temperature=0.1,
+            max_tokens=200,
+        )
+        
+        title = response.choices[0].message.content.strip() if response.choices else ""
+        
+        if not title:
+            return ""
+        
+        # 清理可能的多余标记
+        title = title.strip('"\'""''`')
+        if not title:
+            return ""
+        
+        return title
+        
+    except Exception as e:
+        print(f"[WARN] LLM 提取标题失败: {e}")
+        return ""
+
+
 def extract_paper_title_from_text(text: str) -> str:
     """从转换后的文本中提取论文标题
     
     策略：
+    0. 优先使用 LLM 从文本中提取标题（与 ingest_markdown.py 保持一致）
     1. 寻找第一个 Markdown 标题行（# 开头）
     2. 寻找第一个非空、非元数据行中符合标题特征的行
     3. 返回空字符串表示未找到
@@ -1491,6 +1553,18 @@ def extract_paper_title_from_text(text: str) -> str:
     """
     if not text:
         return ""
+    
+    # 策略0: 使用 LLM 提取标题（优先级最高）
+    try:
+        llm_title = _extract_paper_title_with_llm(
+            text,
+            api_key=config.openai_api_key,
+            api_base=config.openai_api_base
+        )
+        if llm_title:
+            return llm_title
+    except Exception:
+        pass  # LLM 失败时回退到规则匹配
     
     lines = text.split('\n')
     
@@ -1771,8 +1845,8 @@ def main():
     parser.add_argument(
         "--output-dir", "-o",
         type=str,
-        default="markdown_docs",
-        help="Markdown 输出目录路径 (默认: markdown_docs)"
+        default=str(Path(__file__).parent.parent / "markdown_docs"),
+        help="Markdown 输出目录路径 (默认: pdf_qdrant_mvp/markdown_docs)"
     )
 
     parser.add_argument(

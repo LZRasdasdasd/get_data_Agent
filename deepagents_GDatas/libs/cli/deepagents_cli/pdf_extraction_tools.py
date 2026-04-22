@@ -916,7 +916,7 @@ def process_json_directory_to_excel(json_dir: str, output_dir: str = None) -> di
     
     Args:
         json_dir: 包含 JSON 文件的目录路径
-        output_dir: 输出目录（可选，默认为 json_dir/excel_datas）
+        output_dir: 输出目录（可选，默认为 pdf_qdrant_mvp/excel_datas/）
         
     Returns:
         dict: 包含处理结果的字典：
@@ -931,7 +931,8 @@ def process_json_directory_to_excel(json_dir: str, output_dir: str = None) -> di
         from pathlib import Path
         
         if output_dir is None:
-            output_dir = str(Path(json_dir) / "excel_datas")
+            # 默认输出到与 queried_datas 同级的 excel_datas 目录 (pdf_qdrant_mvp/excel_datas/)
+            output_dir = str(Path(json_dir).parent / "excel_datas")
         
         funcs = _import_extract_json_to_excel()
         funcs["process_all_json_files"](json_dir, output_dir)

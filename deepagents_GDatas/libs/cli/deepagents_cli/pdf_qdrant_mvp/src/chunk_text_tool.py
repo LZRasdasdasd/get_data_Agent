@@ -503,8 +503,8 @@ def main():
     parser.add_argument(
         "--md-dir", "-d",
         type=str,
-        default="markdown_docs",
-        help="Markdown 文件目录路径 (默认: markdown_docs)"
+        default=str(Path(__file__).parent.parent / "markdown_docs"),
+        help="Markdown 文件目录路径 (默认: pdf_qdrant_mvp/markdown_docs)"
     )
     
     parser.add_argument(
