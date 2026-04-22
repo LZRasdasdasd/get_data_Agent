@@ -2,14 +2,13 @@
 从 集合中提取双原子催化剂合成的结构化数据
 1. 查询集合获取相关文本
 2. 使用 LLM 和 EXPERT_PROMPT 提取结构化数据
-3. 保存为时间戳命名的 JSON 文件到 queried_datas 目录
+3. 保存为论文名称命名的 JSON 文件到 queried_datas 目录
 """
 
 import sys
 import os
 import json
 import re
-from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
@@ -21,108 +20,104 @@ from openai import OpenAI
 
 
 # 化学合成领域专家提示词
-EXPERT_PROMPT = """你是一位化学合成领域的资深专家。你的任务是根据给定的论文内容，找出其实验部分与结论部分，判断其是否与**双原子催化剂**的合成相关，并提取与模型反应相关的详细信息，提取的信息若有化学式，必须以化学式而不是名称表示。
+EXPERT_PROMPT = """
+'''你是一位化学合成领域的资深专家。你的任务是根据给定的论文内容（包括正文和补充材料），找出其实验部分与结论部分，判断其是否与双原子催化剂的合成相关，并提取与合成相关的详细信息。
 
-### **判断标准：**
-- **与化学合成无关：** 如果论文内容与化学合成无关，请输出 `-`。
-- **与双原子催化剂合成相关：** 如果涉及双原子催化剂的合成，请按下列要求提取**模型反应**的信息。
+判断标准：
+- 与双原子催化剂合成无关：如果论文不涉及双原子催化剂的实验合成（例如纯理论计算、综述、或催化剂用于催化反应但无双原子合成细节），请输出 "-"。
+- 与双原子催化剂合成相关：如果涉及双原子催化剂的合成（包括前驱体制备、热解、负载等步骤），请按下列要求提取合成步骤的信息。
 
-### **模型反应定义：**
-模型反应是文献中用于验证某类反应的可行性或优化反应条件的实验，通常展示最优条件和结果。
+提取字段说明：
 
-### **信息提取要求：**
-请按照以下字段提取相关信息，确保符合化学领域的描述习惯：
+1. paper_title：论文的完整英文标题（字符串）。
 
-1. **反应步数：**
-   - 提取反应的步数，直接记录为 1 或 2（或更多步数）。
-   - 示例：`3`
+2. reaction_steps：合成步骤总数（整数）。
 
-2. **反应单体（起始原料）：**
-   - 提取每一步中使用的反应物名称及其用量，使用字典格式记录。若该步使用了催化剂，需标记 `"catalyst": true`。
-   - 示例：`{"reactant": "Zn(NO3)2·6H2O", "amount": "1186 mg"}`
+3. step_1, step_2, ...：按顺序提取每一步的详细信息。
+   - reactants：数组，每个元素为字典，包含 "reactant"（优先使用化学式，同时用括号保留原始描述，如 "CuSO4·5H2O (copper(II) sulfate pentahydrate)"）、"amount"（用量，如 "10 mg", "5 mmol"）、"catalyst"（布尔值，仅当该物质在此步中作为催化剂使用时为 true，否则为 false）。注意：最终催化剂本身不作为催化步骤中的催化剂标记。
+   - temperature：反应温度（摄氏度，如 "500 °C"；若为室温写 "25 °C"；若有多个温度用逗号分隔）。未提供则写 ""。
+   - reaction_time：反应时间（小时，可包含多步操作）。未提供则写 ""。
+   - atmosphere：气氛（如 "air", "Ar", "N2", "O2"，"vacuum"）。未提供则写 ""。
+   - product：该步产物名称（优先使用化学式或标准缩写，可保留原始描述）。未提供则写 ""。
 
-3. **双原子催化剂活性位点：**
-   - 提取最终催化剂中活性位点的结构（通常由两个金属原子及其邻近的配位原子构成），并注明金属负载量（若提供）。
-   - **如果文中明确给出了两个金属原子之间的距离（如键长、间距），请一并提取，单位应为 Å（埃），并记录在 `metal_metal_distance` 字段中。**
-   - 示例：`{"active_site": "Fe2N6", "loading": "0.1 mg/cm²", "metal_metal_distance": "2.41 Å"}`
+4. double_atom_catalyst_active_site：最终双原子催化剂活性位点的结构信息。
+   - active_site：活性位点描述（如 "N3-Fe-Co-N3", "CuC4/CoN4@HC"）。未提供则写 ""。
+   - loading：金属负载量（字符串，如 "Fe: 1.08 wt%, Co: 1.03 wt%"）。未提供则写 ""。
+   - metal_metal_distance：两个金属原子之间的距离（字符串，单位 Å，如 "2.5 Å"）。未提供则写 ""。
+   - metal_coordination：每个金属的配位环境（字典）。格式：
+     {
+       "金属1": {"coordinating_elements": ["N", "O", "金属2"], "coordination_numbers": {"N": 数值, "O": 数值, "金属2": 数值}},
+       "金属2": {"coordinating_elements": ["N", "O", "金属1"], "coordination_numbers": {"N": 数值, "O": 数值, "金属1": 数值}}
+     }
+     若某种配位元素是混合配位（例如 N 和 O 共同贡献但无法区分具体数量），则使用 "N/O" 作为键合元素，如 {"N/O": 5.6}。若配位数未提供，则 coordination_numbers 写 {}。
 
-4. **温度：**
-   - 提取每一步的反应温度。若有多个温度，用逗号分隔。
-   - 示例：`{"step1": "room temperature", "step2": "900°C"}`
+5. catalytic_performance（可选）：论文中报告的主要催化性能指标（字典格式）。未提供则写 {}。
 
-5. **反应时间：**
-   - 提取每一步的反应时间。若包含多个操作（如搅拌、离心、干燥），可用文字描述。
-   - 示例：`{"step1": "20 min stirring, 5 min centrifugation, overnight drying"}`
+输出格式：
+- 使用 JSON 格式输出，所有字段名和字符串值使用英文双引号。
+- 对于多步反应，按 step_1, step_2, ... 依次记录。
+- 所有化学物质尽量使用化学式，同时在化学式的右边用括号保留原始描述（如原文提供了英文名称或俗名）。
+- 未提供的信息统一写空字符串 "" 或空对象 {}，不要写 "not specified"。
 
-6. **反应产物：**
-   - 提取每一步的中间产物或最终产物名称。若有多步，下一步的产物应是上一步的产物经处理后得到。
-   - 示例：`{"step1": "solution A", "step2": "white powder (ZIF-8)", "step3": "Fe2@NG DAC"}`
+示例：
 
-7. **气氛：**
-   - 提取每一步反应的气氛（如空气、Ar、N2、O2等）。
-   - 示例：`{"step1": "air", "step2": "Ar"}`
-
-8. **催化剂（如有）：**
-   - 若某一步中使用了催化剂（非最终产物），需在反应物列表中标记 `"catalyst": true`。
-
-### **输出格式：**
-- 使用 JSON 格式并用英文输出。
-- 对于多步反应，按顺序提取每一步信息，并记录在同一 JSON 对象中。
-
-**示例（基于 Fe2@NG DAC 的合成）：**
-```json
 {
-  "reaction_steps": 4,
+  "paper_title": "Dual-Metal Hetero-Single-Atoms with Different Coordination for Efficient Synergistic Catalysis",
+  "reaction_steps": 3,
   "step_1": {
     "reactants": [
-      {"reactant": "Zn(NO3)2·6H2O", "amount": "8000 mg"},
-      {"reactant": "cetyltrimethylammonium bromide", "amount": "8000 mg"},
-      {"reactant": "deionized water", "amount": "8000 mL"}
+      {"reactant": "H2BDC (p-phthalic acid)", "amount": "12 mmol (1.994 g)", "catalyst": false},
+      {"reactant": "NaOH", "amount": "25 mmol (1.0 g)", "catalyst": false},
+      {"reactant": "CuSO4·5H2O (copper(II) sulfate pentahydrate)", "amount": "15 mmol (3.75 g)", "catalyst": false},
+      {"reactant": "H2O (deionized water)", "amount": "360 mL", "catalyst": false}
     ],
-    "temperature": "room temperature",
-    "reaction_time": "dissolved",
+    "temperature": "25 °C",
+    "reaction_time": "5 h (stirring) + 24 h (vacuum drying)",
     "atmosphere": "air",
-    "product": "solution A"
+    "product": "Cu-MOF"
   },
   "step_2": {
     "reactants": [
-      {"reactant": "2-methylimidazole", "amount": "18.16 g"},
-      {"reactant": "deionized water", "amount": "280 mL"}
+      {"reactant": "Cu-MOF", "amount": "mixed with KCl-KBr 1:40 by weight", "catalyst": false},
+      {"reactant": "KCl-KBr (1:3 by weight)", "amount": "", "catalyst": false}
     ],
-    "temperature": "room temperature",
-    "reaction_time": "dissolved",
-    "atmosphere": "air",
-    "product": "solution B"
+    "temperature": "730 °C",
+    "reaction_time": "180 min (heating rate 2 °C/min) + 4 h (aqua regia immersion)",
+    "atmosphere": "Ar",
+    "product": "CuC4@HC"
   },
   "step_3": {
     "reactants": [
-      {"reactant": "solution A", "amount": "all"},
-      {"reactant": "solution B", "amount": "all"}
+      {"reactant": "CuC4@HC", "amount": "0.1 g", "catalyst": false},
+      {"reactant": "MTPP-Co (vitamin B12 derivative)", "amount": "0.1 g", "catalyst": false},
+      {"reactant": "C2H5OH (ethanol)", "amount": "20 mL", "catalyst": false}
     ],
-    "temperature": "room temperature",
-    "reaction_time": "stirred at 900 rpm for 20 min, centrifuged at 5000 rpm for 5 min, vacuum-dried at 80°C overnight",
-    "atmosphere": "air",
-    "product": "white powder (ZIF-8)"
-  },
-  "step_4": {
-    "reactants": [
-      {"reactant": "cyclopentadienyliron dicarbonyl dimer (Fe dimer)", "amount": "2.1 mg"},
-      {"reactant": "dimethyl formamide", "amount": "150 mL"},
-      {"reactant": "white powder (ZIF-8)", "amount": "150 mg"},
-      {"reactant": "dopamine hydrochloride", "amount": "45 mg"}
-    ],
-    "temperature": "room temperature, 900°C",
-    "reaction_time": "stirred at 800 rpm for 12 h, collected, added to Tris-HCl + dopamine, stirred 6 h, dried, annealed at 900°C for 1 h under Ar",
-    "atmosphere": "Ar (final annealing)",
-    "product": "Fe2@NG DAC"
+    "temperature": "70 °C (rotary evaporation) + 800 °C (pyrolysis)",
+    "reaction_time": "2 h (pyrolysis, heating rate 2 °C/min)",
+    "atmosphere": "Ar",
+    "product": "CuC4/CoN4@HC"
   },
   "double_atom_catalyst_active_site": {
-    "active_site": "Fe2N6",
-    "loading": "0.1 mg/cm² (on electrode)",
-    "metal_metal_distance": "2.41 Å"
+    "active_site": "CuC4 (Cu-C4) and CoN4 (Co-N4) on hollow carbon",
+    "loading": {"Cu": "1.20 wt%", "Co": "1.84 wt%"},
+    "metal_metal_distance": "",
+    "metal_coordination": {
+      "Cu": {"coordinating_elements": ["C"], "coordination_numbers": {"C": 3.8}},
+      "Co": {"coordinating_elements": ["N", "C"], "coordination_numbers": {"N/O": 5.6, "C": 3.8}}
+    }
+  },
+  "catalytic_performance": {
+    "oxidative esterification of furfural to methyl furoate": "100% conversion, 100% yield"
   }
 }
-```
+
+注意事项：
+- 仅提取催化剂合成部分，不提取催化剂用于催化反应的步骤。
+- 若论文中合成了多个不同金属组合的 DAC，请分别输出每个催化剂的完整 JSON 对象（可作为数组或在回答中分条列出）。
+- 所有温度统一转换为摄氏度（°C），时间统一使用小时（h）。
+- 对于从补充材料中获取的数据，直接提取，无需额外标注来源。
+- 未提供的信息统一写空字符串 "" 或空对象 {}，不要写 "not specified"。
+'''
 """
 
 
@@ -184,10 +179,10 @@ def call_llm_for_extraction(client: OpenAI, text_content: str, model: str = "qwe
             model=model,
             messages=[
                 {"role": "system", "content": EXPERT_PROMPT},
-                {"role": "user", "content": f"请根据以下论文内容提取双原子催化剂合成的结构化信息：\n\n{text_content}"}
+                {"role": "user", "content": f"请根据以下论文内容提取双原子催化剂合成的结构化信息。\n\n【重要】请直接输出JSON，不要输出任何分析、解释或说明文字。只输出JSON对象。\n\n论文内容：\n{text_content}"}
             ],
             temperature=0.1,  # 低温度以获得更确定性的输出
-            max_tokens=4096
+            max_tokens=8192
         )
         
         response_text = response.choices[0].message.content
@@ -340,8 +335,10 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
             return None
         
         # 只有成功提取数据时才准备并保存输出
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_filename = f"_{timestamp}_{collection_name}.json"
+        # 使用集合名称（源自论文名称）转换为可读格式作为 JSON 文件名，不加时间戳
+        # 集合名用下划线（Qdrant限制），文件名用空格更可读
+        paper_name = collection_name.replace('_', ' ')
+        output_filename = f"{paper_name}.json"
         output_dir = Path(__file__).parent.parent / "queried_datas"
         output_dir.mkdir(exist_ok=True)
         output_path = output_dir / output_filename
@@ -350,7 +347,6 @@ def query_and_extract(collection_name: str = None, silent: bool = False):
             "metadata": {
                 "collection_name": collection_name,
                 "query": query,
-                "timestamp": timestamp,
                 "total_results": len(search_results),
                 "combined_text_length": len(combined_text)
             },

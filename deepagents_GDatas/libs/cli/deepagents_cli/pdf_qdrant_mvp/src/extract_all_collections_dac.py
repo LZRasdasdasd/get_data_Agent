@@ -7,7 +7,6 @@
 
 import sys
 import json
-from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, '.')
@@ -85,13 +84,10 @@ def extract_from_all_collections(output_prefix: str = "dac_batch"):
                 "error": str(e)
             })
     
-    # 生成汇总报告
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
+    # 生成汇总报告（不加时间戳）
     summary_report = {
         "metadata": {
             "extraction_type": "dual-atom catalyst synthesis",
-            "timestamp": timestamp,
             "total_collections": len(collection_names),
             "successful_count": len(successful_extractions),
             "failed_count": len(failed_extractions),
@@ -105,7 +101,7 @@ def extract_from_all_collections(output_prefix: str = "dac_batch"):
     # 保存汇总报告
     output_dir = Path(__file__).parent.parent / "queried_datas"
     output_dir.mkdir(exist_ok=True)
-    summary_file = output_dir / f"{output_prefix}_summary_{timestamp}.json"
+    summary_file = output_dir / f"{output_prefix}_summary.json"
     
     with open(summary_file, 'w', encoding='utf-8') as f:
         json.dump(summary_report, f, ensure_ascii=False, indent=2)
