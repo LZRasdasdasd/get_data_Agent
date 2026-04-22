@@ -1110,12 +1110,6 @@ def convert_docx_to_markdown(docx_path: str, output_dir: str, overwrite: bool = 
 
     try:
         docx_name = Path(docx_path).stem
-        output_file = Path(output_dir) / f"{docx_name}.md"
-
-        if output_file.exists() and not overwrite:
-            result["output_file"] = str(output_file)
-            result["error"] = "文件已存在，跳过（使用 --overwrite 覆盖）"
-            return result
 
         converter = DocxToMarkdownConverter(docx_path)
         docx_result = converter.convert()
@@ -1127,9 +1121,26 @@ def convert_docx_to_markdown(docx_path: str, output_dir: str, overwrite: bool = 
         # 后处理：复用 PDF 的化学式修复和智能格式化
         formatted_text = smart_format_text(docx_result["text"])
 
+        # 从文本中提取论文标题作为文件名
+        paper_title = extract_paper_title_from_text(formatted_text)
+        if paper_title:
+            display_name = paper_title
+            safe_filename = sanitize_filename(paper_title)
+            md_name = safe_filename if safe_filename else docx_name
+        else:
+            display_name = docx_name
+            md_name = docx_name
+
+        output_file = Path(output_dir) / f"{md_name}.md"
+
+        if output_file.exists() and not overwrite:
+            result["output_file"] = str(output_file)
+            result["error"] = "文件已存在，跳过（使用 --overwrite 覆盖）"
+            return result
+
         # 构建 Markdown 内容
         markdown_lines = [
-            f"# {docx_name}",
+            f"# {display_name}",
             "",
             f"> **Source**: {docx_path}",
             f"> **Paragraphs**: {docx_result['paragraphs']}",
@@ -1184,16 +1195,8 @@ def convert_doc_to_markdown(doc_path: str, output_dir: str, overwrite: bool = Fa
     }
 
     try:
-        # 先检查输出文件是否已存在
-        doc_name = Path(doc_path).stem
-        output_file = Path(output_dir) / f"{doc_name}.md"
-
-        if output_file.exists() and not overwrite:
-            result["output_file"] = str(output_file)
-            result["error"] = "文件已存在，跳过（使用 --overwrite 覆盖）"
-            return result
-
         # Step 1: doc → docx
+        # 注意：不在此处预检查输出文件，因为最终文件名取决于提取的论文标题
         temp_dir = tempfile.mkdtemp()
         convert_result = convert_doc_to_docx(doc_path, temp_dir)
 
@@ -1472,6 +1475,88 @@ def _is_likely_heading(line: str) -> bool:
     return False
 
 
+def extract_paper_title_from_text(text: str) -> str:
+    """从转换后的文本中提取论文标题
+    
+    策略：
+    1. 寻找第一个 Markdown 标题行（# 开头）
+    2. 寻找第一个非空、非元数据行中符合标题特征的行
+    3. 返回空字符串表示未找到
+    
+    Args:
+        text: 转换后的文本
+        
+    Returns:
+        论文标题字符串，未找到返回空字符串
+    """
+    if not text:
+        return ""
+    
+    lines = text.split('\n')
+    
+    # 策略1: 寻找第一个 Markdown 标题（# 开头，但不是我们生成的元数据标题）
+    for line in lines:
+        stripped = line.strip()
+        # 跳过空行和元数据行
+        if not stripped or stripped.startswith('>'):
+            continue
+        # 跳过分隔线
+        if stripped == '---':
+            continue
+        # 找到第一个 Markdown 标题
+        if stripped.startswith('#'):
+            title = stripped.lstrip('#').strip()
+            # 过滤掉看起来不像论文标题的内容
+            if len(title) > 10 and len(title) < 500:
+                return title
+            break
+    
+    # 策略2: 寻找前几行中符合标题特征的行（全大写或首字母大写，较长）
+    for line in lines[:20]:
+        stripped = line.strip()
+        if not stripped or stripped.startswith('>') or stripped.startswith('#') or stripped == '---':
+            continue
+        # 标题通常较长（>15字符）且不是以常见非标题词开头
+        non_title_prefixes = ['Table', 'Figure', 'Fig.', 'Abstract', 'Supporting', 'Supplementary']
+        if len(stripped) > 15 and not any(stripped.startswith(p) for p in non_title_prefixes):
+            # 标题通常不含句号结尾（除非是缩写）
+            if not stripped.endswith('.') or 'et al' in stripped:
+                return stripped
+    
+    return ""
+
+
+def sanitize_filename(title: str) -> str:
+    """将论文标题转换为合法的文件名
+    
+    Args:
+        title: 论文标题
+        
+    Returns:
+        合法的文件名字符串
+    """
+    if not title:
+        return ""
+    
+    # 移除或替换不合法的文件名字符
+    # Windows 不允许: \ / : * ? " < > |
+    filename = title
+    for char in ['\\', '/', ':', '*', '?', '"', '<', '>', '|']:
+        filename = filename.replace(char, '')
+    
+    # 移除首尾空格和点号
+    filename = filename.strip().strip('.')
+    
+    # 压缩连续空格为单个空格
+    filename = re.sub(r'\s+', ' ', filename)
+    
+    # 限制文件名长度（Windows MAX_PATH 考虑）
+    if len(filename) > 200:
+        filename = filename[:200].strip()
+    
+    return filename
+
+
 def convert_pdf_to_markdown(pdf_path: str, output_dir: str, overwrite: bool = False) -> dict:
     """
     将 PDF 文件转换为 Markdown 格式，保留化学式和科学符号格式。
@@ -1514,12 +1599,6 @@ def convert_pdf_to_markdown(pdf_path: str, output_dir: str, overwrite: bool = Fa
     
     try:
         pdf_name = Path(pdf_path).stem
-        output_file = Path(output_dir) / f"{pdf_name}.md"
-        
-        if output_file.exists() and not overwrite:
-            result["output_file"] = str(output_file)
-            result["error"] = "文件已存在，跳过（使用 --overwrite 覆盖）"
-            return result
         
         converter = PDFToMarkdownConverter(pdf_path)
         pdf_result = converter.convert()
@@ -1531,9 +1610,26 @@ def convert_pdf_to_markdown(pdf_path: str, output_dir: str, overwrite: bool = Fa
         # 智能格式化
         formatted_text = smart_format_text(pdf_result["text"])
         
+        # 从文本中提取论文标题作为文件名
+        paper_title = extract_paper_title_from_text(formatted_text)
+        if paper_title:
+            display_name = paper_title
+            safe_filename = sanitize_filename(paper_title)
+            md_name = safe_filename if safe_filename else pdf_name
+        else:
+            display_name = pdf_name
+            md_name = pdf_name
+        
+        output_file = Path(output_dir) / f"{md_name}.md"
+        
+        if output_file.exists() and not overwrite:
+            result["output_file"] = str(output_file)
+            result["error"] = "文件已存在，跳过（使用 --overwrite 覆盖）"
+            return result
+        
         # 构建 Markdown 内容
         markdown_lines = [
-            f"# {pdf_name}",
+            f"# {display_name}",
             "",
             f"> **Source**: {pdf_path}",
             f"> **Pages**: {pdf_result['pages']}",
