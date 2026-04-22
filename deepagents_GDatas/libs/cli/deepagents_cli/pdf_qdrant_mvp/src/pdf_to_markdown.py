@@ -1624,9 +1624,9 @@ def sanitize_filename(title: str) -> str:
     # 压缩连续空格为单个空格
     filename = re.sub(r'\s+', ' ', filename)
     
-    # 限制文件名长度（Windows MAX_PATH 考虑）
-    if len(filename) > 200:
-        filename = filename[:200].strip()
+    # 限制文件名长度（Windows MAX_PATH 考虑，留出目录路径和扩展名的空间）
+    if len(filename) > 150:
+        filename = filename[:150].strip()
     
     return filename
 
