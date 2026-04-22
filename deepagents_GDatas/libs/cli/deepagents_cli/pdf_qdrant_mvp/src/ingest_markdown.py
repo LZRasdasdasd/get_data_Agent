@@ -17,12 +17,14 @@ Use this tool when you need to:
 import os
 import re
 import sys
+import logging
 import argparse
 from pathlib import Path
 
 # 添加父目录到路径
 sys.path.insert(0, str(Path(__file__).parent))
 
+from openai import OpenAI
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import Progress
@@ -35,24 +37,87 @@ from vector_tools import QdrantManager
 # 初始化控制台
 console = Console()
 
-
-def sanitize_collection_name(filename: str) -> str:
+# 配置日志
+logger = logging.getLogger(__name__)
+def extract_paper_title(text: str, api_key: str, api_base: str, model: str = "qwen-plus") -> str | None:
     """
-    将文件名转换为合法的 Qdrant 集合名称
+    使用 LLM 从论文 Markdown 内容中提取标题
+    
+    Args:
+        text: Markdown 文本（建议传入前 2000 字符以节省 token）
+        api_key: OpenAI 兼容 API 的密钥
+        api_base: OpenAI 兼容 API 的基础 URL
+        model: 使用的 LLM 模型名称，默认 qwen-plus
+        
+    Returns:
+        str | None: 提取到的论文标题，失败时返回 None
+    """
+    if not text or not text.strip():
+        return None
+    
+    try:
+        client = OpenAI(api_key=api_key, base_url=api_base)
+        
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "你是一个学术论文标题提取助手。"
+                        "从用户提供的论文文本中提取论文标题。"
+                        "只返回标题的纯文本，不要包含任何其他内容（如引号、解释、前缀等）。"
+                        "如果找不到明确的论文标题，返回空字符串。"
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": f"请从以下学术论文文本中提取论文标题：\n\n{text}"
+                }
+            ],
+            temperature=0.1,
+            max_tokens=200,
+        )
+        
+        title = response.choices[0].message.content.strip() if response.choices else ""
+        
+        if not title:
+            return None
+        
+        # 清理可能的多余标记
+        title = title.strip('"\'""''`')
+        if not title:
+            return None
+        
+        logger.debug(f"LLM 提取标题成功: {title}")
+        return title
+        
+    except Exception as e:
+        logger.warning(f"LLM 提取标题失败: {e}")
+        return None
+
+
+def sanitize_collection_name(name: str, max_length: int = 80) -> str:
+    """
+    将文件名或标题转换为合法的 Qdrant 集合名称
     
     规则:
-    1. 移除 .md 扩展名
+    1. 如果输入是文件名（含扩展名），先移除扩展名
     2. 转换为小写
-    3. 空格和特殊字符替换为下划线
-    4. 截断到 50 个字符
+    3. 非法字符（非小写字母、数字、下划线）替换为下划线
+    4. 合并连续下划线
+    5. 移除首尾下划线
+    6. 截断到指定长度（默认 80 字符）
+    7. 确保不为空
     """
-    # 移除扩展名
-    name = Path(filename).stem
+    # 如果是文件名（含扩展名），移除扩展名
+    if '.' in name and name.rsplit('.', 1)[-1].lower() in ('md', 'txt', 'pdf', 'docx'):
+        name = Path(name).stem
     
     # 转小写
     name = name.lower()
     
-    # 替换特殊字符为下划线
+    # 替换特殊字符为下划线（只保留小写字母、数字、下划线）
     name = re.sub(r'[^a-z0-9_]', '_', name)
     
     # 合并连续下划线
@@ -61,9 +126,9 @@ def sanitize_collection_name(filename: str) -> str:
     # 移除首尾下划线
     name = name.strip('_')
     
-    # 截断到 50 个字符
-    if len(name) > 50:
-        name = name[:50]
+    # 截断到指定长度
+    if len(name) > max_length:
+        name = name[:max_length]
     
     # 确保不为空
     if not name:
@@ -72,15 +137,17 @@ def sanitize_collection_name(filename: str) -> str:
     return name
 
 
-def get_markdown_files(md_dir: str) -> list:
+def get_markdown_files(md_dir: str, use_title: bool = True, model: str = "qwen-plus") -> list:
     """
-    获取目录下所有 Markdown 文件
+    获取目录下所有 Markdown 文件，并为每个文件确定集合名称
     
     Args:
         md_dir: Markdown 文件目录
+        use_title: 是否使用 LLM 从内容中提取标题作为集合名（默认 True）
+        model: LLM 模型名称（默认 qwen-plus）
         
     Returns:
-        list: 文件信息列表
+        list: 文件信息列表，每项包含 name, path, collection_name, title
     """
     md_path = Path(md_dir)
     
@@ -90,11 +157,40 @@ def get_markdown_files(md_dir: str) -> list:
     
     files = []
     for md_file in sorted(md_path.glob("*.md")):
-        files.append({
+        file_info = {
             "name": md_file.name,
             "path": str(md_file.absolute()),
-            "collection_name": sanitize_collection_name(md_file.name)
-        })
+            "collection_name": sanitize_collection_name(md_file.name),
+            "title": None
+        }
+        
+        # 如果启用标题提取模式，尝试从内容中提取标题
+        if use_title:
+            try:
+                with open(md_file, 'r', encoding='utf-8') as f:
+                    head_text = f.read(2000)
+                
+                title = extract_paper_title(
+                    text=head_text,
+                    api_key=config.openai_api_key,
+                    api_base=config.openai_api_base,
+                    model=model
+                )
+                
+                if title:
+                    collection_name = sanitize_collection_name(title)
+                    file_info["title"] = title
+                    file_info["collection_name"] = collection_name
+                    console.print(f"  [green]提取标题:[/green] {title}")
+                    console.print(f"  [dim]集合名:[/dim] {collection_name}")
+                else:
+                    console.print(f"  [yellow]标题提取失败，使用文件名作为集合名[/yellow]")
+                    
+            except Exception as e:
+                logger.warning(f"处理文件 {md_file.name} 时出错: {e}")
+                console.print(f"  [yellow]标题提取异常，使用文件名: {e}[/yellow]")
+        
+        files.append(file_info)
     
     return files
 
@@ -450,7 +546,30 @@ def main():
         help="只模拟运行，不实际存入"
     )
     
+    parser.add_argument(
+        "--use-title", "-t",
+        action="store_true",
+        default=True,
+        help="使用 LLM 从论文内容中提取标题作为集合名 (默认启用)"
+    )
+    
+    parser.add_argument(
+        "--no-title",
+        action="store_true",
+        help="禁用标题提取，使用文件名作为集合名"
+    )
+    
+    parser.add_argument(
+        "--model", "-m",
+        type=str,
+        default="qwen-plus",
+        help="用于标题提取的 LLM 模型名 (默认: qwen-plus)"
+    )
+    
     args = parser.parse_args()
+    
+    # 确定是否使用标题提取模式
+    use_title = args.use_title and not args.no_title
     
     # 显示配置信息
     console.print(Panel.fit(
@@ -462,13 +581,17 @@ def main():
     console.print(f"Qdrant 地址: {config.qdrant_url}")
     console.print(f"块大小: {args.chunk_size}")
     console.print(f"块重叠: {args.chunk_overlap}")
+    console.print(f"标题提取: {'启用' if use_title else '禁用'}")
+    if use_title:
+        console.print(f"LLM 模型: {args.model}")
     
     # 初始化 Qdrant 管理器
     console.print("\n[bold]连接 Qdrant...[/bold]")
     qdrant = QdrantManager()
     
-    # 获取 Markdown 文件列表
-    md_files = get_markdown_files(args.md_dir)
+    # 获取 Markdown 文件列表（带标题提取）
+    console.print("\n[bold]扫描 Markdown 文件并提取标题...[/bold]")
+    md_files = get_markdown_files(args.md_dir, use_title=use_title, model=args.model)
     
     if not md_files:
         console.print(f"[red]未找到 Markdown 文件: {args.md_dir}[/red]")
