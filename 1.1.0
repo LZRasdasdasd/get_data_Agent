@@ -1,0 +1,11 @@
+Collecting python-docx
+  Downloading python_docx-1.2.0-py3-none-any.whl (252 kB)
+     ------------------------------------ 253.0/253.0 kB 817.3 kB/s eta 0:00:00
+Collecting lxml>=3.1.0
+  Downloading lxml-6.1.0-cp311-cp311-win_amd64.whl (4.0 MB)
+     ---------------------------------------- 4.0/4.0 MB 2.0 MB/s eta 0:00:00
+Collecting typing_extensions>=4.9.0
+  Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+     ---------------------------------------- 44.6/44.6 kB 2.3 MB/s eta 0:00:00
+Installing collected packages: typing_extensions, lxml, python-docx
+Successfully installed lxml-6.1.0 python-docx-1.2.0 typing_extensions-4.15.0

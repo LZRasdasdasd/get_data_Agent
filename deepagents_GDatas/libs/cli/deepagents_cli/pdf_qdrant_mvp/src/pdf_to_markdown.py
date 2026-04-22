@@ -1,18 +1,26 @@
 """
-PDF 转 Markdown 转换脚本
+文档转 Markdown 转换脚本
 
-将 PDF 文件转换为 Markdown 格式并保存到指定文件夹。
-使用 pdfplumber 的字符级提取功能，更精确地保留下标/上标格式。
+将 PDF / DOCX / DOC 文件转换为 Markdown 格式并保存到指定文件夹。
+- PDF：使用 pdfplumber 的字符级提取功能，精确保留下标/上标格式。
+- DOCX：使用 python-docx 提取段落、表格、标题、列表等结构化内容。
+- DOC：先转换为 DOCX（依赖 LibreOffice 或 MS Word），再按 DOCX 流程处理。
 
 使用方法:
     python src/pdf_to_markdown.py --pdf-dir <PDF目录> --output-dir <输出目录>
     python src/pdf_to_markdown.py --pdf-file <PDF文件路径> --output-dir <输出目录>
+    python src/pdf_to_markdown.py --docx-file <DOCX文件路径> --output-dir <输出目录>
+    python src/pdf_to_markdown.py --doc-file <DOC文件路径> --output-dir <输出目录>
+    python src/pdf_to_markdown.py --input-dir <目录> --output-dir <输出目录>
 """
 
 import os
 import re
 import sys
 import argparse
+import subprocess
+import tempfile
+import shutil
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List, Tuple, Optional
@@ -68,6 +76,98 @@ def get_pdf_files(directory: str) -> List[Dict[str, str]]:
         })
     
     return pdf_files
+
+
+# ========== 获取 DOCX / DOC 文件列表 ==========
+
+def get_docx_files(directory: str) -> List[Dict[str, str]]:
+    """获取目录中的所有 DOCX 文件
+
+    Args:
+        directory: 目录路径
+
+    Returns:
+        包含 DOCX 文件信息的列表
+    """
+    docx_files = []
+    dir_path = Path(directory)
+
+    if not dir_path.exists():
+        return docx_files
+
+    for docx_file in sorted(dir_path.glob("*.docx")):
+        name = docx_file.stem
+        collection_name = re.sub(r'[^a-zA-Z0-9_]', '_', name.lower())
+        collection_name = re.sub(r'_+', '_', collection_name).strip('_')
+
+        docx_files.append({
+            "name": docx_file.name,
+            "path": str(docx_file),
+            "collection_name": collection_name
+        })
+
+    return docx_files
+
+
+def get_doc_files(directory: str) -> List[Dict[str, str]]:
+    """获取目录中的所有 DOC 文件（不含 .docx）
+
+    Args:
+        directory: 目录路径
+
+    Returns:
+        包含 DOC 文件信息的列表
+    """
+    doc_files = []
+    dir_path = Path(directory)
+
+    if not dir_path.exists():
+        return doc_files
+
+    for doc_file in sorted(dir_path.glob("*.doc")):
+        # 排除 .docx 文件
+        if doc_file.suffix.lower() != '.doc':
+            continue
+        name = doc_file.stem
+        collection_name = re.sub(r'[^a-zA-Z0-9_]', '_', name.lower())
+        collection_name = re.sub(r'_+', '_', collection_name).strip('_')
+
+        doc_files.append({
+            "name": doc_file.name,
+            "path": str(doc_file),
+            "collection_name": collection_name
+        })
+
+    return doc_files
+
+
+def get_all_document_files(directory: str) -> List[Dict[str, str]]:
+    """获取目录中所有支持的文档文件（PDF + DOCX + DOC）
+
+    Args:
+        directory: 目录路径
+
+    Returns:
+        包含所有文档文件信息的列表，每个元素额外包含 file_type 字段
+    """
+    all_files = []
+
+    for f in get_pdf_files(directory):
+        f["file_type"] = "pdf"
+        all_files.append(f)
+
+    for f in get_docx_files(directory):
+        f["file_type"] = "docx"
+        all_files.append(f)
+
+    for f in get_doc_files(directory):
+        f["file_type"] = "doc"
+        all_files.append(f)
+
+    # 按文件名排序
+    all_files.sort(key=lambda x: x["name"])
+
+    return all_files
 
 
 # ========== 常量定义 ==========
@@ -556,6 +656,580 @@ class PDFToMarkdownConverter:
 
 # ========== 后处理函数 ==========
 
+# ========== DOCX / DOC 转 Markdown ==========
+
+class DocxToMarkdownConverter:
+    """DOCX 转 Markdown 转换器
+
+    使用 python-docx 库提取 DOCX 文件中的段落、标题、表格、列表等
+    结构化内容，并转换为 Markdown 格式。
+    """
+
+    def __init__(self, docx_path: str):
+        """初始化转换器
+
+        Args:
+            docx_path: DOCX 文件路径
+        """
+        self.docx_path = docx_path
+        self.paragraph_count = 0
+        self.table_count = 0
+
+    @staticmethod
+    def _fix_docm_content_type(docx_path: str) -> Optional[str]:
+        """修复宏启用文档 (.docm) 的 Content-Type 以便 python-docx 正常解析
+
+        部分 .docx 文件实际上是宏启用格式（Content-Type 为
+        application/vnd.ms-word.document.macroEnabled.main+xml），
+        python-docx 会拒绝解析。本方法创建一个临时副本，
+        将 Content-Type 替换为标准格式后返回临时文件路径。
+
+        Args:
+            docx_path: 原始文件路径
+
+        Returns:
+            修复后的临时文件路径，如果无需修复则返回 None
+        """
+        import zipfile
+
+        try:
+            with zipfile.ZipFile(docx_path, 'r') as zin:
+                ct_data = zin.read('[Content_Types].xml')
+                ct_text = ct_data.decode('utf-8')
+
+                # 检查是否包含宏启用的 Content-Type
+                macro_ct = 'application/vnd.ms-word.document.macroEnabled.main+xml'
+                if macro_ct not in ct_text:
+                    return None  # 标准格式，无需修复
+
+                # 替换为标准 Content-Type
+                standard_ct = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml'
+                ct_text = ct_text.replace(macro_ct, standard_ct)
+
+                # 创建临时副本
+                tmp_dir = tempfile.mkdtemp()
+                tmp_path = os.path.join(tmp_dir, Path(docx_path).name)
+
+                with zipfile.ZipFile(tmp_path, 'w', zipfile.ZIP_DEFLATED) as zout:
+                    for item in zin.infolist():
+                        data = zin.read(item.filename)
+                        if item.filename == '[Content_Types].xml':
+                            data = ct_text.encode('utf-8')
+                        zout.writestr(item, data)
+
+                return tmp_path
+
+        except Exception:
+            return None
+
+    def convert(self) -> Dict[str, Any]:
+        """执行转换
+
+        Returns:
+            包含转换结果的字典:
+            - success: 是否成功
+            - text: Markdown 文本
+            - paragraphs: 段落数
+            - tables: 表格数
+            - char_count: 字符数
+            - error: 错误信息
+        """
+        from docx import Document
+
+        result = {
+            "success": False,
+            "text": "",
+            "paragraphs": 0,
+            "tables": 0,
+            "char_count": 0,
+            "error": None
+        }
+
+        tmp_docx_path = None
+        try:
+            # 尝试直接打开，如果失败则尝试修复宏启用格式
+            try:
+                doc = Document(self.docx_path)
+            except ValueError as e:
+                error_msg = str(e)
+                if 'macroEnabled' in error_msg or 'not a Word file' in error_msg:
+                    # 尝试修复宏启用格式
+                    tmp_docx_path = self._fix_docm_content_type(self.docx_path)
+                    if tmp_docx_path:
+                        doc = Document(tmp_docx_path)
+                    else:
+                        raise
+                else:
+                    raise
+
+            markdown_parts = []
+
+            # 遍历文档的 body 元素，按照段落和表格在文档中的实际顺序处理
+            from docx.oxml.ns import qn
+
+            body = doc.element.body
+            para_idx = 0
+            table_idx = 0
+
+            for child in body:
+                tag = child.tag.split('}')[-1] if '}' in child.tag else child.tag
+
+                if tag == 'p':
+                    # 处理段落
+                    if para_idx < len(doc.paragraphs):
+                        para = doc.paragraphs[para_idx]
+                        md_text = self._process_paragraph(para)
+                        if md_text is not None:
+                            markdown_parts.append(md_text)
+                        para_idx += 1
+
+                elif tag == 'tbl':
+                    # 处理表格
+                    if table_idx < len(doc.tables):
+                        table = doc.tables[table_idx]
+                        md_table = self._process_table(table)
+                        if md_table:
+                            markdown_parts.append(md_table)
+                        table_idx += 1
+
+            full_text = '\n\n'.join(markdown_parts)
+            # 清理多余空行
+            full_text = RE_MULTIPLE_NEWLINES.sub('\n\n', full_text).strip()
+
+            result["text"] = full_text
+            result["paragraphs"] = para_idx
+            result["tables"] = table_idx
+            result["char_count"] = len(full_text)
+            result["success"] = True
+
+        except ImportError:
+            result["error"] = "缺少 python-docx 库，请运行: pip install python-docx"
+        except Exception as e:
+            result["error"] = str(e)
+        finally:
+            # 清理临时文件
+            if tmp_docx_path:
+                try:
+                    tmp_dir = os.path.dirname(tmp_docx_path)
+                    shutil.rmtree(tmp_dir, ignore_errors=True)
+                except Exception:
+                    pass
+
+        return result
+
+    def _process_paragraph(self, para) -> Optional[str]:
+        """处理单个段落，返回 Markdown 文本
+
+        Args:
+            para: python-docx Paragraph 对象
+
+        Returns:
+            Markdown 格式的文本，如果是空段落或图片段落则返回 None
+        """
+        style_name = para.style.name if para.style else ""
+        text = para.text.strip()
+
+        # 跳过空段落
+        if not text:
+            return None
+
+        # 根据样式处理标题
+        if style_name.startswith('Heading'):
+            try:
+                level = int(style_name.replace('Heading', '').strip())
+                level = min(max(level, 1), 6)  # 限制在 1-6 之间
+            except ValueError:
+                level = 2
+            return f"{'#' * level} {text}"
+
+        # 标题变体样式（中文模板常用）
+        heading_styles = {
+            'Title': '# ',
+            'Subtitle': '## ',
+            'Heading 1': '# ',
+            'Heading 2': '## ',
+            'Heading 3': '### ',
+            'Heading 4': '#### ',
+            'Heading 5': '##### ',
+            'Heading 6': '###### ',
+        }
+        if style_name in heading_styles:
+            return f"{heading_styles[style_name]}{text}"
+
+        # 列表处理
+        if style_name.startswith('List'):
+            indent_level = self._get_list_indent(para)
+            prefix = "  " * indent_level
+            # 判断是有序列表还是无序列表
+            if text and text[0].isdigit():
+                # 尝试保持有序列表格式
+                return f"{prefix}{text}"
+            else:
+                return f"{prefix}- {text}"
+
+        # 引用
+        if 'Quote' in style_name or 'quote' in style_name.lower():
+            return f"> {text}"
+
+        # 检测加粗/斜体 runs
+        formatted_text = self._process_runs(para)
+
+        return formatted_text
+
+    def _process_runs(self, para) -> str:
+        """处理段落中的 runs，保留加粗、斜体等格式
+
+        Args:
+            para: python-docx Paragraph 对象
+
+        Returns:
+            带 Markdown 格式的文本
+        """
+        parts = []
+        for run in para.runs:
+            run_text = run.text
+            if not run_text:
+                continue
+
+            # 特殊字符规范化
+            run_text = normalize_special_chars(run_text)
+
+            bold = run.bold
+            italic = run.italic
+
+            if bold and italic:
+                parts.append(f"***{run_text}***")
+            elif bold:
+                parts.append(f"**{run_text}**")
+            elif italic:
+                parts.append(f"*{run_text}*")
+            else:
+                parts.append(run_text)
+
+        return ''.join(parts) if parts else para.text.strip()
+
+    def _get_list_indent(self, para) -> int:
+        """获取列表缩进级别
+
+        Args:
+            para: python-docx Paragraph 对象
+
+        Returns:
+            缩进级别 (0-based)
+        """
+        try:
+            pPr = para._element.pPr
+            if pPr is not None:
+                numPr = pPr.find('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}numPr')
+                if numPr is not None:
+                    ilvl = numPr.find('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}ilvl')
+                    if ilvl is not None:
+                        return int(ilvl.get('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}val', '0'))
+        except Exception:
+            pass
+        return 0
+
+    def _process_table(self, table) -> str:
+        """处理表格，转换为 Markdown 表格
+
+        Args:
+            table: python-docx Table 对象
+
+        Returns:
+            Markdown 格式的表格字符串
+        """
+        try:
+            rows_data = []
+            for row in table.rows:
+                cells = []
+                for cell in row.cells:
+                    cell_text = cell.text.strip() if cell.text else ''
+                    cell_text = normalize_special_chars(cell_text)
+                    # 将单元格内的换行替换为空格，避免破坏表格格式
+                    cell_text = cell_text.replace('\n', ' ').replace('\r', ' ')
+                    cells.append(cell_text)
+                rows_data.append(cells)
+
+            if not rows_data:
+                return ""
+
+            # 确保所有行列数一致
+            max_cols = max(len(row) for row in rows_data)
+            for row in rows_data:
+                while len(row) < max_cols:
+                    row.append('')
+
+            result_lines = []
+            for i, row in enumerate(rows_data):
+                result_lines.append('| ' + ' | '.join(row) + ' |')
+                if i == 0:
+                    result_lines.append('| ' + ' | '.join(['---'] * max_cols) + ' |')
+
+            return '\n'.join(result_lines)
+
+        except Exception:
+            return ""
+
+
+def convert_doc_to_docx(doc_path: str, output_dir: Optional[str] = None) -> Dict[str, Any]:
+    """将 .doc 文件转换为 .docx 文件
+
+    优先使用 LibreOffice 命令行进行转换，如果不可用则尝试 MS Word COM 自动化（仅 Windows）。
+
+    Args:
+        doc_path: .doc 文件的完整路径
+        output_dir: 输出目录，默认为系统临时目录
+
+    Returns:
+        dict: 包含转换结果:
+            - success: 是否成功
+            - docx_path: 生成的 .docx 文件路径
+            - error: 错误信息
+    """
+    result = {
+        "success": False,
+        "docx_path": None,
+        "error": None
+    }
+
+    doc_file = Path(doc_path)
+    if not doc_file.exists():
+        result["error"] = f"文件不存在: {doc_path}"
+        return result
+
+    if output_dir:
+        out_dir = Path(output_dir)
+    else:
+        out_dir = Path(tempfile.mkdtemp())
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # 方法1: 尝试使用 LibreOffice
+    libreoffice_paths = [
+        r"C:\Program Files\LibreOffice\program\soffice.exe",
+        r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
+        "soffice",  # 如果在 PATH 中
+    ]
+
+    for lo_path in libreoffice_paths:
+        try:
+            cmd = [
+                lo_path,
+                "--headless",
+                "--convert-to", "docx",
+                "--outdir", str(out_dir),
+                str(doc_file)
+            ]
+            proc = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=120,
+                encoding='utf-8',
+                errors='replace'
+            )
+            if proc.returncode == 0:
+                expected_docx = out_dir / f"{doc_file.stem}.docx"
+                if expected_docx.exists():
+                    result["success"] = True
+                    result["docx_path"] = str(expected_docx)
+                    return result
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            continue
+        except Exception:
+            continue
+
+    # 方法2: 尝试使用 MS Word COM 自动化（仅 Windows）
+    # 优先使用 win32com (pywin32)，回退到 comtypes
+    for com_lib in ['win32com.client', 'comtypes.client']:
+        try:
+            if com_lib == 'win32com.client':
+                import win32com.client
+                word = win32com.client.Dispatch('Word.Application')
+            else:
+                import comtypes.client
+                word = comtypes.client.CreateObject('Word.Application')
+
+            word.Visible = False
+
+            doc_abs = str(doc_file.absolute())
+            docx_abs = str((out_dir / f"{doc_file.stem}.docx").absolute())
+
+            # wdFormatXMLDocument = 12
+            doc = word.Documents.Open(doc_abs)
+            doc.SaveAs(docx_abs, FileFormat=12)
+            doc.Close()
+            word.Quit()
+
+            result["success"] = True
+            result["docx_path"] = docx_abs
+            return result
+
+        except ImportError:
+            continue
+        except Exception as e:
+            result["error"] = f"MS Word COM 转换失败 ({com_lib}): {e}"
+            return result
+
+    result["error"] = (
+        "无法转换 .doc 文件：未找到 LibreOffice 或 MS Word。\n"
+        "请安装以下任一工具:\n"
+        "  1. LibreOffice (推荐): https://www.libreoffice.org/download/\n"
+        "  2. Microsoft Word 并安装 pywin32: pip install pywin32"
+    )
+    return result
+
+
+def convert_docx_to_markdown(docx_path: str, output_dir: str, overwrite: bool = False) -> dict:
+    """将 DOCX 文件转换为 Markdown 格式
+
+    Args:
+        docx_path: DOCX 文件的完整路径
+        output_dir: 输出 Markdown 文件的目录路径
+        overwrite: 是否覆盖已存在的文件
+
+    Returns:
+        dict: 包含转换结果:
+            - success: 是否成功
+            - input_file: 输入文件路径
+            - output_file: 输出 Markdown 文件路径
+            - char_count: 字符数
+            - paragraphs: 段落数
+            - tables: 表格数
+            - error: 错误信息
+    """
+    result = {
+        "success": False,
+        "input_file": docx_path,
+        "output_file": None,
+        "char_count": 0,
+        "paragraphs": 0,
+        "tables": 0,
+        "error": None
+    }
+
+    try:
+        docx_name = Path(docx_path).stem
+        output_file = Path(output_dir) / f"{docx_name}.md"
+
+        if output_file.exists() and not overwrite:
+            result["output_file"] = str(output_file)
+            result["error"] = "文件已存在，跳过（使用 --overwrite 覆盖）"
+            return result
+
+        converter = DocxToMarkdownConverter(docx_path)
+        docx_result = converter.convert()
+
+        if not docx_result["success"]:
+            result["error"] = f"提取失败: {docx_result.get('error')}"
+            return result
+
+        # 后处理：复用 PDF 的化学式修复和智能格式化
+        formatted_text = smart_format_text(docx_result["text"])
+
+        # 构建 Markdown 内容
+        markdown_lines = [
+            f"# {docx_name}",
+            "",
+            f"> **Source**: {docx_path}",
+            f"> **Paragraphs**: {docx_result['paragraphs']}",
+            f"> **Tables**: {docx_result['tables']}",
+            f"> **Characters**: {docx_result['char_count']}",
+            f"> **Converted**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            "",
+            "---",
+            "",
+            formatted_text,
+        ]
+
+        # 写入文件
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(markdown_lines))
+
+        result["success"] = True
+        result["output_file"] = str(output_file)
+        result["char_count"] = docx_result["char_count"]
+        result["paragraphs"] = docx_result["paragraphs"]
+        result["tables"] = docx_result["tables"]
+
+    except Exception as e:
+        result["error"] = str(e)
+
+    return result
+
+
+def convert_doc_to_markdown(doc_path: str, output_dir: str, overwrite: bool = False) -> dict:
+    """将 DOC 文件转换为 Markdown 格式
+
+    先将 .doc 转换为 .docx，然后按 .docx 流程处理。
+
+    Args:
+        doc_path: DOC 文件的完整路径
+        output_dir: 输出 Markdown 文件的目录路径
+        overwrite: 是否覆盖已存在的文件
+
+    Returns:
+        dict: 包含转换结果（字段同 convert_docx_to_markdown），
+              另外可能包含 temp_docx_path（临时 docx 文件路径）
+    """
+    result = {
+        "success": False,
+        "input_file": doc_path,
+        "output_file": None,
+        "char_count": 0,
+        "paragraphs": 0,
+        "tables": 0,
+        "error": None,
+        "temp_docx_path": None
+    }
+
+    try:
+        # 先检查输出文件是否已存在
+        doc_name = Path(doc_path).stem
+        output_file = Path(output_dir) / f"{doc_name}.md"
+
+        if output_file.exists() and not overwrite:
+            result["output_file"] = str(output_file)
+            result["error"] = "文件已存在，跳过（使用 --overwrite 覆盖）"
+            return result
+
+        # Step 1: doc → docx
+        temp_dir = tempfile.mkdtemp()
+        convert_result = convert_doc_to_docx(doc_path, temp_dir)
+
+        if not convert_result["success"]:
+            result["error"] = f"DOC → DOCX 转换失败: {convert_result.get('error')}"
+            return result
+
+        docx_path = convert_result["docx_path"]
+        result["temp_docx_path"] = docx_path
+
+        # Step 2: docx → markdown
+        docx_result = convert_docx_to_markdown(docx_path, output_dir, overwrite)
+
+        # 清理临时文件
+        try:
+            if temp_dir:
+                shutil.rmtree(temp_dir, ignore_errors=True)
+        except Exception:
+            pass
+
+        # 汇总结果
+        result["success"] = docx_result["success"]
+        result["output_file"] = docx_result.get("output_file")
+        result["char_count"] = docx_result.get("char_count", 0)
+        result["paragraphs"] = docx_result.get("paragraphs", 0)
+        result["tables"] = docx_result.get("tables", 0)
+        result["error"] = docx_result.get("error")
+
+    except Exception as e:
+        result["error"] = str(e)
+
+    return result
+
+
+# ========== 后处理函数 ==========
+
 def post_process_text(text: str) -> str:
     """
     后处理文本 - 修复常见的转换问题
@@ -886,158 +1560,317 @@ def convert_pdf_to_markdown(pdf_path: str, output_dir: str, overwrite: bool = Fa
     return result
 
 
+def _dispatch_convert(file_info: Dict[str, Any], output_dir: str, overwrite: bool) -> dict:
+    """根据文件类型分发到对应的转换函数
+
+    Args:
+        file_info: 包含 path, name, file_type 等信息的字典
+        output_dir: 输出目录
+        overwrite: 是否覆盖已存在文件
+
+    Returns:
+        转换结果字典
+    """
+    file_path = file_info["path"]
+    file_type = file_info.get("file_type", "")
+
+    if file_type == "pdf":
+        return convert_pdf_to_markdown(file_path, output_dir, overwrite)
+    elif file_type == "docx":
+        return convert_docx_to_markdown(file_path, output_dir, overwrite)
+    elif file_type == "doc":
+        return convert_doc_to_markdown(file_path, output_dir, overwrite)
+    else:
+        # 根据扩展名自动判断
+        ext = Path(file_path).suffix.lower()
+        if ext == '.pdf':
+            return convert_pdf_to_markdown(file_path, output_dir, overwrite)
+        elif ext == '.docx':
+            return convert_docx_to_markdown(file_path, output_dir, overwrite)
+        elif ext == '.doc':
+            return convert_doc_to_markdown(file_path, output_dir, overwrite)
+        else:
+            return {
+                "success": False,
+                "input_file": file_path,
+                "output_file": None,
+                "char_count": 0,
+                "error": f"不支持的文件格式: {ext}"
+            }
+
+
+def _detect_single_file_type(file_path: str) -> Optional[str]:
+    """检测单个文件的类型
+
+    Args:
+        file_path: 文件路径
+
+    Returns:
+        文件类型字符串 ("pdf", "docx", "doc") 或 None
+    """
+    ext = Path(file_path).suffix.lower()
+    type_map = {
+        '.pdf': 'pdf',
+        '.docx': 'docx',
+        '.doc': 'doc',
+    }
+    return type_map.get(ext)
+
+
 def main():
     """主函数"""
     parser = argparse.ArgumentParser(
-        description="PDF 转 Markdown 工具 - 将 PDF 文件转换为 Markdown 格式",
+        description="文档转 Markdown 工具 - 将 PDF/DOCX/DOC 文件转换为 Markdown 格式",
         formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "示例:\n"
+            "  # 转换单个 PDF 文件\n"
+            "  python src/pdf_to_markdown.py --pdf-file paper.pdf -o output\n\n"
+            "  # 转换单个 DOCX 文件\n"
+            "  python src/pdf_to_markdown.py --docx-file document.docx -o output\n\n"
+            "  # 转换单个 DOC 文件（需要 LibreOffice 或 MS Word）\n"
+            "  python src/pdf_to_markdown.py --doc-file document.doc -o output\n\n"
+            "  # 转换目录中的所有文档（PDF + DOCX + DOC）\n"
+            "  python src/pdf_to_markdown.py --input-dir ./docs -o output\n\n"
+            "  # 仅转换目录中的 PDF 文件\n"
+            "  python src/pdf_to_markdown.py --pdf-dir ./pdfs -o output"
+        ),
     )
-    
+
     parser.add_argument(
         "--pdf-dir", "-d",
         type=str,
         default=None,
         help="PDF 文件目录路径 (默认使用 .env 中的配置)"
     )
-    
+
     parser.add_argument(
         "--pdf-file", "-f",
         type=str,
         default=None,
-        help="单个 PDF 文件路径 (优先于 --pdf-dir)"
+        help="单个 PDF 文件路径"
     )
-    
+
+    parser.add_argument(
+        "--docx-file",
+        type=str,
+        default=None,
+        help="单个 DOCX 文件路径"
+    )
+
+    parser.add_argument(
+        "--doc-file",
+        type=str,
+        default=None,
+        help="单个 DOC 文件路径（需要 LibreOffice 或 MS Word）"
+    )
+
+    parser.add_argument(
+        "--input-dir", "-i",
+        type=str,
+        default=None,
+        help="通用输入目录，自动扫描 PDF、DOCX、DOC 文件"
+    )
+
     parser.add_argument(
         "--output-dir", "-o",
         type=str,
         default="markdown_docs",
         help="Markdown 输出目录路径 (默认: markdown_docs)"
     )
-    
+
     parser.add_argument(
         "--overwrite", "-w",
         action="store_true",
         help="覆盖已存在的文件"
     )
-    
+
     args = parser.parse_args()
-    
+
     # 显示配置信息
     console.print(Panel.fit(
-        "[bold cyan]PDF 转 Markdown 工具[/bold cyan]\n"
-        "[dim]优化版本 - 精确保留下标/上标格式[/dim]",
+        "[bold cyan]文档转 Markdown 工具[/bold cyan]\n"
+        "[dim]支持 PDF / DOCX / DOC 格式，精确保留下标/上标格式[/dim]",
         border_style="cyan"
     ))
-    
+
     # 创建输出目录
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     console.print(f"[green]输出目录已创建/确认: {output_dir}[/green]")
-    
-    # 确定要处理的 PDF 文件列表
-    pdf_files = []
-    
-    if args.pdf_file:
-        pdf_path = Path(args.pdf_file)
-        if not pdf_path.exists():
-            console.print(f"[red]PDF 文件不存在: {args.pdf_file}[/red]")
-            sys.exit(1)
-        if not pdf_path.suffix.lower() == '.pdf':
-            console.print(f"[red]不是有效的 PDF 文件: {args.pdf_file}[/red]")
-            sys.exit(1)
-        
-        pdf_files.append({
-            "path": str(pdf_path),
-            "name": pdf_path.name,
-            "size_kb": pdf_path.stat().st_size / 1024
-        })
-        console.print(f"PDF 文件: {args.pdf_file}")
-    else:
-        if args.pdf_dir:
-            config.pdf_dir = args.pdf_dir
-        
-        # PDF转Markdown不需要OpenAI API，跳过配置验证
-        pdf_dir_path = Path(config.pdf_dir)
-        if not pdf_dir_path.exists():
-            console.print(f"[red]PDF 目录不存在: {config.pdf_dir}[/red]")
-            sys.exit(1)
-        
-        console.print(f"PDF 目录: {config.pdf_dir}")
-        pdf_files = get_pdf_files(config.pdf_dir)
-        
-        if not pdf_files:
-            console.print(f"[red]未找到 PDF 文件: {config.pdf_dir}[/red]")
-            sys.exit(1)
-    
+
+    # ========== 确定要处理的文件列表 ==========
+    all_files = []  # 每个元素: {"path": ..., "name": ..., "file_type": ...}
+
+    # 优先级：单文件参数 > 通用 input-dir > pdf-dir
+    single_file_args = [
+        (args.pdf_file, "pdf"),
+        (args.docx_file, "docx"),
+        (args.doc_file, "doc"),
+    ]
+
+    single_file_found = False
+    for file_arg, expected_type in single_file_args:
+        if file_arg:
+            file_path = Path(file_arg)
+            if not file_path.exists():
+                console.print(f"[red]文件不存在: {file_arg}[/red]")
+                sys.exit(1)
+
+            detected_type = _detect_single_file_type(file_arg)
+            if detected_type != expected_type:
+                console.print(
+                    f"[red]文件扩展名不匹配: 期望 .{expected_type}，"
+                    f"实际为 {file_path.suffix}[/red]"
+                )
+                sys.exit(1)
+
+            all_files.append({
+                "path": str(file_path),
+                "name": file_path.name,
+                "file_type": expected_type,
+                "size_kb": file_path.stat().st_size / 1024
+            })
+            console.print(f"[{expected_type.upper()}] 文件: {file_arg}")
+            single_file_found = True
+            break  # 只处理第一个指定的单文件
+
+    if not single_file_found:
+        if args.input_dir:
+            # 通用输入目录：扫描所有支持的格式
+            input_path = Path(args.input_dir)
+            if not input_path.exists():
+                console.print(f"[red]输入目录不存在: {args.input_dir}[/red]")
+                sys.exit(1)
+
+            console.print(f"输入目录: {args.input_dir}")
+            all_files = get_all_document_files(args.input_dir)
+
+            if not all_files:
+                console.print(f"[red]未找到任何支持的文档文件: {args.input_dir}[/red]")
+                console.print("[dim]支持的格式: .pdf, .docx, .doc[/dim]")
+                sys.exit(1)
+        else:
+            # 回退到原有的 pdf-dir 逻辑
+            if args.pdf_dir:
+                config.pdf_dir = args.pdf_dir
+
+            pdf_dir_path = Path(config.pdf_dir)
+            if not pdf_dir_path.exists():
+                console.print(f"[red]PDF 目录不存在: {config.pdf_dir}[/red]")
+                sys.exit(1)
+
+            console.print(f"PDF 目录: {config.pdf_dir}")
+            pdf_list = get_pdf_files(config.pdf_dir)
+
+            if not pdf_list:
+                console.print(f"[red]未找到 PDF 文件: {config.pdf_dir}[/red]")
+                sys.exit(1)
+
+            for f in pdf_list:
+                f["file_type"] = "pdf"
+            all_files = pdf_list
+
+    # 打印文件汇总
+    type_counts = Counter(f["file_type"] for f in all_files)
     console.print(f"输出目录: {args.output_dir}")
-    console.print(f"\n[bold]找到 {len(pdf_files)} 个 PDF 文件[/bold]")
-    
-    # 转换统计
+    summary_parts = []
+    for ft in ["pdf", "docx", "doc"]:
+        if type_counts.get(ft, 0) > 0:
+            summary_parts.append(f"{type_counts[ft]} 个 {ft.upper()}")
+    console.print(f"\n[bold]找到 {'、'.join(summary_parts)}，共 {len(all_files)} 个文件[/bold]")
+
+    # ========== 转换统计 ==========
     stats = {
-        "total": len(pdf_files),
+        "total": len(all_files),
         "success": 0,
         "skipped": 0,
         "failed": 0,
         "total_chars": 0,
         "files": []
     }
-    
+
     # 使用进度条
     with Progress(console=console) as progress:
         overall_task = progress.add_task(
-            "[cyan]转换 PDF 文件...",
-            total=len(pdf_files)
+            "[cyan]转换文档文件...",
+            total=len(all_files)
         )
-        
-        for i in range(len(pdf_files)):
-            pdf_file = pdf_files[i]
+
+        for i in range(len(all_files)):
+            file_info = all_files[i]
             progress.update(overall_task, advance=1)
-            
-            console.print(f"\n[{i+1}/{len(pdf_files)}] 处理: {pdf_file['name']}")
-            
-            result = convert_pdf_to_markdown(
-                pdf_file["path"],
-                args.output_dir,
-                args.overwrite
+
+            file_type_tag = file_info.get("file_type", "???").upper()
+            console.print(
+                f"\n[{i+1}/{len(all_files)}] "
+                f"[{file_type_tag}] 处理: {file_info['name']}"
             )
-            
+
+            result = _dispatch_convert(file_info, args.output_dir, args.overwrite)
+
             if result["success"]:
                 stats["success"] += 1
                 stats["total_chars"] += result["char_count"]
-                stats["files"].append({
-                    "name": pdf_file["name"],
+                file_stat = {
+                    "name": file_info["name"],
                     "output": result["output_file"],
                     "chars": result["char_count"],
-                    "pages": result["pages"]
-                })
+                    "type": file_info.get("file_type", "unknown"),
+                }
+                # PDF 特有字段
+                if "pages" in result:
+                    file_stat["pages"] = result["pages"]
+                # DOCX/DOC 特有字段
+                if "paragraphs" in result:
+                    file_stat["paragraphs"] = result["paragraphs"]
+                if "tables" in result:
+                    file_stat["tables"] = result["tables"]
+                stats["files"].append(file_stat)
+
+                detail_parts = [f"字符数: {result['char_count']}"]
+                if "pages" in result:
+                    detail_parts.append(f"页数: {result['pages']}")
+                if "paragraphs" in result:
+                    detail_parts.append(f"段落: {result['paragraphs']}")
+                if "tables" in result:
+                    detail_parts.append(f"表格: {result['tables']}")
+
                 console.print(f"  [green]成功: {result['output_file']}[/green]")
-                console.print(f"  字符数: {result['char_count']}, 页数: {result['pages']}")
+                console.print(f"  {', '.join(detail_parts)}")
             elif "已存在" in str(result.get("error", "")):
                 stats["skipped"] += 1
                 console.print(f"  [yellow]跳过: {result['error']}[/yellow]")
             else:
                 stats["failed"] += 1
                 console.print(f"  [red]失败: {result.get('error')}[/red]")
-    
-    # 显示统计
+
+    # ========== 显示统计 ==========
     console.print("\n")
     console.print("=" * 60)
     console.print(Panel.fit(
         "[bold green]转换完成统计[/bold green]",
         border_style="green"
     ))
-    
+
     console.print(f"总文件数: {stats['total']}")
     console.print(f"成功: {stats['success']}")
     console.print(f"跳过: {stats['skipped']}")
     console.print(f"失败: {stats['failed']}")
     console.print(f"总字符数: {stats['total_chars']}")
-    
+
     if stats["files"]:
         console.print("\n[bold]生成的 Markdown 文件:[/bold]")
         for f in stats["files"]:
-            console.print(f"  - {f['output']}: {f['chars']} 字符, {f['pages']} 页")
-    
+            detail_parts = [f"{f['chars']} 字符"]
+            if "pages" in f:
+                detail_parts.append(f"{f['pages']} 页")
+            if "paragraphs" in f:
+                detail_parts.append(f"{f['paragraphs']} 段落")
+            if "tables" in f:
+                detail_parts.append(f"{f['tables']} 表格")
+            console.print(f"  - [{f.get('type', '').upper()}] {f['output']}: {', '.join(detail_parts)}")
+
     console.print("\n")
     console.print(Panel(
         "[bold yellow]下一步操作[/bold yellow]\n\n"
