@@ -1080,6 +1080,32 @@ def convert_doc_to_docx(doc_path: str, output_dir: Optional[str] = None) -> Dict
     return result
 
 
+def _get_unique_output_path(output_dir: str, base_name: str, overwrite: bool = False) -> Path:
+    """生成唯一的输出文件路径，如果文件名重复则在末尾添加序号
+
+    Args:
+        output_dir: 输出目录路径
+        base_name: 基础文件名（不含扩展名）
+        overwrite: 是否覆盖已存在的文件
+
+    Returns:
+        Path: 唯一的输出文件路径
+    """
+    out_dir = Path(output_dir)
+    candidate = out_dir / f"{base_name}.md"
+
+    if overwrite or not candidate.exists():
+        return candidate
+
+    # 文件已存在且不覆盖，添加序号
+    seq = 2
+    while True:
+        candidate = out_dir / f"{base_name}_{seq}.md"
+        if not candidate.exists():
+            return candidate
+        seq += 1
+
+
 def convert_docx_to_markdown(docx_path: str, output_dir: str, overwrite: bool = False) -> dict:
     """将 DOCX 文件转换为 Markdown 格式
 
@@ -1121,26 +1147,12 @@ def convert_docx_to_markdown(docx_path: str, output_dir: str, overwrite: bool = 
         # 后处理：复用 PDF 的化学式修复和智能格式化
         formatted_text = smart_format_text(docx_result["text"])
 
-        # 从文本中提取论文标题作为文件名
-        paper_title = extract_paper_title_from_text(formatted_text)
-        if paper_title:
-            display_name = paper_title
-            safe_filename = sanitize_filename(paper_title)
-            md_name = safe_filename if safe_filename else docx_name
-        else:
-            display_name = docx_name
-            md_name = docx_name
-
-        output_file = Path(output_dir) / f"{md_name}.md"
-
-        if output_file.exists() and not overwrite:
-            result["output_file"] = str(output_file)
-            result["error"] = "文件已存在，跳过（使用 --overwrite 覆盖）"
-            return result
+        # 使用原始文件名命名，如有重复自动添加序号
+        output_file = _get_unique_output_path(output_dir, docx_name, overwrite)
 
         # 构建 Markdown 内容
         markdown_lines = [
-            f"# {display_name}",
+            f"# {docx_name}",
             "",
             f"> **Source**: {docx_path}",
             f"> **Paragraphs**: {docx_result['paragraphs']}",
@@ -1684,26 +1696,12 @@ def convert_pdf_to_markdown(pdf_path: str, output_dir: str, overwrite: bool = Fa
         # 智能格式化
         formatted_text = smart_format_text(pdf_result["text"])
         
-        # 从文本中提取论文标题作为文件名
-        paper_title = extract_paper_title_from_text(formatted_text)
-        if paper_title:
-            display_name = paper_title
-            safe_filename = sanitize_filename(paper_title)
-            md_name = safe_filename if safe_filename else pdf_name
-        else:
-            display_name = pdf_name
-            md_name = pdf_name
-        
-        output_file = Path(output_dir) / f"{md_name}.md"
-        
-        if output_file.exists() and not overwrite:
-            result["output_file"] = str(output_file)
-            result["error"] = "文件已存在，跳过（使用 --overwrite 覆盖）"
-            return result
+        # 使用原始文件名命名，如有重复自动添加序号
+        output_file = _get_unique_output_path(output_dir, pdf_name, overwrite)
         
         # 构建 Markdown 内容
         markdown_lines = [
-            f"# {display_name}",
+            f"# {pdf_name}",
             "",
             f"> **Source**: {pdf_path}",
             f"> **Pages**: {pdf_result['pages']}",
