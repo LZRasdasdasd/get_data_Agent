@@ -35,7 +35,7 @@ EXPERT_PROMPT = """
 
 3. step_1, step_2, ...：按顺序提取每一步的详细信息。
    - reactants：数组，每个元素为字典，包含 "reactant"（优先使用化学式，同时用括号保留原始描述，如 "CuSO4·5H2O (copper(II) sulfate pentahydrate)"）、"amount"（用量，如 "10 mg", "5 mmol"）、"catalyst"（布尔值，仅当该物质在此步中作为催化剂使用时为 true，否则为 false）。注意：最终催化剂本身不作为催化步骤中的催化剂标记。
-   - temperature：反应温度（摄氏度，如 "500 °C"；若为室温写 "25 °C"；若有多个温度用逗号分隔）。未提供则写 ""。
+   - temperature：反应温度（摄氏度，如 "500 °C"；若为室温写 "25 °C"；不是摄氏度的转换为摄氏度，例如：873 K 需要等价600 °C；若有多个温度用逗号分隔；）。未提供则写 ""。
    - reaction_time：反应时间（小时，可包含多步操作）。未提供则写 ""。
    - atmosphere：气氛（如 "air", "Ar", "N2", "O2"，"vacuum"）。未提供则写 ""。
    - product：该步产物名称（优先使用化学式或标准缩写，可保留原始描述）。未提供则写 ""。
@@ -46,8 +46,8 @@ EXPERT_PROMPT = """
    - metal_metal_distance：两个金属原子之间的距离（字符串，单位 Å，如 "2.5 Å"）。未提供则写 ""。
    - metal_coordination：每个金属的配位环境（字典）。格式：
      {
-       "金属1": {"coordinating_elements": ["N", "O", "金属2"], "coordination_numbers": {"N": 数值, "O": 数值, "金属2": 数值}},
-       "金属2": {"coordinating_elements": ["N", "O", "金属1"], "coordination_numbers": {"N": 数值, "O": 数值, "金属1": 数值}}
+       "金属1": {"coordinating_elements": ["N", "O"], "coordination_numbers": {"N": 数值, "O": 数值}},
+       "金属2": {"coordinating_elements": ["N", "O"], "coordination_numbers": {"N": 数值, "O": 数值}}
      }
      若某种配位元素是混合配位（例如 N 和 O 共同贡献但无法区分具体数量），则使用 "N/O" 作为键合元素，如 {"N/O": 5.6}。若配位数未提供，则 coordination_numbers 写 {}。
 

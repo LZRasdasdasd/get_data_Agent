@@ -1080,13 +1080,18 @@ def convert_doc_to_docx(doc_path: str, output_dir: Optional[str] = None) -> Dict
     return result
 
 
-def _get_unique_output_path(output_dir: str, base_name: str, overwrite: bool = False) -> Path:
+def _get_unique_output_path(output_dir: str, base_name: str, overwrite: bool = False, source_path: str = None) -> Path:
     """生成唯一的输出文件路径，如果文件名重复则在末尾添加序号
+
+    当 overwrite=True 时，会先检查已有文件是否来自同一源文件：
+    - 同源：允许覆盖（重新转换同一文件）
+    - 不同源：拒绝覆盖并自动生成新文件名，同时输出警告
 
     Args:
         output_dir: 输出目录路径
         base_name: 基础文件名（不含扩展名）
         overwrite: 是否覆盖已存在的文件
+        source_path: 源文件路径，用于在 overwrite=True 时比对来源
 
     Returns:
         Path: 唯一的输出文件路径
@@ -1094,16 +1099,66 @@ def _get_unique_output_path(output_dir: str, base_name: str, overwrite: bool = F
     out_dir = Path(output_dir)
     candidate = out_dir / f"{base_name}.md"
 
-    if overwrite or not candidate.exists():
+    if not candidate.exists():
         return candidate
 
-    # 文件已存在且不覆盖，添加序号
+    if overwrite:
+        # 检查已有文件是否来自不同的源文件
+        if source_path and _is_different_source(candidate, source_path):
+            console.print(
+                f"[bold yellow]⚠ 警告: {candidate.name} 已存在但来源不同 "
+                f"(已有来源与 {source_path} 不同)，"
+                f"将使用新文件名以避免数据丢失[/bold yellow]"
+            )
+            # 继续往下生成唯一文件名，而不是覆盖
+        else:
+            # 同源文件或无来源信息，允许覆盖
+            return candidate
+
+    # 文件已存在且不覆盖（或来源不同），添加序号
     seq = 2
     while True:
         candidate = out_dir / f"{base_name}_{seq}.md"
         if not candidate.exists():
             return candidate
         seq += 1
+
+
+def _is_different_source(existing_file: Path, new_source_path: str) -> bool:
+    """检查已有 Markdown 文件是否来自不同的源文件
+
+    通过读取已生成 Markdown 文件中的元数据行（> **Source**: ...）
+    来判断源文件是否与当前处理的文件不同。
+
+    Args:
+        existing_file: 已存在的 Markdown 文件路径
+        new_source_path: 当前待处理文件的源路径
+
+    Returns:
+        True 表示来源不同（应避免覆盖），False 表示同源
+    """
+    try:
+        with open(existing_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped.startswith('> **Source**:'):
+                    existing_source = stripped.replace('> **Source**:', '').strip()
+                    # 规范化路径后比较（处理不同形式的路径指向同一文件）
+                    try:
+                        existing_normalized = Path(existing_source).resolve()
+                        new_normalized = Path(new_source_path).resolve()
+                        return existing_normalized != new_normalized
+                    except (OSError, ValueError):
+                        # 路径无法 resolve 时，直接字符串比较
+                        return existing_source != new_source_path
+                # 元数据区一般在前 10 行内，超过分隔线就停止搜索
+                if stripped == '---':
+                    break
+    except Exception:
+        pass
+
+    # 无法读取源信息时，保守认为来源不同，避免误覆盖
+    return True
 
 
 def convert_docx_to_markdown(docx_path: str, output_dir: str, overwrite: bool = False) -> dict:
@@ -1147,8 +1202,8 @@ def convert_docx_to_markdown(docx_path: str, output_dir: str, overwrite: bool = 
         # 后处理：复用 PDF 的化学式修复和智能格式化
         formatted_text = smart_format_text(docx_result["text"])
 
-        # 使用原始文件名命名，如有重复自动添加序号
-        output_file = _get_unique_output_path(output_dir, docx_name, overwrite)
+        # 使用原始文件名命名，如有重复自动添加序号（传入源路径以防异源覆盖）
+        output_file = _get_unique_output_path(output_dir, docx_name, overwrite, source_path=docx_path)
 
         # 构建 Markdown 内容
         markdown_lines = [
@@ -1696,8 +1751,8 @@ def convert_pdf_to_markdown(pdf_path: str, output_dir: str, overwrite: bool = Fa
         # 智能格式化
         formatted_text = smart_format_text(pdf_result["text"])
         
-        # 使用原始文件名命名，如有重复自动添加序号
-        output_file = _get_unique_output_path(output_dir, pdf_name, overwrite)
+        # 使用原始文件名命名，如有重复自动添加序号（传入源路径以防异源覆盖）
+        output_file = _get_unique_output_path(output_dir, pdf_name, overwrite, source_path=pdf_path)
         
         # 构建 Markdown 内容
         markdown_lines = [
