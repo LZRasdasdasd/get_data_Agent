@@ -5,11 +5,46 @@ Qdrant 向量数据库工具模块
 """
 
 import uuid
+import sys
 import requests
 from typing import List, Dict, Any, Optional
 from openai import OpenAI
 
 from qdrant_config import config
+
+
+def _print_connection_help(qdrant_url: str, error_msg: str):
+    """打印连接失败的诊断帮助信息"""
+    print("\n" + "=" * 60)
+    print("[Qdrant 连接失败 - 诊断与解决方案]")
+    print("=" * 60)
+    print(f"\n目标地址: {qdrant_url}")
+    print(f"错误信息: {error_msg}")
+    
+    if "Connection refused" in error_msg or "10061" in error_msg or "积极拒绝" in error_msg:
+        print("\n[可能原因 1] Qdrant Docker 容器未运行或未映射端口")
+        print("  -> 解决步骤:")
+        print("     1. 确保 Docker Desktop 已启动")
+        print("     2. 在项目目录执行: docker-compose up -d")
+        print("     3. 验证容器状态: docker ps")
+        print("     4. 确认 PORTS 列显示: 0.0.0.0:6333->6333/tcp")
+        print("\n[可能原因 2] 使用了旧容器，端口未映射到宿主机")
+        print("  -> 解决步骤:")
+        print("     1. 查看所有容器: docker ps -a")
+        print("     2. 停止旧容器: docker stop <容器名>")
+        print("     3. 删除旧容器: docker rm <容器名>")
+        print("     4. 重新启动: docker-compose up -d")
+        print("\n[可能原因 3] Qdrant 服务地址配置错误")
+        print("  -> 解决步骤:")
+        print("     1. 检查 .env 文件中的 QDRANT_URL")
+        print("     2. 若使用本地 Docker，应为 http://localhost:6333")
+        print("     3. 若使用远程服务器，填写对应 IP 和端口")
+    
+    print("\n[快速检查命令]")
+    print("  docker ps                    # 查看运行中的容器")
+    print("  docker port <容器名>          # 检查端口映射")
+    print("  curl http://localhost:6333   # 测试服务是否响应")
+    print("=" * 60 + "\n")
 
 
 class QdrantManager:
@@ -28,8 +63,9 @@ class QdrantManager:
             else:
                 raise Exception(f"状态码: {response.status_code}")
         except Exception as e:
-            print(f"[ERROR] Qdrant 连接失败: {e}")
-            raise
+            error_str = str(e)
+            _print_connection_help(self.base_url, error_str)
+            raise ConnectionError(f"无法连接到 Qdrant ({self.base_url}): {error_str}")
     
     def _make_request(self, method: str, endpoint: str, data: dict = None) -> dict:
         """内部方法: 发送HTTP请求"""

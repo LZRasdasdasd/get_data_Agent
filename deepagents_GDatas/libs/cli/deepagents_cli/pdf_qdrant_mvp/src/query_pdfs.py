@@ -78,8 +78,8 @@ def search_collection(qdrant: QdrantManager, collection_name: str, query_text: s
     
     results = qdrant.search(
         collection_name=collection_name,
-        query_text=query_text,
-        n_results=top_k,
+        query=query_text,
+        limit=top_k,
         score_threshold=threshold
     )
     

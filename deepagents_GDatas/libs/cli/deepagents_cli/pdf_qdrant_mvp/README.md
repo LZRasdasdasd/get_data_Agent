@@ -125,3 +125,96 @@ docker-compose logs -f     # 查看日志
 - 需要配置 OpenAI API Key
 - PDF 文件名会自动转换为集合名称
 - 可通过 Qdrant Dashboard 查看和管理数据
+
+## Qdrant 连接与迁移指南
+
+### 为什么迁移项目后会连接失败？
+每次迁移项目或更换工作目录时，可能会遇到 `[WinError 10061] 由于目标计算机积极拒绝，无法连接` 的错误。常见原因：
+
+1. **Docker 容器未启动**：迁移后未在新目录运行 `docker-compose up -d`
+2. **端口未映射**：旧容器可能在没有 `-p 6333:6333` 参数的情况下启动，导致宿主机无法访问
+3. **Docker Desktop 未运行**：Windows 上 Docker 需要 Docker Desktop 支持
+
+### 迁移项目后的标准操作流程
+
+```bash
+# 1. 进入项目目录
+cd deepagents_GDatas/libs/cli/deepagents_cli/pdf_qdrant_mvp
+
+# 2. 检查 Docker 状态
+docker info
+
+# 3. 停止旧容器（如果有）
+docker stop pdf-qdrant-mvp
+docker rm pdf-qdrant-mvp
+
+# 4. 重新启动 Qdrant
+docker-compose up -d
+
+# 5. 验证连接
+python src/check_qdrant.py
+```
+
+### 连接诊断工具
+
+项目内置了诊断脚本，运行后会自动检查 Docker、容器、端口和 API：
+
+```bash
+python src/check_qdrant.py
+```
+
+输出示例：
+```
+[1/4] 检查 Docker 状态...
+[OK] Docker 正在运行
+
+[2/4] 检查 Qdrant 容器...
+[OK] 找到 1 个 Qdrant 容器: ...
+
+[3/4] 检查端口 127.0.0.1:6333...
+[OK] 端口 127.0.0.1:6333 已开放
+
+[4/4] 检查 Qdrant API...
+[OK] Qdrant API 响应正常
+```
+
+### 常见问题速查
+
+| 现象 | 原因 | 解决 |
+|------|------|------|
+| `Connection refused` / `10061` | Qdrant 容器未运行或未映射端口 | `docker-compose up -d` |
+| `PORTS` 列为空 | 容器未做端口映射 | 删除旧容器后重新 `docker-compose up -d` |
+| `docker info` 报错 | Docker Desktop 未启动 | 启动 Docker Desktop |
+| 连接远程 Qdrant | 配置错误 | 修改 `.env` 中 `QDRANT_URL` |
+
+### Docker 数据持久化
+
+[`docker-compose.yml`](docker-compose.yml) 已配置卷映射，将容器内数据持久化到 `./qdrant_storage`：
+
+```yaml
+volumes:
+  - ./qdrant_storage:/qdrant/storage
+```
+
+这样即使删除并重建容器，向量数据也不会丢失。
+
+### 更换 Qdrant 容器/地址
+
+如果需要连接到不同的 Qdrant 实例（例如远程服务器或其他 Docker 容器）：
+
+1. **修改 `.env` 文件**：
+   ```env
+   QDRANT_URL=http://<新IP>:<新端口>
+   ```
+
+2. **验证新地址可访问**：
+   ```bash
+   curl http://<新IP>:<新端口>
+   ```
+
+3. **重新运行脚本**：
+   ```bash
+   python src/ingest_markdown.py --md-dir markdown_output
+   ```
+
+> **注意**：若切换到远程 Qdrant，需确保网络可达且防火墙放行了对应端口。

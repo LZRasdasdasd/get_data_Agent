@@ -165,7 +165,7 @@ def extract_json_data(json_file_path):
         if not extraction_data:
             return None
         
-        file_name = os.path.basename(json_file_path)
+        file_name = Path(json_file_path).stem
         
         # 获取反应步骤数
         reaction_steps = extraction_data.get('reaction_steps', 1)
@@ -282,11 +282,9 @@ def extract_json_data(json_file_path):
             if reaction_time and "stir" in reaction_time.lower():
                 stir = "yes"
                 stir_time = parse_time(reaction_time)
-            
-            # 组装数据行（与用户指定的列格式完全对应）
+            # 组装数据行（与项目现有CSV格式完全对应）
             row_data = {
                 'step_i': step_num,
-                'is_fruitful': '',  # 人工校验字段，提取时为空
                 'ReactantA': reactant_list[0],
                 'amountA': amount_list[0],
                 'ReactantB': reactant_list[1],
@@ -357,9 +355,9 @@ def process_all_json_files(json_dir, output_dir):
         print("没有提取到任何数据")
         return
     
-    # 定义列顺序（与用户指定的格式完全一致）
+    # 定义列顺序（与项目现有CSV格式完全一致）
     fieldnames = [
-        'step_i', 'is_fruitful',
+        'step_i',
         'ReactantA', 'amountA',
         'ReactantB', 'amountB',
         'ReactantC', 'amountC',
@@ -383,16 +381,45 @@ def process_all_json_files(json_dir, output_dir):
             writer.writerow(row_data)
     
     print(f"\n数据已成功导出到: {output_file}")
+    print(f"\n数据已成功导出到: {output_file}")
     print(f"总共处理了 {len(all_results)} 行数据, 来自 {processed_count} 个有效文件")
+    return output_file
 
 
 if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="将提取的JSON数据转换为CSV表格",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--json-dir", "-j",
+        type=str,
+        default=None,
+        help="JSON文件目录 (默认: pdf_qdrant_mvp/queried_datas)"
+    )
+    parser.add_argument(
+        "--output-dir", "-o",
+        type=str,
+        default=None,
+        help="输出CSV目录 (默认: pdf_qdrant_mvp/excel_datas)"
+    )
+    parser.add_argument(
+        "--output-file", "-f",
+        type=str,
+        default="synthesis_data_updated.csv",
+        help="输出CSV文件名 (默认: synthesis_data_updated.csv)"
+    )
+
+    args = parser.parse_args()
+
     current_dir = Path(__file__).parent
-    
-    json_dir = current_dir.parent / 'queried_datas'
-    output_dir = current_dir.parent / 'excel_datas'
-    
+
+    json_dir = Path(args.json_dir) if args.json_dir else current_dir.parent / 'queried_datas'
+    output_dir = Path(args.output_dir) if args.output_dir else current_dir.parent / 'excel_datas'
+
     print(f"输入目录: {json_dir}")
     print(f"输出目录: {output_dir}\n")
-    
+
     process_all_json_files(json_dir, output_dir)

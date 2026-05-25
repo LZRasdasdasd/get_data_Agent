@@ -9,7 +9,8 @@ import sys
 import json
 from pathlib import Path
 
-sys.path.insert(0, '.')
+# 将脚本所在目录加入路径，确保能导入同级模块
+sys.path.insert(0, str(Path(__file__).parent))
 
 from vector_tools import QdrantManager
 from qdrant_config import Config

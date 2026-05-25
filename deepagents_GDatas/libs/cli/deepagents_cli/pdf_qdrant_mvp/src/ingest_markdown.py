@@ -157,10 +157,17 @@ def get_markdown_files(md_dir: str, use_title: bool = True, model: str = "qwen-p
     
     files = []
     for md_file in sorted(md_path.glob("*.md")):
+        # 处理文件名：如果前缀包含"补充材料"，去掉前缀及后续分隔符
+        raw_name = md_file.name
+        stem = md_file.stem
+        if stem.startswith("补充材料"):
+            cleaned_stem = stem[len("补充材料"):].lstrip(" -_")
+            raw_name = cleaned_stem + md_file.suffix if cleaned_stem else md_file.name
+        
         file_info = {
             "name": md_file.name,
             "path": str(md_file.absolute()),
-            "collection_name": sanitize_collection_name(md_file.name),
+            "collection_name": sanitize_collection_name(raw_name),
             "title": None
         }
         

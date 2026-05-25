@@ -974,11 +974,12 @@ class DocxToMarkdownConverter:
 def convert_doc_to_docx(doc_path: str, output_dir: Optional[str] = None) -> Dict[str, Any]:
     """将 .doc 文件转换为 .docx 文件
 
-    优先使用 LibreOffice 命令行进行转换，如果不可用则尝试 MS Word COM 自动化（仅 Windows）。
+    直接修改文件后缀名（.doc → .docx），不调用 LibreOffice 或 MS Word。
+    注意：此方法仅重命名文件，不会真正转换文件格式。
 
     Args:
         doc_path: .doc 文件的完整路径
-        output_dir: 输出目录，默认为系统临时目录
+        output_dir: 输出目录，默认为原文件所在目录
 
     Returns:
         dict: 包含转换结果:
@@ -1000,83 +1001,27 @@ def convert_doc_to_docx(doc_path: str, output_dir: Optional[str] = None) -> Dict
     if output_dir:
         out_dir = Path(output_dir)
     else:
-        out_dir = Path(tempfile.mkdtemp())
+        out_dir = doc_file.parent
 
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # 方法1: 尝试使用 LibreOffice
-    libreoffice_paths = [
-        r"C:\Program Files\LibreOffice\program\soffice.exe",
-        r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
-        "soffice",  # 如果在 PATH 中
-    ]
+    # 直接修改文件后缀名
+    docx_path = out_dir / f"{doc_file.stem}.docx"
 
-    for lo_path in libreoffice_paths:
-        try:
-            cmd = [
-                lo_path,
-                "--headless",
-                "--convert-to", "docx",
-                "--outdir", str(out_dir),
-                str(doc_file)
-            ]
-            proc = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=120,
-                encoding='utf-8',
-                errors='replace'
-            )
-            if proc.returncode == 0:
-                expected_docx = out_dir / f"{doc_file.stem}.docx"
-                if expected_docx.exists():
-                    result["success"] = True
-                    result["docx_path"] = str(expected_docx)
-                    return result
-        except (FileNotFoundError, subprocess.TimeoutExpired):
-            continue
-        except Exception:
-            continue
+    try:
+        if docx_path.exists():
+            docx_path.unlink()
 
-    # 方法2: 尝试使用 MS Word COM 自动化（仅 Windows）
-    # 优先使用 win32com (pywin32)，回退到 comtypes
-    for com_lib in ['win32com.client', 'comtypes.client']:
-        try:
-            if com_lib == 'win32com.client':
-                import win32com.client
-                word = win32com.client.Dispatch('Word.Application')
-            else:
-                import comtypes.client
-                word = comtypes.client.CreateObject('Word.Application')
+        if out_dir.resolve() == doc_file.parent.resolve():
+            doc_file.rename(docx_path)
+        else:
+            shutil.copy2(str(doc_file), str(docx_path))
 
-            word.Visible = False
+        result["success"] = True
+        result["docx_path"] = str(docx_path)
+    except Exception as e:
+        result["error"] = f"修改后缀名失败: {e}"
 
-            doc_abs = str(doc_file.absolute())
-            docx_abs = str((out_dir / f"{doc_file.stem}.docx").absolute())
-
-            # wdFormatXMLDocument = 12
-            doc = word.Documents.Open(doc_abs)
-            doc.SaveAs(docx_abs, FileFormat=12)
-            doc.Close()
-            word.Quit()
-
-            result["success"] = True
-            result["docx_path"] = docx_abs
-            return result
-
-        except ImportError:
-            continue
-        except Exception as e:
-            result["error"] = f"MS Word COM 转换失败 ({com_lib}): {e}"
-            return result
-
-    result["error"] = (
-        "无法转换 .doc 文件：未找到 LibreOffice 或 MS Word。\n"
-        "请安装以下任一工具:\n"
-        "  1. LibreOffice (推荐): https://www.libreoffice.org/download/\n"
-        "  2. Microsoft Word 并安装 pywin32: pip install pywin32"
-    )
     return result
 
 
