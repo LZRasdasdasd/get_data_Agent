@@ -22,7 +22,7 @@ echo 脚本路径: %SCRIPT_PATH%
 echo.
 
 :: 检查Python是否可用
-python --version > nul 2>&1
+".conda\python.exe" --version > nul 2>&1
 if %errorlevel% neq 0 (
     echo [错误] 未找到Python,请先安装Python并添加到PATH环境变量中
     pause
@@ -67,10 +67,10 @@ if not exist "%SCRIPT_PATH%" (
 
 :: 检查并安装所需的依赖项
 echo [信息] 检查Python依赖项...
-python -c "import pdfplumber" > nul 2>&1
+".conda\python.exe" -c "import pdfplumber" > nul 2>&1
 if %errorlevel% neq 0 (
     echo [提示] 正在安装所需的依赖项(pdfplumber、rich、python-docx等)...
-    pip install pdfplumber rich python-docx > nul 2>&1
+    ".conda\Scripts\pip.exe" install pdfplumber rich python-docx > nul 2>&1
     if %errorlevel% neq 0 (
         echo [错误] 依赖项安装失败,请手动安装: pip install pdfplumber rich python-docx
         pause
@@ -89,7 +89,7 @@ echo ========================================
 echo.
 
 :: 调用Python脚本进行批量转换（使用 --input-dir 参数以支持所有格式）
-python "%SCRIPT_PATH%" --input-dir "%DOC_DIR%" --output-dir "%OUTPUT_DIR%" --overwrite
+".conda\python.exe" "%SCRIPT_PATH%" --input-dir "%DOC_DIR%" --output-dir "%OUTPUT_DIR%" --overwrite
 
 if %errorlevel% equ 0 (
     echo.
